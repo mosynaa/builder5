@@ -222,7 +222,7 @@ input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgb
 .preview-toolbar p { margin: 0; font-size: 12px; line-height: 1.35; }
 .preview-toolbar strong { display: block; color: var(--teal-dark); font-size: 13px; }
 .toolbar-actions { display: flex; gap: 8px; }
-.document { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.document { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .page {
   position: relative;
   width: 210mm;
@@ -246,7 +246,8 @@ input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgb
 }
 .logo-somo { width: 38mm; height: auto; }
 .logo-noodles { width: 31mm; height: auto; margin-top: .5mm; }
-.doc-title { margin: 0 0 2.4mm; font-size: 16.4pt; line-height: 1.08; letter-spacing: -.02em; }
+.doc-title { margin: 0 0 1.2mm; font-size: 16.4pt; line-height: 1.08; letter-spacing: -.02em; }
+.doc-subtitle { margin: 0 0 2.7mm; color: var(--teal); font-size: 9.8pt; line-height: 1.15; font-weight: 700; }
 table { width: 100%; border-collapse: collapse; }
 .parties { margin-bottom: 3.6mm; table-layout: fixed; }
 .parties th, .parties td {
@@ -281,6 +282,7 @@ table { width: 100%; border-collapse: collapse; }
 .service-list .service-description { display: block; }
 .page.compact { font-size: 9.15pt; line-height: 1.16; }
 .page.compact .doc-title { font-size: 15.6pt; }
+.page.compact .doc-subtitle { margin-bottom: 2.1mm; font-size: 9.2pt; }
 .page.compact .parties { margin-bottom: 3mm; }
 .page.compact .object-text { margin-bottom: 2.1mm; }
 .page.compact .doc-section { margin-top: 1.85mm; }
@@ -289,6 +291,7 @@ table { width: 100%; border-collapse: collapse; }
 .page.compact .summary-table th, .page.compact .summary-table td { height: 6.15mm; padding-top: 1.05mm; padding-bottom: 1.05mm; }
 .page.dense { padding-top: 11.5mm; font-size: 8.6pt; line-height: 1.08; }
 .page.dense .doc-header { height: 10mm; margin-bottom: 1.3mm; }
+.page.dense .doc-subtitle { margin-bottom: 1.5mm; font-size: 8.8pt; }
 .page.dense .object-text { margin-bottom: 1.15mm; }
 .page.dense .section-title { margin-bottom: 1.25mm; }
 .page.dense .summary-table { margin-bottom: 1.25mm; }
@@ -296,7 +299,7 @@ table { width: 100%; border-collapse: collapse; }
 .page.dense .summary-table th, .page.dense .summary-table td { height: 5.8mm; }
 .page.dense .service-list { font-size: 8pt; line-height: 1.06; }
 .page.dense .doc-section { margin-top: 1.05mm; }
-.page-two { padding-top: 42mm; }
+.page-two { padding-top: 18mm; }
 .fee-table { margin: 0 0 8mm; table-layout: fixed; border: .35mm solid var(--teal); }
 .fee-table th, .fee-table td {
   height: auto;
@@ -308,16 +311,16 @@ table { width: 100%; border-collapse: collapse; }
 }
 .fee-table th { width: 50%; color: var(--teal); font-size: 9pt; letter-spacing: .012em; }
 .fee-table td { font-size: 11pt; font-weight: 800; }
-.page-two .doc-section { margin-top: 7mm; }
-.page-two .doc-section + .doc-section { margin-top: 9mm; }
+.page-two .doc-section { margin-top: 5.2mm; }
+.page-two .doc-section + .doc-section { margin-top: 6.8mm; }
 .page-two .exclusion-note { margin-top: 3mm; }
-.page-two.compact { padding-top: 35mm; }
+.page-two.compact { padding-top: 16.5mm; }
 .page-two.compact .fee-table { margin-bottom: 5.7mm; }
-.page-two.compact .doc-section { margin-top: 5.2mm; }
-.page-two.compact .doc-section + .doc-section { margin-top: 6.5mm; }
+.page-two.compact .doc-section { margin-top: 4.4mm; }
+.page-two.compact .doc-section + .doc-section { margin-top: 5.4mm; }
 .page-two.compact .signature { margin-top: 7.5mm; }
-.signature { margin-top: 11mm; }
-.signature p { margin: 0 0 11mm; }
+.signature { margin-top: 8mm; }
+.signature p { margin: 0 0 8mm; }
 .signature p:last-child { margin-bottom: 0; line-height: 1.45; }
 .doc-footer {
   position: absolute;

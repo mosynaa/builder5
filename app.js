@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'somo-allegato-a-builder-v10';
+  const STORAGE_KEY = 'somo-allegato-a-builder-v11';
   const form = document.getElementById('builderForm');
   const fields = [...form.querySelectorAll('input, select')];
   const objectiveIds = [
@@ -735,10 +735,29 @@
     return rows.length;
   }
 
+  function documentHeading() {
+    const mode = proposalMode();
+    if (mode === 'tiktok') return {
+      title: 'ALLEGATO A – PROPOSTA OPERATIVA ED ECONOMICA',
+      subtitle: 'Attività dedicate al TikTok Shop'
+    };
+    if (mode === 'both') return {
+      title: 'ALLEGATO A – PROPOSTA INTEGRATA DI COMUNICAZIONE',
+      subtitle: 'Servizi social e attività TikTok Shop'
+    };
+    return {
+      title: 'ALLEGATO A – OFFERTA ECONOMICA E SCOPE OF WORK',
+      subtitle: 'Servizi di comunicazione e gestione social'
+    };
+  }
+
   function render() {
     syncProposalMode();
     renderVisibility();
     renderClientBlock();
+    const heading = documentHeading();
+    setText('docTitle', heading.title);
+    setText('docSubtitle', heading.subtitle);
     setText('objectText', buildObjectText());
     renderSummary();
     const objectiveCount = renderObjectives();
@@ -761,7 +780,7 @@
     render();
   }
 
-  // ---- DOCX generation: valid editable .docx without external libraries ----
+  // ---- DOCX generation: editable .docx, con colori e loghi incorporati ----
   function crc32(bytes) {
     let crc = 0xffffffff;
     for (let i = 0; i < bytes.length; i++) {
@@ -799,102 +818,203 @@
       centrals.push(central);
       offset += local.length;
     }
-    const centralSize = centrals.reduce((s, x) => s + x.length, 0);
-    const end = new Uint8Array([
+    const centralSize = centrals.reduce((sum, part) => sum + part.length, 0);
+    const endRecord = new Uint8Array([
       ...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(centrals.length), ...u16(centrals.length),
       ...u32(centralSize), ...u32(offset), ...u16(0)
     ]);
-    const total = locals.reduce((s,x) => s + x.length, 0) + centralSize + end.length;
+    const total = locals.reduce((sum, part) => sum + part.length, 0) + centralSize + endRecord.length;
     const out = new Uint8Array(total);
     let pos = 0;
-    [...locals, ...centrals, end].forEach((part) => { out.set(part, pos); pos += part.length; });
+    [...locals, ...centrals, endRecord].forEach((part) => { out.set(part, pos); pos += part.length; });
     return out;
   }
-  function wRun(text, bold = false, size = 20, color = '') {
-    const props = `${bold ? '<w:b/>' : ''}<w:rFonts w:ascii="Nunito" w:hAnsi="Nunito"/><w:sz w:val="${size}"/>${color ? `<w:color w:val="${color}"/>` : ''}`;
+
+  const WORD = {
+    teal: '2F6F6D', tealDark: '245957', paper: 'F1F4F3', line: 'D2D7D6', ink: '171717', muted: '666666'
+  };
+
+  function wRun(text, opts = {}) {
+    const { bold = false, size = 19, color = WORD.ink, italic = false } = opts;
+    const props = `${bold ? '<w:b/>' : ''}${italic ? '<w:i/>' : ''}<w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:eastAsia="Nunito"/><w:sz w:val="${size}"/><w:szCs w:val="${size}"/>${color ? `<w:color w:val="${color}"/>` : ''}`;
     return `<w:r><w:rPr>${props}</w:rPr><w:t xml:space="preserve">${xmlSafe(text)}</w:t></w:r>`;
   }
   function wParagraph(text, opts = {}) {
-    const { bold = false, size = 20, color = '', before = 0, after = 80, align = '', pageBreak = false } = opts;
-    const pPr = `<w:pPr>${before || after ? `<w:spacing w:before="${before}" w:after="${after}"/>` : ''}${align ? `<w:jc w:val="${align}"/>` : ''}</w:pPr>`;
-    return `<w:p>${pPr}${pageBreak ? '<w:r><w:br w:type="page"/></w:r>' : ''}${text ? wRun(text, bold, size, color) : ''}</w:p>`;
+    const { bold = false, size = 19, color = WORD.ink, before = 0, after = 70, align = '', pageBreak = false } = opts;
+    const spacing = `<w:spacing w:before="${before}" w:after="${after}"/>`;
+    const pPr = `<w:pPr>${spacing}${align ? `<w:jc w:val="${align}"/>` : ''}</w:pPr>`;
+    return `<w:p>${pPr}${pageBreak ? '<w:r><w:br w:type="page"/></w:r>' : ''}${text ? wRun(text, { bold, size, color }) : ''}</w:p>`;
   }
-  function wTable(rows, header = false, widths = [4800,4800]) {
-    const cells = (row, isHeader) => row.map((cell, i) => `<w:tc><w:tcPr><w:tcW w:w="${widths[i] || widths[0]}" w:type="dxa"/>${isHeader ? '<w:shd w:fill="F1F4F3"/>' : ''}</w:tcPr>${wParagraph(cell, { bold: isHeader, size: isHeader ? 18 : 18, color: isHeader ? '2F6F6D' : '' })}</w:tc>`).join('');
-    return `<w:tbl><w:tblPr><w:tblBorders><w:top w:val="single" w:sz="4" w:color="D2D7D6"/><w:left w:val="single" w:sz="4" w:color="D2D7D6"/><w:bottom w:val="single" w:sz="4" w:color="D2D7D6"/><w:right w:val="single" w:sz="4" w:color="D2D7D6"/><w:insideH w:val="single" w:sz="4" w:color="D2D7D6"/><w:insideV w:val="single" w:sz="4" w:color="D2D7D6"/></w:tblBorders></w:tblPr>${rows.map((row, idx) => `<w:tr>${cells(row, header && idx === 0)}</w:tr>`).join('')}</w:tbl>`;
+  function wRichParagraph(runs, opts = {}) {
+    const { before = 0, after = 70, align = '', bullet = false } = opts;
+    const pPr = `<w:pPr><w:spacing w:before="${before}" w:after="${after}"/>${align ? `<w:jc w:val="${align}"/>` : ''}${bullet ? '<w:ind w:left="260" w:hanging="160"/>' : ''}</w:pPr>`;
+    const prefix = bullet ? wRun('• ', { size:18 }) : '';
+    return `<w:p>${pPr}${prefix}${runs.map((run) => wRun(run.text, run)).join('')}</w:p>`;
+  }
+  function wLinesParagraph(lines, opts = {}) {
+    const { before = 0, after = 60, align = '', firstBold = false, size = 18, color = WORD.ink } = opts;
+    const pPr = `<w:pPr><w:spacing w:before="${before}" w:after="${after}"/>${align ? `<w:jc w:val="${align}"/>` : ''}</w:pPr>`;
+    const runs = lines.map((line, idx) => `${idx ? '<w:r><w:br/></w:r>' : ''}${wRun(line, { bold:firstBold && idx === 0, size, color })}`).join('');
+    return `<w:p>${pPr}${runs}</w:p>`;
+  }
+  function wCell(content, width, opts = {}) {
+    const { fill = '', valign = 'top' } = opts;
+    return `<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/><w:vAlign w:val="${valign}"/>${fill ? `<w:shd w:fill="${fill}"/>` : ''}</w:tcPr>${content}</w:tc>`;
+  }
+  function wTableShell(rows, opts = {}) {
+    const { border = WORD.line, size = 4, widths = [4800,4800] } = opts;
+    const grid = widths.map((width) => `<w:gridCol w:w="${width}"/>`).join('');
+    return `<w:tbl><w:tblPr><w:tblW w:w="${widths.reduce((a,b)=>a+b,0)}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblBorders><w:top w:val="single" w:sz="${size}" w:color="${border}"/><w:left w:val="single" w:sz="${size}" w:color="${border}"/><w:bottom w:val="single" w:sz="${size}" w:color="${border}"/><w:right w:val="single" w:sz="${size}" w:color="${border}"/><w:insideH w:val="single" w:sz="${size}" w:color="${border}"/><w:insideV w:val="single" w:sz="${size}" w:color="${border}"/></w:tblBorders></w:tblPr><w:tblGrid>${grid}</w:tblGrid>${rows.join('')}</w:tbl>`;
+  }
+  function wPartiesTable(client) {
+    const widths = [4800,4800];
+    const header = `<w:tr>${wCell(wParagraph('FORNITORE', { bold:true, size:18, color:WORD.teal, after:20 }), widths[0], { fill:WORD.paper, valign:'center' })}${wCell(wParagraph('CLIENTE', { bold:true, size:18, color:WORD.teal, after:20 }), widths[1], { fill:WORD.paper, valign:'center' })}</w:tr>`;
+    const providerLines = ['SOMO S.r.l.', "Vico Sant’Eframo Vecchio, 20", '80137 Napoli (NA)', 'P. IVA 10895731213'];
+    const clientLines = [client.name, client.address, client.city, client.vat];
+    const body = `<w:tr>${wCell(wLinesParagraph(providerLines, { firstBold:true, size:18, after:20 }), widths[0])}${wCell(wLinesParagraph(clientLines, { firstBold:true, size:18, after:20 }), widths[1])}</w:tr>`;
+    return wTableShell([header, body], { widths, border:WORD.line, size:4 });
+  }
+  function wSummaryTable(rows) {
+    const widths = [3600,6000];
+    const xmlRows = rows.map(([label, value]) => `<w:tr>${wCell(wParagraph(label, { bold:true, size:17, color:WORD.teal, after:20 }), widths[0], { fill:WORD.paper, valign:'center' })}${wCell(wParagraph(value, { size:16, after:20 }), widths[1], { valign:'center' })}</w:tr>`);
+    return wTableShell(xmlRows, { widths, border:WORD.line, size:4 });
+  }
+  function wFeeTable(rows) {
+    const widths = [4800,4800];
+    const xmlRows = rows.map(([label, value]) => `<w:tr>${wCell(wParagraph(label, { bold:true, size:17, color:WORD.teal, after:20 }), widths[0], { fill:WORD.paper, valign:'center' })}${wCell(wParagraph(value, { bold:true, size:21, after:20 }), widths[1], { fill:WORD.paper, valign:'center' })}</w:tr>`);
+    return wTableShell(xmlRows, { widths, border:WORD.teal, size:6 });
+  }
+
+  function pngDimensions(bytes) {
+    try {
+      if (!bytes || bytes.length < 24) return null;
+      const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+      const signature = [137,80,78,71,13,10,26,10];
+      for (let i = 0; i < signature.length; i++) if (bytes[i] !== signature[i]) return null;
+      return { width:view.getUint32(16), height:view.getUint32(20) };
+    } catch (_) { return null; }
+  }
+  function imageDrawing(relId, name, bytes, widthMm, align, docPrId) {
+    const dim = pngDimensions(bytes) || { width:4, height:1 };
+    const cx = Math.round(widthMm * 36000);
+    const cy = Math.round(cx * dim.height / dim.width);
+    return `<w:p><w:pPr><w:jc w:val="${align}"/><w:spacing w:after="0"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${docPrId}" name="${xmlSafe(name)}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="${xmlSafe(name)}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
+  }
+  function wBrandTable(somo, black) {
+    const widths = [4800,4800];
+    const borderNil = '<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>';
+    const left = somo ? imageDrawing('rIdSomoLogo', 'SOMO', somo, 38, 'left', 1) : wParagraph('SOMO S.r.l.', { bold:true, size:19, color:WORD.teal, after:0 });
+    const right = black ? imageDrawing('rIdBlackLogo', 'Black Noodles', black, 31, 'right', 2) : wParagraph('BLACK NOODLES', { bold:true, size:19, color:WORD.teal, align:'right', after:0 });
+    return `<w:tbl><w:tblPr><w:tblW w:w="9600" w:type="dxa"/><w:tblLayout w:type="fixed"/>${borderNil}</w:tblPr><w:tblGrid><w:gridCol w:w="4800"/><w:gridCol w:w="4800"/></w:tblGrid><w:tr>${wCell(left,widths[0])}${wCell(right,widths[1])}</w:tr></w:tbl>`;
+  }
+  async function fetchBinary(path) {
+    try {
+      const response = await fetch(path, { cache:'no-store' });
+      if (!response.ok) return null;
+      return new Uint8Array(await response.arrayBuffer());
+    } catch (_) { return null; }
   }
   function domText(selector) { return document.querySelector(selector)?.textContent?.replace(/\s+/g,' ').trim() || ''; }
-  function domList(selector) { return [...document.querySelectorAll(selector)].map((x) => x.textContent.replace(/\s+/g,' ').trim()).filter(Boolean); }
   function downloadBlob(blob, filename) {
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    const anchor = document.createElement('a');
+    anchor.href = url; anchor.download = filename; document.body.appendChild(anchor); anchor.click(); anchor.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
-  function buildDocx() {
+
+  async function buildDocx() {
     render();
     const summaryRows = [...document.querySelectorAll('.summary-table tr')]
       .filter((tr) => !tr.classList.contains('is-hidden'))
       .map((tr) => [tr.children[0]?.textContent?.trim() || '', tr.children[1]?.textContent?.trim() || '']);
     const feeRows = [...document.querySelectorAll('.fee-table tr')].map((tr) => [tr.children[0]?.textContent?.trim() || '', tr.children[1]?.textContent?.trim() || '']);
-    const clientLines = [value('legalName') || value('clientName') || '________________________________', value('address') ? `Sede: ${value('address')}` : 'Sede: __________________________________', value('city') || '________________________________________', `P. IVA/C.F.: ${value('vat') || '__________________________'}`].join(' · ');
-    const objectiveParagraphs = domList('#objectiveText p');
-    const serviceItems = domList('#serviceList li');
-    const exclusions = domList('#exclusionList li');
+    const serviceItems = [...document.querySelectorAll('#serviceList li')].map((li) => ({
+      title: li.querySelector('strong')?.textContent?.trim() || '',
+      description: li.querySelector('.service-description')?.textContent?.trim() || ''
+    }));
+    const objectiveParagraphs = [...document.querySelectorAll('#objectiveText p')].map((p) => p.textContent.replace(/\s+/g,' ').trim()).filter(Boolean);
+    const exclusions = [...document.querySelectorAll('#exclusionList li')].map((li) => li.textContent.replace(/\s+/g,' ').trim()).filter(Boolean);
+    const client = {
+      name: value('legalName') || value('clientName') || '________________________________',
+      address: value('address') ? `Sede: ${value('address')}` : 'Sede: __________________________________',
+      city: value('city') || '________________________________________',
+      vat: `P. IVA/C.F.: ${value('vat') || '__________________________'}`
+    };
+
+    const somoPath = document.querySelector('.logo-somo')?.getAttribute('src') || 'assets/somo.png';
+    const blackPath = document.querySelector('.logo-noodles')?.getAttribute('src') || 'assets/black-noodles.png';
+    const [somoLogo, blackLogo] = await Promise.all([fetchBinary(somoPath), fetchBinary(blackPath)]);
+
     const body = [];
-    body.push(wParagraph('SOMO S.r.l.  |  BLACK NOODLES', { bold:true, size:18, color:'2F6F6D', after:120 }));
-    body.push(wParagraph('ALLEGATO A – OFFERTA ECONOMICA E SCOPE OF WORK', { bold:true, size:30, after:160 }));
-    body.push(wTable([
-      ['FORNITORE','CLIENTE'],
-      ['SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 · 80137 Napoli (NA) · P. IVA 10895731213', clientLines]
-    ], true));
-    body.push(wParagraph('OGGETTO', { bold:true, size:20, color:'2F6F6D', before:140, after:50 }));
-    body.push(wParagraph(domText('#objectText'), { size:19, after:130 }));
-    body.push(wParagraph('SINTESI DELL’OFFERTA', { bold:true, size:23, after:80 }));
-    body.push(wTable(summaryRows.map((r) => [r[0], r[1]]), false, [3600,6000]));
+    body.push(wBrandTable(somoLogo, blackLogo));
+    body.push(wParagraph(domText('#docTitle'), { bold:true, size:33, after:35 }));
+    body.push(wParagraph(domText('#docSubtitle'), { bold:true, size:19, color:WORD.teal, after:100 }));
+    body.push(wPartiesTable(client));
+    body.push(wParagraph('OGGETTO', { bold:true, size:19, color:WORD.teal, before:100, after:30 }));
+    body.push(wParagraph(domText('#objectText'), { size:19, after:100 }));
+    body.push(wParagraph('SINTESI DELL’OFFERTA', { bold:true, size:23, after:55 }));
+    body.push(wSummaryTable(summaryRows));
+
     if (!el('objectiveDocumentSection')?.classList.contains('is-hidden')) {
-      body.push(wParagraph('1. OBIETTIVO DELLA COLLABORAZIONE', { bold:true, size:23, before:160, after:70 }));
-      objectiveParagraphs.forEach((p) => body.push(wParagraph(p, { size:19, after:55 })));
+      body.push(wParagraph('1. OBIETTIVO DELLA COLLABORAZIONE', { bold:true, size:23, before:110, after:45 }));
+      objectiveParagraphs.forEach((text) => body.push(wParagraph(text, { size:18, after:35 })));
     }
     if (!el('servicesDocumentSection')?.classList.contains('is-hidden')) {
-      body.push(wParagraph('2. SERVIZI INCLUSI', { bold:true, size:23, before:120, after:70 }));
-      serviceItems.forEach((p) => body.push(wParagraph(`• ${p}`, { size:18, after:45 })));
+      body.push(wParagraph('2. SERVIZI INCLUSI', { bold:true, size:23, before:90, after:45 }));
+      serviceItems.forEach((item) => body.push(wRichParagraph([
+        { text:item.title + (item.description ? ' — ' : ''), bold:true, size:18 },
+        { text:item.description, size:18 }
+      ], { bullet:true, after:26 })));
     }
     if (!el('productionDocumentSection')?.classList.contains('is-hidden')) {
-      body.push(wParagraph(domText('#productionHeading'), { bold:true, size:23, before:120, after:70 }));
-      body.push(wParagraph(domText('#productionText'), { size:18, after:80 }));
+      body.push(wParagraph(domText('#productionHeading'), { bold:true, size:23, before:90, after:45 }));
+      body.push(wParagraph(domText('#productionText'), { size:18, after:40 }));
     }
-    body.push(wParagraph('', { pageBreak:true, after:0 }));
-    body.push(wParagraph('4. COMPENSO', { bold:true, size:23, after:80 }));
-    body.push(wTable(feeRows, false, [4800,4800]));
-    body.push(wParagraph('5. NON INCLUSO', { bold:true, size:23, before:170, after:70 }));
-    exclusions.forEach((p) => body.push(wParagraph(`• ${p}`, { size:18, after:45 })));
-    body.push(wParagraph('Le eventuali attività aggiuntive saranno concordate e preventivate separatamente.', { size:18, after:120 }));
-    body.push(wParagraph('6. PAGAMENTO E VALIDITÀ', { bold:true, size:23, before:120, after:70 }));
-    [domText('#paymentText'),domText('#invoiceText'),domText('#validityText')].filter(Boolean).forEach((p) => body.push(wParagraph(p, { size:18, after:55 })));
-    body.push(wParagraph('Data: ____ / ____ / ______', { size:18, before:200, after:160 }));
-    body.push(wParagraph('Per accettazione', { bold:true, size:18, after:50 }));
-    body.push(wParagraph('Firma e Timbro del Cliente  _____________________________________________', { size:18, after:220 }));
-    body.push(wParagraph('SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it', { size:14, color:'666666', align:'center', after:0 }));
 
-    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body.join('')}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="900" w:right="1050" w:bottom="900" w:left="1050" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr></w:body></w:document>`;
-    const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:eastAsia="Nunito"/><w:sz w:val="20"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="80"/></w:pPr></w:pPrDefault></w:docDefaults></w:styles>`;
+    body.push(wParagraph('', { pageBreak:true, after:0 }));
+    body.push(wParagraph('4. COMPENSO', { bold:true, size:23, after:60 }));
+    body.push(wFeeTable(feeRows));
+    body.push(wParagraph('5. NON INCLUSO', { bold:true, size:23, before:120, after:45 }));
+    exclusions.forEach((text) => body.push(wRichParagraph([{ text, size:18 }], { bullet:true, after:26 })));
+    body.push(wParagraph('Le eventuali attività aggiuntive saranno concordate e preventivate separatamente.', { size:18, after:85 }));
+    body.push(wParagraph('6. PAGAMENTO E VALIDITÀ', { bold:true, size:23, before:90, after:45 }));
+    [domText('#paymentText'),domText('#invoiceText'),domText('#validityText')].filter(Boolean).forEach((text) => body.push(wParagraph(text, { size:18, after:38 })));
+    body.push(wParagraph('Data: ____ / ____ / ______', { size:18, before:130, after:90 }));
+    body.push(wParagraph('Per accettazione', { bold:true, size:18, after:28 }));
+    body.push(wParagraph('Firma e Timbro del Cliente  _____________________________________________', { size:18, after:30 }));
+
+    const footerText = 'SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it';
+    const footerXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="30"/></w:pPr>${wRun(footerText,{size:14,color:'181818'})}</w:p><w:p><w:pPr><w:jc w:val="right"/><w:spacing w:after="0"/></w:pPr><w:fldSimple w:instr="PAGE"><w:r><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito"/><w:sz w:val="14"/><w:color w:val="666666"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple></w:p></w:ftr>`;
+
+    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><w:body>${body.join('')}<w:sectPr><w:footerReference w:type="default" r:id="rIdFooter"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="895" w:right="1134" w:bottom="1020" w:left="1134" w:header="360" w:footer="470" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+    const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:eastAsia="Nunito"/><w:sz w:val="19"/><w:color w:val="${WORD.ink}"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="60"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito"/></w:rPr></w:style></w:styles>`;
+
+    const relationships = [
+      '<Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>',
+      '<Relationship Id="rIdFooter" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>'
+    ];
+    if (somoLogo) relationships.push('<Relationship Id="rIdSomoLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/somo.png"/>');
+    if (blackLogo) relationships.push('<Relationship Id="rIdBlackLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/black-noodles.png"/>');
+
     const files = {
-      '[Content_Types].xml': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`,
+      '[Content_Types].xml': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`,
       '_rels/.rels': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`,
       'word/document.xml': documentXml,
       'word/styles.xml': stylesXml,
-      'word/_rels/document.xml.rels': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`,
-      'docProps/core.xml': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>Allegato A SOMO</dc:title><dc:creator>SOMO S.r.l.</dc:creator><cp:lastModifiedBy>SOMO S.r.l.</cp:lastModifiedBy><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created></cp:coreProperties>`,
+      'word/footer1.xml': footerXml,
+      'word/_rels/document.xml.rels': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${relationships.join('')}</Relationships>`,
+      'docProps/core.xml': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${xmlSafe(domText('#docTitle'))}</dc:title><dc:creator>SOMO S.r.l.</dc:creator><cp:lastModifiedBy>SOMO S.r.l.</cp:lastModifiedBy><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created></cp:coreProperties>`,
       'docProps/app.xml': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Microsoft Office Word</Application></Properties>`
     };
+    if (somoLogo) files['word/media/somo.png'] = somoLogo;
+    if (blackLogo) files['word/media/black-noodles.png'] = blackLogo;
     return zipStore(files);
   }
 
-  function downloadWord(button) {
+  async function downloadWord(button) {
     button?.classList.add('is-loading');
     try {
-      const bytes = buildDocx();
+      const bytes = await buildDocx();
       const name = (value('clientName') || value('legalName') || 'Cliente').replace(/[^a-zA-Z0-9À-ÿ_-]+/g,'_');
       downloadBlob(new Blob([bytes], { type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }), `Allegato_A_${name}.docx`);
     } catch (error) {

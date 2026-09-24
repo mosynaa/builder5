@@ -1,8 +1,8 @@
-# Allegato A Builder · SOMO — v10
+# Allegato A Builder · SOMO — v11
 
 Generatore statico per creare Allegati A SOMO in stile sintetico BabyChic/Gloria, con blocco TikTok Shop basato sulla proposta Supermercato Cinese.
 
-## Correzioni v10
+## Correzioni v11
 
 - suggerimenti cliente mantenuti mentre si scrive, senza menu fisso;
 - selezionando o completando esattamente “Shopping Casa” vengono compilati anche indirizzo e città disponibili;
@@ -27,3 +27,11 @@ SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 1089573
 ## GitHub Pages
 
 Sostituire `index.html`, `styles.css`, `app.js` e `README.md`. Se nel repository esiste già la cartella `assets` con i loghi, lasciarla invariata.
+
+
+## Versione 11
+
+- seconda pagina riallineata alla prima, senza grande vuoto iniziale;
+- titolo e sottotitolo del documento cambiano in base a proposta classica, TikTok Shop o proposta integrata;
+- esportazione Word resa più fedele all’anteprima: colori SOMO, tabelle, footer e loghi incorporati nel file quando gli asset sono disponibili;
+- i loghi vengono letti da `assets/somo.png` e `assets/black-noodles.png` e incorporati nel `.docx`, quindi non restano semplici riferimenti esterni.
