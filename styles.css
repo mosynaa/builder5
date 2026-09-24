@@ -376,3 +376,35 @@ table { width: 100%; border-collapse: collapse; }
   font-weight: 800;
   border-color: #9fbfbb;
 }
+
+/* Autocomplete clienti */
+.autocomplete-field { position: relative; }
+.autocomplete-suggestions {
+  position: absolute;
+  z-index: 30;
+  top: 64px;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #cbd5d3;
+  border-radius: 8px;
+  box-shadow: 0 10px 26px rgba(27, 53, 51, .14);
+}
+.autocomplete-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 11px;
+  color: var(--ink);
+  background: #fff;
+  border: 0;
+  border-bottom: 1px solid #edf1f0;
+  text-align: left;
+}
+.autocomplete-option:last-child { border-bottom: 0; }
+.autocomplete-option:hover, .autocomplete-option:focus { background: var(--teal-soft); outline: none; }
+.autocomplete-option strong { font-size: 12px; }
+.autocomplete-option span { color: var(--muted); font-size: 10px; text-align: right; }

@@ -1,4 +1,4 @@
-# Allegato A Builder · SOMO — v7
+# Allegato A Builder · SOMO — v8
 
 Generatore statico per creare Allegati A SOMO in stile sintetico BabyChic/Gloria, con blocco TikTok Shop basato sulla proposta Supermercato Cinese.
 
@@ -31,18 +31,18 @@ Se una voce viene tolta, non viene richiamata nel documento finale.
 
 ## Clienti già usati
 
-Nel campo “Nome commerciale” vengono suggeriti automaticamente alcuni clienti ricorrenti:
+Nel campo “Nome commerciale” compare un suggerimento mentre si scrive, senza menu fisso. Sono presenti:
 - Shopping Casa
 - Mega Family
 - Ipermondo
 - Gold Center
 - Supermercato Cinese
 
-La tipologia cliente viene impostata come emporio / grande store multicategoria. I dati non disponibili non vengono inventati e restano compilabili manualmente.
+Se si seleziona un suggerimento, il builder compila automaticamente i dati disponibili (tipologia, sede e, dove verificati, ragione sociale e P. IVA). Tutti i campi restano modificabili e i dati non disponibili restano vuoti.
 
 ## Campi lasciati vuoti
 
-Se ragione sociale, sede, città, P. IVA/C.F. o data non vengono inseriti, il documento lascia righe vuote da compilare a penna dopo la stampa.
+Se ragione sociale, sede, città o P. IVA/C.F. non vengono inseriti, il documento lascia righe vuote da compilare a penna dopo la stampa. La data non si inserisce nel builder: nel documento resta sempre la riga `Data: ____ / ____ / ______` da compilare a penna.
 
 ## GitHub Pages
 
@@ -54,3 +54,8 @@ Caricare nella root del repository:
 - la cartella `assets` già presente con i loghi
 
 Il progetto non richiede server o build.
+
+
+## Piè di pagina
+
+SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it

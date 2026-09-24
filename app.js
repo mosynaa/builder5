@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'somo-allegato-a-builder-v7';
+  const STORAGE_KEY = 'somo-allegato-a-builder-v8';
   const form = document.getElementById('builderForm');
   const fields = [...form.querySelectorAll('input, select')];
   const objectiveIds = [
@@ -90,16 +90,41 @@
   };
 
   const knownClients = {
-    'shopping casa': { clientName: 'Shopping Casa', clientType: 'emporium' },
-    'mega family': { clientName: 'Mega Family', clientType: 'emporium' },
-    'ipermondo': { clientName: 'Ipermondo', clientType: 'emporium' },
-    'gold center': { clientName: 'Gold Center', clientType: 'emporium' },
-    'supermercato cinese': { clientName: 'Supermercato Cinese', clientType: 'emporium' }
+    'shopping casa': {
+      clientName: 'Shopping Casa', clientType: 'emporium',
+      legalName: 'Shopping Casa di Yang Zhihui',
+      address: 'SS 18, Viale Giuseppe Verdi, 12/13',
+      city: '84090 Montecorvino Pugliano (SA)'
+    },
+    'mega family': {
+      clientName: 'Mega Family', clientType: 'emporium',
+      legalName: 'Mega Family S.r.l.s.',
+      address: 'Via Nazionale, 120',
+      city: '84015 Nocera Superiore (SA)',
+      vat: '05839780656'
+    },
+    'ipermondo': {
+      clientName: 'Ipermondo', clientType: 'emporium',
+      address: 'Via Pietro Nenni, 54',
+      city: '80018 Mugnano di Napoli (NA)'
+    },
+    'gold center': {
+      clientName: 'Gold Center', clientType: 'emporium',
+      address: 'Via Torre',
+      city: '80039 Saviano (NA)'
+    },
+    'supermercato cinese': {
+      clientName: 'Supermercato Cinese', clientType: 'emporium',
+      legalName: 'Supermercato Cinese S.A.S. di Wang Chenghong',
+      address: 'Via Emanuele Gianturco, 92',
+      city: '80146 Napoli (NA)',
+      vat: '07914881219'
+    }
   };
 
   const defaultState = {
     proposalMode: 'classic', clientType: 'retail', clientName: '', legalName: '', address: '', city: '', vat: '',
-    documentDate: '', focus: '', customObjective: '',
+    focus: '', customObjective: '',
     objectiveBrand: true, objectiveContinuity: true, objectiveRange: true, objectiveExperience: false,
     objectiveFootfall: true, objectiveEvents: false, objectiveEcommerce: false, objectiveLeads: false,
     objectiveCommunity: false, objectiveLaunch: false,
@@ -168,14 +193,51 @@
     if (!preset) return false;
     if (el('clientName')) el('clientName').value = preset.clientName;
     if (el('clientType')) el('clientType').value = preset.clientType;
-    if (preset.legalName && el('legalName')) el('legalName').value = preset.legalName;
-    if (preset.address && el('address')) el('address').value = preset.address;
-    if (preset.city && el('city')) el('city').value = preset.city;
-    if (preset.vat && el('vat')) el('vat').value = preset.vat;
+    if (el('legalName')) el('legalName').value = preset.legalName || '';
+    if (el('address')) el('address').value = preset.address || '';
+    if (el('city')) el('city').value = preset.city || '';
+    if (el('vat')) el('vat').value = preset.vat || '';
     const defaults = profile().defaults;
     objectiveIds.forEach((id) => { el(id).checked = defaults.includes(id); });
     showAllObjectives = false;
     return true;
+  }
+
+  function clientEntries() {
+    const seen = new Set();
+    return Object.values(knownClients).filter((client) => {
+      const key = client.clientName.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+  function hideClientSuggestions() {
+    const box = el('clientAutocomplete');
+    if (!box) return;
+    box.innerHTML = '';
+    box.classList.add('is-hidden');
+    el('clientName')?.setAttribute('aria-expanded', 'false');
+  }
+  function showClientSuggestions() {
+    const input = el('clientName');
+    const box = el('clientAutocomplete');
+    if (!input || !box) return;
+    const query = input.value.trim().toLowerCase();
+    if (!query) { hideClientSuggestions(); return; }
+    const matches = clientEntries().filter((client) => client.clientName.toLowerCase().includes(query)).slice(0, 8);
+    if (!matches.length) { hideClientSuggestions(); return; }
+    box.innerHTML = matches.map((client) => `<button type="button" class="autocomplete-option" role="option" data-client="${safe(client.clientName)}"><strong>${safe(client.clientName)}</strong>${client.city ? `<span>${safe(client.city)}</span>` : ''}</button>`).join('');
+    box.classList.remove('is-hidden');
+    input.setAttribute('aria-expanded', 'true');
+  }
+  function selectKnownClient(name) {
+    const input = el('clientName');
+    if (!input) return;
+    input.value = name;
+    applyKnownClient();
+    hideClientSuggestions();
+    render();
   }
 
   function getState() {
@@ -631,7 +693,7 @@
     renderProduction();
     const exclusionCount = renderExclusions();
     const feeRows = renderEconomics();
-    setText('signatureDate', dateItalian(value('documentDate')));
+    setText('signatureDate', '____ / ____ / ______');
 
     el('pageOne').classList.toggle('compact', serviceCount > 5 || objectiveCount > 2 || checked('serviceTikTok'));
     el('pageOne').classList.toggle('dense', serviceCount > 6 || (checked('serviceTikTok') && hasMainServices() && serviceCount > 5));
@@ -751,10 +813,10 @@
     body.push(wParagraph('Le eventuali attività aggiuntive saranno concordate e preventivate separatamente.', { size:18, after:120 }));
     body.push(wParagraph('6. PAGAMENTO E VALIDITÀ', { bold:true, size:23, before:120, after:70 }));
     [domText('#paymentText'),domText('#invoiceText'),domText('#validityText')].filter(Boolean).forEach((p) => body.push(wParagraph(p, { size:18, after:55 })));
-    body.push(wParagraph(`Data: ${dateItalian(value('documentDate'))}`, { size:18, before:200, after:160 }));
+    body.push(wParagraph('Data: ____ / ____ / ______', { size:18, before:200, after:160 }));
     body.push(wParagraph('Per accettazione', { bold:true, size:18, after:50 }));
     body.push(wParagraph('Firma e Timbro del Cliente  _____________________________________________', { size:18, after:220 }));
-    body.push(wParagraph('SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli (NA) · P. IVA 10895731213 · PEC somonapoli@pec.it', { size:14, color:'666666', align:'center', after:0 }));
+    body.push(wParagraph('SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it', { size:14, color:'666666', align:'center', after:0 }));
 
     const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body.join('')}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="900" w:right="1050" w:bottom="900" w:left="1050" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr></w:body></w:document>`;
     const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:eastAsia="Nunito"/><w:sz w:val="20"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="80"/></w:pPr></w:pPrDefault></w:docDefaults></w:styles>`;
@@ -787,8 +849,21 @@
   fields.forEach((field) => field.addEventListener('input', render));
   el('proposalMode').addEventListener('change', () => { syncProposalMode(); render(); });
   el('clientType').addEventListener('change', applyClientPreset);
+  el('clientName').addEventListener('input', () => { showClientSuggestions(); });
+  el('clientName').addEventListener('focus', () => { showClientSuggestions(); });
   el('clientName').addEventListener('change', () => { if (applyKnownClient()) render(); });
-  el('clientName').addEventListener('blur', () => { if (applyKnownClient()) render(); });
+  el('clientName').addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') hideClientSuggestions();
+  });
+  el('clientAutocomplete')?.addEventListener('mousedown', (event) => {
+    const option = event.target.closest('.autocomplete-option');
+    if (!option) return;
+    event.preventDefault();
+    selectKnownClient(option.dataset.client || option.textContent.trim());
+  });
+  document.addEventListener('mousedown', (event) => {
+    if (!event.target.closest('.autocomplete-field')) hideClientSuggestions();
+  });
   el('toggleObjectivesButton').addEventListener('click', () => { showAllObjectives = !showAllObjectives; updateObjectiveVisibility(); });
   el('tiktokStatus').addEventListener('change', () => { applyTikTokStatusPreset(); render(); });
   el('printButton').addEventListener('click', () => window.print());

@@ -52,18 +52,12 @@
             </select>
           </label>
           <div class="grid-2">
-            <label class="field">
+            <div class="field autocomplete-field">
               <span>Nome commerciale</span>
-              <input id="clientName" name="clientName" type="text" list="clientSuggestions" autocomplete="off" placeholder="Es. Shopping Casa">
-              <datalist id="clientSuggestions">
-                <option value="Shopping Casa"></option>
-                <option value="Mega Family"></option>
-                <option value="Ipermondo"></option>
-                <option value="Gold Center"></option>
-                <option value="Supermercato Cinese"></option>
-              </datalist>
+              <input id="clientName" name="clientName" type="text" autocomplete="off" placeholder="Es. Shopping Casa" aria-autocomplete="list" aria-controls="clientAutocomplete" aria-expanded="false">
+              <div id="clientAutocomplete" class="autocomplete-suggestions is-hidden" role="listbox" aria-label="Clienti suggeriti"></div>
               <small>Inizia a scrivere: i clienti già usati vengono suggeriti automaticamente.</small>
-            </label>
+            </div>
             <label class="field">
               <span>Ragione sociale</span>
               <input id="legalName" name="legalName" type="text" placeholder="Es. Gloria S.r.l.">
@@ -83,10 +77,6 @@
               <input id="vat" name="vat" type="text" inputmode="numeric" placeholder="00000000000">
             </label>
           </div>
-          <label class="field">
-            <span>Data della proposta</span>
-            <input id="documentDate" name="documentDate" type="date">
-          </label>
         </section>
 
         <section id="objectiveSection" class="form-section">
@@ -314,7 +304,7 @@
             <p id="productionText"></p>
           </section>
 
-          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli (NA) · P. IVA 10895731213 · PEC somonapoli@pec.it</footer>
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it</footer>
           <span class="page-number">1</span>
         </section>
 
@@ -338,11 +328,11 @@
           </section>
 
           <section class="signature">
-            <p>Data: <span id="signatureDate">___-___-______</span></p>
+            <p>Data: <span id="signatureDate">____ / ____ / ______</span></p>
             <p>Per accettazione<br><strong>Firma e Timbro del Cliente</strong><br>_____________________________________________</p>
           </section>
 
-          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli (NA) · P. IVA 10895731213 · PEC somonapoli@pec.it</footer>
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it</footer>
           <span class="page-number">2</span>
         </section>
       </article>
