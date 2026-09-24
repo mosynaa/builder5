@@ -102,7 +102,7 @@
     videos: '8', photos: '15–20', graphicsCount: '4', serviceAds: false, adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokProductCount: '30', tiktokFee: '1200',
     economicMode: 'monthly', duration: '6', monthlyFee: '1200', extraEnabled: false,
-    extraLabel: 'Produzione straordinaria', extraFee: '0', oneTimeFee: '0'
+    extraLabel: 'Fase iniziale / servizio extra', extraFee: '0', oneTimeFee: '0'
   };
 
   let showAllObjectives = false;
@@ -218,6 +218,7 @@
       setText('tiktokPreset3', '03 Costruzione catalogo');
       setText('tiktokPreset4', '04 Schede + pubblicazione');
     }
+    setText('tiktokFeeLabel', tiktokIsActive() ? 'Investimento ampliamento catalogo' : 'Investimento fase di avvio');
   }
 
   function renderVisibility() {
@@ -464,22 +465,25 @@
     const monthly = numberValue('monthlyFee');
     const oneTimeFee = numberValue('oneTimeFee');
 
-    setText('summaryDuration', tikOnly ? 'Attività una tantum' : (oneTime ? 'Attività una tantum' : `${duration} mesi`));
+    setText('summaryDurationLabel', tikOnly || oneTime ? 'TIPOLOGIA' : 'DURATA');
+    setText('summaryDuration', tikOnly ? (tiktokIsActive() ? 'Ampliamento catalogo' : 'Fase di avvio') : (oneTime ? 'Progetto a importo complessivo' : `${duration} mesi`));
     setText('summaryObjective', summaryObjective());
     setText('summaryProduction', productionSummary());
     setText('summaryContent', contentSummary());
     setText('summaryManagement', managementSummary());
     setText('summaryAds', adsSummary());
+    setHidden('summaryManagementRow', tikOnly);
+    setHidden('summaryAdsRow', tikOnly);
 
     const tiktokSelected = checked('serviceTikTok');
     setHidden('summaryTikTokRow', !tiktokSelected);
     if (tiktokSelected) {
       const status = tiktokIsActive() ? 'Shop già attivo' : 'Shop da attivare';
-      setText('summaryTikTok', `${status} · ${tiktokCount()} ${itemWord()} · ${money(tiktokFee())} + IVA una tantum`);
+      setText('summaryTikTok', `${status} · ${tiktokCount()} ${itemWord()} · ${tiktokIsActive() ? 'ampliamento' : 'fase di avvio'} ${money(tiktokFee())} + IVA`);
     }
 
-    if (tikOnly) setText('summaryInvestment', `${money(tiktokFee())} + IVA una tantum`);
-    else if (oneTime) setText('summaryInvestment', `${money(oneTimeFee)} + IVA una tantum`);
+    if (tikOnly) setText('summaryInvestment', `${money(tiktokFee())} + IVA`);
+    else if (oneTime) setText('summaryInvestment', `${money(oneTimeFee)} + IVA`);
     else setText('summaryInvestment', `${money(monthly)} al mese + IVA`);
   }
 
@@ -515,12 +519,14 @@
     if (tikOnly) {
       const label = tiktokIsActive() ? `AMPLIAMENTO SHOP · ${count} ${itemWord().toUpperCase()}` : `FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`;
       el('feeTableBody').innerHTML = [feeRow(label, `${money(tikFee)} + IVA`), feeRow('TOTALE PROPOSTA', `${money(tikFee)} + IVA`)].join('');
-      setText('installmentsLabel', 'MODALITÀ');
-      setText('installmentsPreview', 'Una tantum');
+      setText('installmentsLabel', 'TIPOLOGIA');
+      setText('installmentsPreview', tiktokIsActive() ? 'Ampliamento' : 'Fase di avvio');
       setText('contractTotalLabel', 'TOTALE PROPOSTA');
       setText('contractTotalPreview', money(tikFee));
-      el('paymentText').innerHTML = `Il compenso complessivo per la fase TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong>.`;
-      setText('invoiceText', 'Il compenso sarà fatturato all’avvio dell’attività e corrisposto secondo le modalità concordate.');
+      el('paymentText').innerHTML = tiktokIsActive()
+        ? `L'investimento previsto per l'ampliamento del TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong>.`
+        : `L'investimento previsto per la fase di avvio del TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong>.`;
+      setText('invoiceText', tiktokIsActive() ? 'L’importo sarà fatturato all’avvio delle attività di ampliamento del catalogo, secondo le modalità concordate.' : 'L’importo sarà fatturato all’avvio della fase TikTok Shop, secondo le modalità concordate.');
       setText('validityText', 'La proposta ha validità 15 giorni. Le tempistiche operative decorreranno dalla conferma e dalla disponibilità degli articoli e delle informazioni necessarie.');
       return 2;
     }
@@ -530,12 +536,12 @@
     const monthly = numberValue('monthlyFee');
     const mainOneTime = numberValue('oneTimeFee');
     const extra = !oneTime && checked('extraEnabled') ? numberValue('extraFee') : 0;
-    const extraLabel = value('extraLabel') || 'Attività una tantum';
+    const extraLabel = value('extraLabel') || 'Fase iniziale / servizio extra';
     const rows = [];
     let total = 0;
 
     if (oneTime) {
-      rows.push(feeRow('SERVIZI PRINCIPALI · UNA TANTUM', `${money(mainOneTime)} + IVA`));
+      rows.push(feeRow('PROGETTO · IMPORTO COMPLESSIVO', `${money(mainOneTime)} + IVA`));
       total += mainOneTime;
     } else {
       const baseTotal = duration * monthly;
@@ -545,25 +551,25 @@
     }
 
     if (checked('serviceTikTok')) {
-      rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · ${count} NUOVI ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`));
+      rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`));
       total += tikFee;
     }
     if (extra) { rows.push(feeRow(extraLabel.toUpperCase(), `${money(extra)} + IVA`)); total += extra; }
     if (rows.length > 2 || checked('serviceTikTok') || extra || oneTime) rows.push(feeRow('TOTALE COMPLESSIVO', `${money(total)} + IVA`));
     el('feeTableBody').innerHTML = rows.join('');
 
-    setText('installmentsLabel', oneTime ? 'MODALITÀ' : 'RATE MENSILI');
-    setText('installmentsPreview', oneTime ? 'Una tantum' : String(duration));
+    setText('installmentsLabel', oneTime ? 'TIPOLOGIA' : 'RATE MENSILI');
+    setText('installmentsPreview', oneTime ? 'Progetto' : String(duration));
     setText('contractTotalLabel', 'TOTALE COMPLESSIVO');
     setText('contractTotalPreview', money(total));
 
     const payment = [];
-    if (oneTime) payment.push(`Il compenso per i servizi principali è pari a <strong>${safe(money(mainOneTime))} + IVA</strong> una tantum.`);
+    if (oneTime) payment.push(`L'importo complessivo previsto per il progetto è pari a <strong>${safe(money(mainOneTime))} + IVA</strong>.`);
     else payment.push(`Il compenso per i servizi continuativi è pari a <strong>${safe(money(monthly))} + IVA al mese</strong>, per ${duration} mesi.`);
-    if (checked('serviceTikTok')) payment.push(`La fase TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong> una tantum.`);
+    if (checked('serviceTikTok')) payment.push(`${tiktokIsActive() ? 'L’ampliamento del TikTok Shop' : 'La fase di avvio del TikTok Shop'} prevede un investimento di <strong>${safe(money(tikFee))} + IVA</strong>.`);
     if (extra) payment.push(`L’attività “${safe(extraLabel)}” è pari a <strong>${safe(money(extra))} + IVA</strong>.`);
     el('paymentText').innerHTML = payment.join(' ');
-    setText('invoiceText', oneTime ? 'La fatturazione avverrà all’avvio delle attività, secondo le modalità concordate.' : 'La fatturazione dei servizi continuativi avverrà mensilmente; le eventuali attività una tantum saranno fatturate all’avvio.');
+    setText('invoiceText', oneTime ? 'La fatturazione avverrà all’avvio del progetto, secondo le modalità concordate.' : 'La fatturazione dei servizi continuativi avverrà mensilmente; eventuali fasi iniziali o servizi extra saranno fatturati all’avvio delle relative attività.');
     setText('validityText', oneTime ? 'La proposta ha validità 15 giorni.' : `La proposta ha validità 15 giorni. La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività.`);
     return rows.length;
   }

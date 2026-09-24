@@ -1,4 +1,4 @@
-# Allegato A Builder · SOMO v4
+# Allegato A Builder · SOMO v6
 
 Builder statico per generare Allegati A SOMO con struttura sintetica coerente con i documenti BabyChic/Gloria e con un preset dedicato TikTok Shop basato sulla proposta Supermercato Cinese.
 
@@ -18,14 +18,16 @@ Builder statico per generare Allegati A SOMO con struttura sintetica coerente co
 Valori predefiniti:
 
 - 30 articoli/prodotti;
-- € 1.200 + IVA una tantum.
+- € 1.200 + IVA come investimento predefinito della fase TikTok Shop.
 
 Il builder distingue:
 
 1. **Shop da attivare**: configurazione, produzione fotografica, costruzione catalogo, schede e pubblicazione;
 2. **Shop già attivo**: selezione nuovi articoli, produzione fotografica, aggiornamento catalogo, schede e pubblicazione.
 
-Se TikTok Shop è l’unico servizio, il documento usa i quattro passaggi in forma compatta e le informazioni operative. Se è incluso in un pacchetto social, compare come un solo blocco sintetico e come costo una tantum separato.
+Se TikTok Shop è l’unico servizio, il documento usa i quattro passaggi in forma compatta e le informazioni operative. Se è incluso in un pacchetto social, compare come un solo blocco sintetico e con un investimento separato dalla fee mensile.
+
+La terminologia economica evita la dicitura generica “una tantum”: per un nuovo Shop viene usata **Fase di avvio**; per uno Shop già attivo viene usato **Ampliamento catalogo**. Per gli altri lavori non continuativi il builder usa **Progetto a importo complessivo**.
 
 ## Pubblicazione su GitHub Pages
 

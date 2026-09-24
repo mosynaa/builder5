@@ -203,7 +203,7 @@
             </div>
             <div class="grid-2">
               <label class="field"><span>Quantità</span><input id="tiktokProductCount" name="tiktokProductCount" type="number" min="1" max="1000" step="1"><small>Default: 30. Si aggiorna automaticamente in tutto il documento.</small></label>
-              <label class="field"><span>Investimento TikTok Shop una tantum</span><input id="tiktokFee" name="tiktokFee" type="number" min="0" step="50"><small>Default: € 1.200 + IVA.</small></label>
+              <label class="field"><span id="tiktokFeeLabel">Investimento fase di avvio</span><input id="tiktokFee" name="tiktokFee" type="number" min="0" step="50"><small>Default: € 1.200 + IVA. Puoi modificarlo.</small></label>
             </div>
           </div>
         </section>
@@ -211,15 +211,15 @@
         <section class="form-section">
           <h2><span class="step">6</span>Durata e compenso</h2>
           <div id="tiktokOnlyEconomicNote" class="dependent-panel is-hidden">
-            <strong>Proposta TikTok Shop autonoma</strong>
-            <p>Quantità e investimento si modificano direttamente nel blocco TikTok Shop.</p>
+            <strong>Proposta TikTok Shop</strong>
+            <p>Quantità e investimento della fase TikTok Shop si modificano direttamente nel blocco dedicato.</p>
           </div>
           <div id="mainEconomicControls">
             <label class="field">
-              <span>Tipologia economica dei servizi principali</span>
+              <span>Struttura economica dei servizi principali</span>
               <select id="economicMode" name="economicMode">
-                <option value="monthly">Contratto con compenso mensile</option>
-                <option value="oneTime">Attività una tantum</option>
+                <option value="monthly">Collaborazione continuativa</option>
+                <option value="oneTime">Progetto a importo complessivo</option>
               </select>
             </label>
             <div id="monthlyEconomicPanel">
@@ -227,7 +227,7 @@
                 <label class="field"><span>Durata</span><select id="duration" name="duration"><option value="3">3 mesi</option><option value="6">6 mesi</option><option value="12">12 mesi</option></select></label>
                 <label class="field"><span>Compenso mensile</span><input id="monthlyFee" name="monthlyFee" type="number" min="0" step="50"></label>
               </div>
-              <label class="check extra-toggle"><input id="extraEnabled" name="extraEnabled" type="checkbox"><span><strong>Aggiungi altra attività una tantum</strong><em>Solo per extra diversi dal TikTok Shop.</em></span></label>
+              <label class="check extra-toggle"><input id="extraEnabled" name="extraEnabled" type="checkbox"><span><strong>Aggiungi fase iniziale o servizio extra</strong><em>Per attività aggiuntive rispetto al compenso principale.</em></span></label>
               <div id="extraPanel" class="dependent-panel is-hidden">
                 <div class="grid-2">
                   <label class="field"><span>Descrizione</span><input id="extraLabel" name="extraLabel" type="text" placeholder="Es. Produzione straordinaria"></label>
@@ -236,7 +236,7 @@
               </div>
             </div>
             <div id="oneTimeEconomicPanel" class="is-hidden">
-              <label class="field"><span>Compenso una tantum servizi principali</span><input id="oneTimeFee" name="oneTimeFee" type="number" min="0" step="50"></label>
+              <label class="field"><span>Importo complessivo del progetto</span><input id="oneTimeFee" name="oneTimeFee" type="number" min="0" step="50"></label>
             </div>
           </div>
           <div class="total-card" aria-live="polite">
@@ -284,14 +284,14 @@
           <h2 class="section-title">SINTESI DELL’OFFERTA</h2>
           <table class="summary-table">
             <tbody>
-              <tr><th>DURATA</th><td id="summaryDuration"></td></tr>
+              <tr><th id="summaryDurationLabel">DURATA</th><td id="summaryDuration"></td></tr>
               <tr><th>OBIETTIVO</th><td id="summaryObjective"></td></tr>
               <tr><th>PRODUZIONE</th><td id="summaryProduction"></td></tr>
               <tr><th>CONTENUTI</th><td id="summaryContent"></td></tr>
-              <tr><th>GESTIONE</th><td id="summaryManagement"></td></tr>
+              <tr id="summaryManagementRow"><th>GESTIONE</th><td id="summaryManagement"></td></tr>
               <tr id="summaryTikTokRow" class="is-hidden"><th>TIKTOK SHOP</th><td id="summaryTikTok"></td></tr>
               <tr><th>INVESTIMENTO</th><td id="summaryInvestment"></td></tr>
-              <tr><th>ADS</th><td id="summaryAds"></td></tr>
+              <tr id="summaryAdsRow"><th>ADS</th><td id="summaryAds"></td></tr>
             </tbody>
           </table>
 
