@@ -1,54 +1,56 @@
-# Allegato A Builder · SOMO v6
+# Allegato A Builder · SOMO — v7
 
-Builder statico per generare Allegati A SOMO con struttura sintetica coerente con i documenti BabyChic/Gloria e con un preset dedicato TikTok Shop basato sulla proposta Supermercato Cinese.
+Generatore statico per creare Allegati A SOMO in stile sintetico BabyChic/Gloria, con blocco TikTok Shop basato sulla proposta Supermercato Cinese.
 
-## Correzioni principali
+## Logica principale
 
-- dati SOMO corretti: Vico Sant’Eframo Vecchio, 20 – 80137 Napoli (NA), P. IVA 10895731213;
-- font Nunito nel builder, nell’anteprima e nel Word generato;
-- tipologie cliente distinte: negozio, emporio/grande store, e-commerce, ristorante/food, locale/nightlife, fitness/wellness, parco/struttura ricreativa, B2B, servizi e brand;
-- obiettivi abituali selezionati automaticamente in base alla tipologia cliente, con possibilità di aggiungere obiettivi o priorità specifiche;
-- servizi sintetici senza duplicare montaggio, editing e post-produzione come voci separate;
-- quantità contenuti fisse oppure definite in base al piano editoriale;
-- TikTok Shop con struttura fissa e chiara;
-- download Word `.docx` editabile e stampa/salvataggio PDF.
+All'apertura si sceglie:
+- Proposta classica
+- TikTok Shop
+- Classica + TikTok Shop
+
+Gli obiettivi e i servizi abituali sono **preset preselezionati ma sempre modificabili**: ogni spunta può essere tolta e il testo del documento si aggiorna di conseguenza.
 
 ## TikTok Shop
 
-Valori predefiniti:
+Default:
+- 30 articoli
+- € 1.200 + IVA
 
-- 30 articoli/prodotti;
-- € 1.200 + IVA come investimento predefinito della fase TikTok Shop.
+È possibile indicare se lo Shop è:
+- da attivare
+- già attivo
 
-Il builder distingue:
+Le attività TikTok Shop sono preselezionate ma tutte deselezionabili:
+- configurazione e impostazione Shop (solo se da attivare)
+- selezione e produzione fotografica
+- costruzione/aggiornamento catalogo
+- creazione e pubblicazione schede
 
-1. **Shop da attivare**: configurazione, produzione fotografica, costruzione catalogo, schede e pubblicazione;
-2. **Shop già attivo**: selezione nuovi articoli, produzione fotografica, aggiornamento catalogo, schede e pubblicazione.
+Se una voce viene tolta, non viene richiamata nel documento finale.
 
-Se TikTok Shop è l’unico servizio, il documento usa i quattro passaggi in forma compatta e le informazioni operative. Se è incluso in un pacchetto social, compare come un solo blocco sintetico e con un investimento separato dalla fee mensile.
+## Clienti già usati
 
-La terminologia economica evita la dicitura generica “una tantum”: per un nuovo Shop viene usata **Fase di avvio**; per uno Shop già attivo viene usato **Ampliamento catalogo**. Per gli altri lavori non continuativi il builder usa **Progetto a importo complessivo**.
+Nel campo “Nome commerciale” vengono suggeriti automaticamente alcuni clienti ricorrenti:
+- Shopping Casa
+- Mega Family
+- Ipermondo
+- Gold Center
+- Supermercato Cinese
 
-## Pubblicazione su GitHub Pages
+La tipologia cliente viene impostata come emporio / grande store multicategoria. I dati non disponibili non vengono inventati e restano compilabili manualmente.
 
-Sostituire nel repository esistente:
+## Campi lasciati vuoti
 
+Se ragione sociale, sede, città, P. IVA/C.F. o data non vengono inseriti, il documento lascia righe vuote da compilare a penna dopo la stampa.
+
+## GitHub Pages
+
+Caricare nella root del repository:
 - `index.html`
 - `styles.css`
 - `app.js`
 - `README.md`
+- la cartella `assets` già presente con i loghi
 
-**Lasciare invariata la cartella `assets` già presente**, che deve continuare a contenere almeno:
-
-- `assets/somo.png`
-- `assets/black-noodles.png`
-
-GitHub Pages resta configurato su `main` → `/(root)`.
-
-## PDF
-
-Premere **PDF** e nella finestra di stampa scegliere **Salva come PDF**, formato A4, scala 100%, margini nessuno e grafica di sfondo attiva.
-
-## Word
-
-Premere **Scarica Word**. Il builder genera direttamente un file `.docx` editabile; non richiede librerie esterne.
+Il progetto non richiede server o build.

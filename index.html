@@ -54,7 +54,15 @@
           <div class="grid-2">
             <label class="field">
               <span>Nome commerciale</span>
-              <input id="clientName" name="clientName" type="text" placeholder="Es. Gloria">
+              <input id="clientName" name="clientName" type="text" list="clientSuggestions" autocomplete="off" placeholder="Es. Shopping Casa">
+              <datalist id="clientSuggestions">
+                <option value="Shopping Casa"></option>
+                <option value="Mega Family"></option>
+                <option value="Ipermondo"></option>
+                <option value="Gold Center"></option>
+                <option value="Supermercato Cinese"></option>
+              </datalist>
+              <small>Inizia a scrivere: i clienti già usati vengono suggeriti automaticamente.</small>
             </label>
             <label class="field">
               <span>Ragione sociale</span>
@@ -83,7 +91,7 @@
 
         <section id="objectiveSection" class="form-section">
           <h2><span class="step">2</span>Obiettivi</h2>
-          <p class="form-note section-note">Vengono selezionati automaticamente gli obiettivi abituali per la tipologia scelta.</p>
+          <p class="form-note section-note">Gli obiettivi abituali vengono preselezionati: puoi togliere o aggiungere qualsiasi spunta.</p>
           <div id="objectiveGrid" class="check-list check-grid">
             <label class="check objective-card" data-objective="objectiveBrand"><input id="objectiveBrand" name="objectiveBrand" type="checkbox"><span><strong>Notorietà e posizionamento</strong><em>Rafforzare identità e riconoscibilità.</em></span></label>
             <label class="check objective-card" data-objective="objectiveContinuity"><input id="objectiveContinuity" name="objectiveContinuity" type="checkbox"><span><strong>Continuità social</strong><em>Mantenere una presenza costante e riconoscibile.</em></span></label>
@@ -185,7 +193,7 @@
         <section id="tiktokSection" class="form-section is-hidden">
           <h2><span class="step">T</span>TikTok Shop</h2>
           <input id="serviceTikTok" name="serviceTikTok" type="checkbox" class="is-hidden" aria-hidden="true" tabindex="-1">
-          <p class="form-note section-note">Preset automatico basato sulla proposta Supermercato Cinese. Quantità e importo restano modificabili.</p>
+          <p class="form-note section-note">Preset basato sulla proposta Supermercato Cinese: parte completo, ma ogni attività è modificabile.</p>
           <div id="tiktokPanel" class="dependent-panel tiktok-builder-panel">
             <label class="field">
               <span>TikTok Shop già attivo?</span>
@@ -194,12 +202,12 @@
                 <option value="active">Sì, già attivo</option>
               </select>
             </label>
-            <p class="preset-title">Il preset comprende:</p>
-            <div class="locked-list">
-              <span id="tiktokPreset1">01 Configurazione Shop</span>
-              <span id="tiktokPreset2">02 Produzione fotografica</span>
-              <span id="tiktokPreset3">03 Catalogo</span>
-              <span id="tiktokPreset4">04 Schede + pubblicazione</span>
+            <p class="preset-title">Attività preselezionate <small>(puoi togliere qualsiasi spunta)</small></p>
+            <div class="check-list sub-checks tiktok-checks">
+              <label id="tiktokSetupRow" class="check"><input id="tiktokSetup" name="tiktokSetup" type="checkbox"><span><strong id="tiktokPreset1">01 Configurazione e impostazione dello Shop</strong></span></label>
+              <label class="check"><input id="tiktokPhotos" name="tiktokPhotos" type="checkbox"><span><strong id="tiktokPreset2">02 Selezione e produzione fotografica</strong></span></label>
+              <label class="check"><input id="tiktokCatalog" name="tiktokCatalog" type="checkbox"><span><strong id="tiktokPreset3">03 Costruzione del catalogo</strong></span></label>
+              <label class="check"><input id="tiktokPublish" name="tiktokPublish" type="checkbox"><span><strong id="tiktokPreset4">04 Creazione e pubblicazione delle schede</strong></span></label>
             </div>
             <div class="grid-2">
               <label class="field"><span>Quantità</span><input id="tiktokProductCount" name="tiktokProductCount" type="number" min="1" max="1000" step="1"><small>Default: 30. Si aggiorna automaticamente in tutto il documento.</small></label>
@@ -210,10 +218,6 @@
 
         <section class="form-section">
           <h2><span class="step">6</span>Durata e compenso</h2>
-          <div id="tiktokOnlyEconomicNote" class="dependent-panel is-hidden">
-            <strong>Proposta TikTok Shop</strong>
-            <p>Quantità e investimento della fase TikTok Shop si modificano direttamente nel blocco dedicato.</p>
-          </div>
           <div id="mainEconomicControls">
             <label class="field">
               <span>Struttura economica dei servizi principali</span>
@@ -274,7 +278,7 @@
             <thead><tr><th>FORNITORE</th><th>CLIENTE</th></tr></thead>
             <tbody><tr>
               <td><strong>SOMO S.r.l.</strong><br>Vico Sant’Eframo Vecchio, 20<br>80137 Napoli (NA)<br>P. IVA 10895731213</td>
-              <td id="clientBlock" class="placeholder"><strong>[Ragione sociale Cliente]</strong><br>[Indirizzo]<br>[CAP e città]<br>P. IVA [Partita IVA]</td>
+              <td id="clientBlock"><strong>________________________________</strong><br>Sede: __________________________________<br>________________________________________<br>P. IVA/C.F.: __________________________</td>
             </tr></tbody>
           </table>
 

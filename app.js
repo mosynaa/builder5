@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'somo-allegato-a-builder-v5';
+  const STORAGE_KEY = 'somo-allegato-a-builder-v7';
   const form = document.getElementById('builderForm');
   const fields = [...form.querySelectorAll('input, select')];
   const objectiveIds = [
@@ -89,9 +89,17 @@
     }
   };
 
+  const knownClients = {
+    'shopping casa': { clientName: 'Shopping Casa', clientType: 'emporium' },
+    'mega family': { clientName: 'Mega Family', clientType: 'emporium' },
+    'ipermondo': { clientName: 'Ipermondo', clientType: 'emporium' },
+    'gold center': { clientName: 'Gold Center', clientType: 'emporium' },
+    'supermercato cinese': { clientName: 'Supermercato Cinese', clientType: 'emporium' }
+  };
+
   const defaultState = {
     proposalMode: 'classic', clientType: 'retail', clientName: '', legalName: '', address: '', city: '', vat: '',
-    documentDate: new Date().toISOString().slice(0,10), focus: '', customObjective: '',
+    documentDate: '', focus: '', customObjective: '',
     objectiveBrand: true, objectiveContinuity: true, objectiveRange: true, objectiveExperience: false,
     objectiveFootfall: true, objectiveEvents: false, objectiveEcommerce: false, objectiveLeads: false,
     objectiveCommunity: false, objectiveLaunch: false,
@@ -100,7 +108,7 @@
     eventCoverageFrequency: 'agreed', productionCadence: 'monthly', productionDays: '1',
     productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan',
     videos: '8', photos: '15–20', graphicsCount: '4', serviceAds: false, adsBudget: '200',
-    serviceTikTok: false, tiktokStatus: 'new', tiktokProductCount: '30', tiktokFee: '1200',
+    serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
     economicMode: 'monthly', duration: '6', monthlyFee: '1200', extraEnabled: false,
     extraLabel: 'Fase iniziale / servizio extra', extraFee: '0', oneTimeFee: '0'
   };
@@ -146,6 +154,29 @@
   function tiktokCount() { return Math.max(1, numberValue('tiktokProductCount', 30)); }
   function tiktokFee() { return numberValue('tiktokFee', 1200); }
   function tiktokIsActive() { return value('tiktokStatus') === 'active'; }
+  function selectedTikTokStepIds() {
+    return ['tiktokSetup','tiktokPhotos','tiktokCatalog','tiktokPublish'].filter((id) => checked(id) && !(id === 'tiktokSetup' && tiktokIsActive()));
+  }
+  function tiktokHas(id) { return selectedTikTokStepIds().includes(id); }
+  function applyTikTokStatusPreset() {
+    if (el('tiktokSetup')) el('tiktokSetup').checked = !tiktokIsActive();
+    ['tiktokPhotos','tiktokCatalog','tiktokPublish'].forEach((id) => { if (el(id)) el(id).checked = true; });
+  }
+  function applyKnownClient() {
+    const key = value('clientName').toLowerCase();
+    const preset = knownClients[key];
+    if (!preset) return false;
+    if (el('clientName')) el('clientName').value = preset.clientName;
+    if (el('clientType')) el('clientType').value = preset.clientType;
+    if (preset.legalName && el('legalName')) el('legalName').value = preset.legalName;
+    if (preset.address && el('address')) el('address').value = preset.address;
+    if (preset.city && el('city')) el('city').value = preset.city;
+    if (preset.vat && el('vat')) el('vat').value = preset.vat;
+    const defaults = profile().defaults;
+    objectiveIds.forEach((id) => { el(id).checked = defaults.includes(id); });
+    showAllObjectives = false;
+    return true;
+  }
 
   function getState() {
     return Object.fromEntries(fields.map((field) => [field.name, field.type === 'checkbox' ? field.checked : field.value]));
@@ -208,15 +239,17 @@
 
   function updateTikTokPresetLabels() {
     if (tiktokIsActive()) {
-      setText('tiktokPreset1', '01 Selezione articoli');
-      setText('tiktokPreset2', '02 Produzione fotografica');
-      setText('tiktokPreset3', '03 Aggiornamento catalogo');
-      setText('tiktokPreset4', '04 Schede + pubblicazione');
+      setText('tiktokPreset1', 'Configurazione iniziale non necessaria');
+      setText('tiktokPreset2', '01 Selezione e produzione fotografica');
+      setText('tiktokPreset3', '02 Aggiornamento del catalogo');
+      setText('tiktokPreset4', '03 Creazione e pubblicazione delle schede');
+      setHidden('tiktokSetupRow', true);
     } else {
-      setText('tiktokPreset1', '01 Configurazione Shop');
-      setText('tiktokPreset2', '02 Produzione fotografica');
-      setText('tiktokPreset3', '03 Costruzione catalogo');
-      setText('tiktokPreset4', '04 Schede + pubblicazione');
+      setText('tiktokPreset1', '01 Configurazione e impostazione dello Shop');
+      setText('tiktokPreset2', '02 Selezione e produzione fotografica');
+      setText('tiktokPreset3', '03 Costruzione del catalogo');
+      setText('tiktokPreset4', '04 Creazione e pubblicazione delle schede');
+      setHidden('tiktokSetupRow', false);
     }
     setText('tiktokFeeLabel', tiktokIsActive() ? 'Investimento ampliamento catalogo' : 'Investimento fase di avvio');
   }
@@ -238,7 +271,6 @@
     setHidden('graphicsField', !checked('productionGraphics'));
 
     const tikOnly = isTikTokOnly();
-    setHidden('tiktokOnlyEconomicNote', !tikOnly);
     setHidden('mainEconomicControls', tikOnly);
 
     const oneTime = value('economicMode') === 'oneTime';
@@ -250,19 +282,36 @@
   }
 
   function renderClientBlock() {
-    const legal = value('legalName') || '[Ragione sociale Cliente]';
-    el('clientBlock').innerHTML = [
-      `<strong>${safe(legal)}</strong>`, safe(value('address') || '[Indirizzo]'), safe(value('city') || '[CAP e città]'), `P. IVA ${safe(value('vat') || '[Partita IVA]')}`
-    ].join('<br>');
-    el('clientBlock').classList.toggle('placeholder', !value('legalName'));
+    const name = value('legalName') || value('clientName') || '________________________________';
+    const address = value('address');
+    const city = value('city');
+    const vat = value('vat');
+    const lines = [`<strong>${safe(name)}</strong>`];
+    if (address || city) {
+      lines.push(`Sede: ${safe(address || '__________________________________')}`);
+      lines.push(safe(city || '________________________________________'));
+    } else {
+      lines.push('Sede: __________________________________');
+      lines.push('________________________________________');
+    }
+    lines.push(`P. IVA/C.F.: ${safe(vat || '__________________________')}`);
+    el('clientBlock').innerHTML = lines.join('<br>');
+  }
+
+  function tiktokObjectDescription() {
+    const count = tiktokCount();
+    const word = itemWord();
+    const activities = [];
+    if (tiktokHas('tiktokSetup')) activities.push('configurazione e impostazione del TikTok Shop');
+    if (tiktokHas('tiktokPhotos')) activities.push(`selezione e produzione fotografica di ${count} ${word}`);
+    if (tiktokHas('tiktokCatalog')) activities.push(tiktokIsActive() ? 'aggiornamento del catalogo' : 'costruzione del catalogo iniziale');
+    if (tiktokHas('tiktokPublish')) activities.push(`creazione e pubblicazione di ${count} schede prodotto`);
+    if (!activities.length) return 'servizi TikTok Shop da definire';
+    return joinNatural(activities);
   }
 
   function buildObjectText() {
-    if (isTikTokOnly()) {
-      return tiktokIsActive()
-        ? `Ampliamento del TikTok Shop già attivo, con produzione fotografica, aggiornamento del catalogo e pubblicazione di ${tiktokCount()} nuove schede prodotto.`
-        : `Attivazione del TikTok Shop e realizzazione del catalogo iniziale di ${tiktokCount()} ${itemWord()}.`;
-    }
+    if (isTikTokOnly()) return sentence(tiktokObjectDescription());
 
     const activities = [];
     const completeSocial = checked('serviceStrategy') && checked('serviceProduction') && checked('serviceSocial');
@@ -275,7 +324,7 @@
     if (checked('serviceAdvCreative') && checked('serviceAds')) activities.push('creatività e gestione delle campagne Meta Ads');
     else if (checked('serviceAdvCreative')) activities.push('creatività per campagne ADV');
     else if (checked('serviceAds')) activities.push('gestione delle campagne Meta Ads');
-    if (checked('serviceTikTok')) activities.push(tiktokIsActive() ? 'ampliamento del catalogo TikTok Shop' : 'attivazione del TikTok Shop e realizzazione del catalogo iniziale');
+    if (checked('serviceTikTok')) activities.push(tiktokObjectDescription());
     if (checked('serviceInfluencer')) activities.push('coordinamento di creator e influencer');
     if (checked('serviceCommunity') && !checked('serviceSocial')) activities.push('community management');
     if (checked('serviceEventCoverage')) activities.push('copertura dedicata degli eventi');
@@ -283,7 +332,14 @@
   }
 
   function summaryObjective() {
-    if (isTikTokOnly()) return tiktokIsActive() ? 'Ampliamento del catalogo dello Shop già attivo' : 'Attivazione del canale di vendita e pubblicazione del catalogo iniziale';
+    if (isTikTokOnly()) {
+      const steps = selectedTikTokStepIds();
+      if (!steps.length) return 'Servizi TikTok Shop da definire';
+      if (tiktokHas('tiktokSetup') && tiktokHas('tiktokCatalog') && tiktokHas('tiktokPublish')) return 'Attivazione dello Shop e realizzazione del catalogo iniziale';
+      if (tiktokIsActive() && tiktokHas('tiktokCatalog') && tiktokHas('tiktokPublish')) return 'Ampliamento del catalogo dello Shop già attivo';
+      if (tiktokHas('tiktokPhotos') && steps.length === 1) return 'Produzione fotografica per TikTok Shop';
+      return 'Organizzazione e sviluppo delle attività TikTok Shop selezionate';
+    }
     if (objectivesAreDefault() && !value('customObjective')) return profile().summary;
     const parts = selectedObjectives().map((o) => o.summary);
     if (parts.length > 4) return `${joinNatural(parts.slice(0,4))} e altri obiettivi concordati`;
@@ -291,17 +347,19 @@
   }
 
   function renderObjectives() {
-    const name = safe(clientDisplayName());
     const paragraphs = [];
     if (isTikTokOnly()) {
-      paragraphs.push(tiktokIsActive()
-        ? `Ampliare il TikTok Shop di <strong>${name}</strong> attraverso la preparazione e pubblicazione di <strong>${tiktokCount()} nuovi ${safe(itemWord())}</strong>.`
-        : `Attivare il TikTok Shop di <strong>${name}</strong> e predisporre un catalogo iniziale di <strong>${tiktokCount()} ${safe(itemWord())}</strong>, completo e pronto alla pubblicazione.`);
+      const count = tiktokCount();
+      const word = itemWord();
+      if (!selectedTikTokStepIds().length) paragraphs.push('Definire le attività TikTok Shop da includere nella proposta.');
+      else if (tiktokHas('tiktokSetup') && tiktokHas('tiktokCatalog') && tiktokHas('tiktokPublish')) paragraphs.push(`Attivare il TikTok Shop e predisporre un catalogo iniziale di <strong>${count} ${safe(word)}</strong>, organizzato e pronto alla pubblicazione.`);
+      else if (tiktokIsActive() && tiktokHas('tiktokCatalog') && tiktokHas('tiktokPublish')) paragraphs.push(`Ampliare il TikTok Shop già attivo attraverso la preparazione e pubblicazione di <strong>${count} nuovi ${safe(word)}</strong>.`);
+      else paragraphs.push(`Sviluppare le attività TikTok Shop selezionate per <strong>${count} ${safe(word)}</strong> in modo coordinato e pronto all'utilizzo sulla piattaforma.`);
     } else if (objectivesAreDefault()) {
-      paragraphs.push(`<strong>${name}</strong>: ${safe(profile().objectiveSentence)}`);
+      paragraphs.push(safe(profile().objectiveSentence));
     } else {
       const actions = selectedObjectives().map((o) => o.action);
-      paragraphs.push(`Le attività per <strong>${name}</strong> saranno orientate a ${safe(joinNatural(actions) || 'rafforzare la comunicazione del Cliente')}.`);
+      paragraphs.push(`Le attività saranno orientate a ${safe(joinNatural(actions) || 'rafforzare la comunicazione del Cliente')}.`);
     }
 
     if (!isTikTokOnly() && value('focus')) paragraphs.push(`La comunicazione darà particolare priorità a <strong>${safe(value('focus'))}</strong>.`);
@@ -318,20 +376,12 @@
   function tiktokServiceSteps() {
     const count = tiktokCount();
     const word = itemWord();
-    if (tiktokIsActive()) {
-      return [
-        ['Selezione degli articoli da inserire', `Definizione dei ${count} nuovi ${word} da aggiungere allo Shop.`],
-        ['Produzione fotografica', `Realizzazione e preparazione delle immagini dedicate ai ${count} ${word}.`],
-        ['Aggiornamento del catalogo', 'Organizzazione di titoli, descrizioni, prezzi e informazioni commerciali necessarie alla pubblicazione.'],
-        ['Creazione e pubblicazione delle schede', `Realizzazione delle ${count} schede prodotto, caricamento, verifica finale e pubblicazione.`]
-      ];
-    }
-    return [
-      ['Configurazione e impostazione dello Shop', 'Configurazione iniziale del canale e organizzazione della struttura necessaria alla vendita e alla gestione del catalogo.'],
-      ['Selezione e produzione fotografica', `Definizione dei primi ${count} ${word} e shooting dedicato, con selezione e preparazione delle immagini.`],
-      ['Costruzione del catalogo', 'Organizzazione degli articoli e delle relative informazioni commerciali: titoli, descrizioni, prezzi e dati necessari alla pubblicazione.'],
-      ['Creazione e pubblicazione delle schede', `Realizzazione delle ${count} schede prodotto, caricamento dei contenuti, verifica finale e pubblicazione del catalogo iniziale.`]
-    ];
+    const steps = [];
+    if (tiktokHas('tiktokSetup')) steps.push(['Configurazione e impostazione dello Shop', 'Configurazione iniziale del canale e organizzazione della struttura necessaria alla vendita e alla gestione del catalogo.']);
+    if (tiktokHas('tiktokPhotos')) steps.push([tiktokIsActive() ? 'Selezione e produzione fotografica' : 'Selezione e produzione fotografica', `Definizione dei ${tiktokIsActive() ? '' : 'primi '}${count} ${word} e realizzazione delle immagini destinate allo Shop.`]);
+    if (tiktokHas('tiktokCatalog')) steps.push([tiktokIsActive() ? 'Aggiornamento del catalogo' : 'Costruzione del catalogo', 'Organizzazione delle informazioni commerciali: titoli, descrizioni, prezzi e dati necessari alla pubblicazione.']);
+    if (tiktokHas('tiktokPublish')) steps.push(['Creazione e pubblicazione delle schede', `Realizzazione delle ${count} schede prodotto, caricamento dei contenuti, verifica finale e pubblicazione.`]);
+    return steps;
   }
 
   function renderServices() {
@@ -354,10 +404,8 @@
       }
 
       if (checked('serviceTikTok')) {
-        const count = tiktokCount();
-        const desc = tiktokIsActive()
-          ? `Ampliamento del TikTok Shop già attivo con produzione fotografica, aggiornamento del catalogo e pubblicazione di ${count} nuove schede prodotto.`
-          : `Configurazione iniziale dello Shop, produzione fotografica, organizzazione del catalogo e pubblicazione delle schede relative ai primi ${count} ${itemWord()}.`;
+        const steps = tiktokServiceSteps();
+        const desc = steps.length ? sentence(steps.map((s) => s[0].toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' e $1')) : 'Attività da definire.';
         services.push(['TikTok Shop', desc]);
       }
       if (checked('serviceInfluencer')) services.push(['Creator e influencer', 'Ricerca, selezione, proposta dei profili e coordinamento delle collaborazioni approvate dal Cliente.']);
@@ -395,10 +443,10 @@
       setText('productionHeading', '3. INFORMAZIONI OPERATIVE');
       const count = tiktokCount();
       const word = itemWord();
-      const platformNote = tiktokIsActive()
-        ? 'La pubblicazione delle nuove schede resta soggetta alle verifiche e alle procedure previste da TikTok.'
-        : 'L’attivazione definitiva delle funzionalità dello Shop resta soggetta alle verifiche e alle procedure previste da TikTok.';
-      setText('productionText', `Il Cliente mette a disposizione i ${word} e fornisce o conferma prezzi, disponibilità e informazioni necessarie alla pubblicazione. Gli inserimenti oltre i ${count} ${word} previsti saranno concordati separatamente. ${platformNote}`);
+      const notes = [`Il Cliente mette a disposizione i ${word} e fornisce o conferma prezzi, disponibilità e informazioni necessarie alle attività selezionate.`, `Gli inserimenti oltre i ${count} ${word} previsti saranno concordati separatamente.`];
+      if (tiktokHas('tiktokSetup')) notes.push('L’attivazione definitiva delle funzionalità dello Shop resta soggetta alle verifiche e alle procedure previste da TikTok.');
+      else if (tiktokHas('tiktokPublish')) notes.push('La pubblicazione delle schede resta soggetta alle verifiche e alle procedure previste da TikTok.');
+      setText('productionText', notes.join(' '));
       return;
     }
 
@@ -420,7 +468,7 @@
   }
 
   function productionSummary() {
-    if (isTikTokOnly()) return `Shooting dedicato a ${tiktokCount()} ${itemWord()}`;
+    if (isTikTokOnly()) return tiktokHas('tiktokPhotos') ? `Shooting dedicato a ${tiktokCount()} ${itemWord()}` : 'Non prevista';
     if (checked('serviceProduction')) {
       const days = Math.max(1, numberValue('productionDays',1));
       const unit = days === 1 ? 'giornata' : 'giornate';
@@ -435,7 +483,7 @@
   }
 
   function contentSummary() {
-    if (isTikTokOnly()) return `${tiktokCount()} schede prodotto con foto e dati commerciali`;
+    if (isTikTokOnly()) { const parts=[]; if (tiktokHas('tiktokPhotos')) parts.push('immagini'); if (tiktokHas('tiktokCatalog')) parts.push('catalogo'); if (tiktokHas('tiktokPublish')) parts.push(`${tiktokCount()} schede prodotto`); return parts.length ? joinNatural(parts) : 'Da definire'; }
     if (checked('serviceProduction')) {
       if (value('quantityMode') === 'plan') return 'Quantità e tipologia definite in base al piano editoriale';
       const parts = fixedContentParts();
@@ -445,7 +493,7 @@
   }
 
   function managementSummary() {
-    if (isTikTokOnly()) return tiktokIsActive() ? 'Aggiornamento catalogo e pubblicazione' : 'Configurazione iniziale e pubblicazione';
+    if (isTikTokOnly()) { const parts=[]; if (tiktokHas('tiktokSetup')) parts.push('configurazione iniziale'); if (tiktokHas('tiktokCatalog')) parts.push(tiktokIsActive() ? 'aggiornamento catalogo' : 'costruzione catalogo'); if (tiktokHas('tiktokPublish')) parts.push('pubblicazione'); return parts.length ? sentence(joinNatural(parts)).replace(/\.$/,'') : 'Da definire'; }
     if (checked('serviceSocial')) return 'Piano editoriale, copy, programmazione e pubblicazione';
     if (checked('serviceCommunity')) return 'Community management';
     return 'Non prevista';
@@ -466,7 +514,7 @@
     const oneTimeFee = numberValue('oneTimeFee');
 
     setText('summaryDurationLabel', tikOnly || oneTime ? 'TIPOLOGIA' : 'DURATA');
-    setText('summaryDuration', tikOnly ? (tiktokIsActive() ? 'Ampliamento catalogo' : 'Fase di avvio') : (oneTime ? 'Progetto a importo complessivo' : `${duration} mesi`));
+    setText('summaryDuration', tikOnly ? (tiktokIsActive() ? 'Ampliamento catalogo' : (tiktokHas('tiktokSetup') ? 'Fase di avvio' : 'TikTok Shop')) : (oneTime ? 'Progetto a importo complessivo' : `${duration} mesi`));
     setText('summaryObjective', summaryObjective());
     setText('summaryProduction', productionSummary());
     setText('summaryContent', contentSummary());
@@ -479,19 +527,19 @@
     setHidden('summaryTikTokRow', !tiktokSelected);
     if (tiktokSelected) {
       const status = tiktokIsActive() ? 'Shop già attivo' : 'Shop da attivare';
-      setText('summaryTikTok', `${status} · ${tiktokCount()} ${itemWord()} · ${tiktokIsActive() ? 'ampliamento' : 'fase di avvio'} ${money(tiktokFee())} + IVA`);
+      setText('summaryTikTok', `${status} · ${tiktokCount()} ${itemWord()}`);
     }
 
     if (tikOnly) setText('summaryInvestment', `${money(tiktokFee())} + IVA`);
-    else if (oneTime) setText('summaryInvestment', `${money(oneTimeFee)} + IVA`);
-    else setText('summaryInvestment', `${money(monthly)} al mese + IVA`);
+    else if (oneTime) setText('summaryInvestment', checked('serviceTikTok') ? `${money(oneTimeFee)} + IVA; TikTok Shop ${money(tiktokFee())} + IVA` : `${money(oneTimeFee)} + IVA`);
+    else setText('summaryInvestment', checked('serviceTikTok') ? `${money(monthly)} al mese + IVA; TikTok Shop ${money(tiktokFee())} + IVA` : `${money(monthly)} al mese + IVA`);
   }
 
   function renderExclusions() {
     const exclusions = [];
     if (isTikTokOnly()) {
       exclusions.push(`Inserimento di ${itemWord()} oltre i ${tiktokCount()} previsti;`);
-      exclusions.push('Gestione continuativa dello Shop successiva alla fase prevista;');
+      exclusions.push('Gestione continuativa dello Shop successiva alle attività previste;');
       exclusions.push('Contenuti video social o produzioni ulteriori non comprese nella presente proposta;');
       exclusions.push('Gestione logistica degli ordini, spedizioni, resi, reclami e assistenza clienti;');
     } else {
@@ -517,16 +565,14 @@
     const count = tiktokCount();
 
     if (tikOnly) {
-      const label = tiktokIsActive() ? `AMPLIAMENTO SHOP · ${count} ${itemWord().toUpperCase()}` : `FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`;
+      const label = tiktokIsActive() ? `AMPLIAMENTO SHOP · ${count} ${itemWord().toUpperCase()}` : (tiktokHas('tiktokSetup') ? `FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · ${count} ${itemWord().toUpperCase()}`);
       el('feeTableBody').innerHTML = [feeRow(label, `${money(tikFee)} + IVA`), feeRow('TOTALE PROPOSTA', `${money(tikFee)} + IVA`)].join('');
       setText('installmentsLabel', 'TIPOLOGIA');
-      setText('installmentsPreview', tiktokIsActive() ? 'Ampliamento' : 'Fase di avvio');
+      setText('installmentsPreview', tiktokIsActive() ? 'Ampliamento' : (tiktokHas('tiktokSetup') ? 'Fase di avvio' : 'TikTok Shop'));
       setText('contractTotalLabel', 'TOTALE PROPOSTA');
       setText('contractTotalPreview', money(tikFee));
-      el('paymentText').innerHTML = tiktokIsActive()
-        ? `L'investimento previsto per l'ampliamento del TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong>.`
-        : `L'investimento previsto per la fase di avvio del TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong>.`;
-      setText('invoiceText', tiktokIsActive() ? 'L’importo sarà fatturato all’avvio delle attività di ampliamento del catalogo, secondo le modalità concordate.' : 'L’importo sarà fatturato all’avvio della fase TikTok Shop, secondo le modalità concordate.');
+      el('paymentText').innerHTML = tiktokIsActive() ? `L'investimento previsto per l'ampliamento del TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong>.` : `L'investimento previsto per le attività TikTok Shop selezionate è pari a <strong>${safe(money(tikFee))} + IVA</strong>.`;
+      setText('invoiceText', tiktokIsActive() ? 'L’importo sarà fatturato all’avvio delle attività di ampliamento del catalogo, secondo le modalità concordate.' : 'L’importo sarà fatturato all’avvio delle attività TikTok Shop, secondo le modalità concordate.');
       setText('validityText', 'La proposta ha validità 15 giorni. Le tempistiche operative decorreranno dalla conferma e dalla disponibilità degli articoli e delle informazioni necessarie.');
       return 2;
     }
@@ -551,7 +597,7 @@
     }
 
     if (checked('serviceTikTok')) {
-      rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`));
+      rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : (tiktokHas('tiktokSetup') ? `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · ${count} ${itemWord().toUpperCase()}`), `${money(tikFee)} + IVA`));
       total += tikFee;
     }
     if (extra) { rows.push(feeRow(extraLabel.toUpperCase(), `${money(extra)} + IVA`)); total += extra; }
@@ -566,7 +612,7 @@
     const payment = [];
     if (oneTime) payment.push(`L'importo complessivo previsto per il progetto è pari a <strong>${safe(money(mainOneTime))} + IVA</strong>.`);
     else payment.push(`Il compenso per i servizi continuativi è pari a <strong>${safe(money(monthly))} + IVA al mese</strong>, per ${duration} mesi.`);
-    if (checked('serviceTikTok')) payment.push(`${tiktokIsActive() ? 'L’ampliamento del TikTok Shop' : 'La fase di avvio del TikTok Shop'} prevede un investimento di <strong>${safe(money(tikFee))} + IVA</strong>.`);
+    if (checked('serviceTikTok')) payment.push(tiktokIsActive() ? `L’ampliamento del TikTok Shop prevede un investimento di <strong>${safe(money(tikFee))} + IVA</strong>.` : `Le attività TikTok Shop selezionate prevedono un investimento di <strong>${safe(money(tikFee))} + IVA</strong>.`);
     if (extra) payment.push(`L’attività “${safe(extraLabel)}” è pari a <strong>${safe(money(extra))} + IVA</strong>.`);
     el('paymentText').innerHTML = payment.join(' ');
     setText('invoiceText', oneTime ? 'La fatturazione avverrà all’avvio del progetto, secondo le modalità concordate.' : 'La fatturazione dei servizi continuativi avverrà mensilmente; eventuali fasi iniziali o servizi extra saranno fatturati all’avvio delle relative attività.');
@@ -676,7 +722,7 @@
       .filter((tr) => !tr.classList.contains('is-hidden'))
       .map((tr) => [tr.children[0]?.textContent?.trim() || '', tr.children[1]?.textContent?.trim() || '']);
     const feeRows = [...document.querySelectorAll('.fee-table tr')].map((tr) => [tr.children[0]?.textContent?.trim() || '', tr.children[1]?.textContent?.trim() || '']);
-    const clientLines = [value('legalName') || '[Ragione sociale Cliente]', value('address') || '[Indirizzo]', value('city') || '[CAP e città]', `P. IVA ${value('vat') || '[Partita IVA]'}`].join(' · ');
+    const clientLines = [value('legalName') || value('clientName') || '________________________________', value('address') ? `Sede: ${value('address')}` : 'Sede: __________________________________', value('city') || '________________________________________', `P. IVA/C.F.: ${value('vat') || '__________________________'}`].join(' · ');
     const objectiveParagraphs = domList('#objectiveText p');
     const serviceItems = domList('#serviceList li');
     const exclusions = domList('#exclusionList li');
@@ -741,8 +787,10 @@
   fields.forEach((field) => field.addEventListener('input', render));
   el('proposalMode').addEventListener('change', () => { syncProposalMode(); render(); });
   el('clientType').addEventListener('change', applyClientPreset);
+  el('clientName').addEventListener('change', () => { if (applyKnownClient()) render(); });
+  el('clientName').addEventListener('blur', () => { if (applyKnownClient()) render(); });
   el('toggleObjectivesButton').addEventListener('click', () => { showAllObjectives = !showAllObjectives; updateObjectiveVisibility(); });
-  el('tiktokStatus').addEventListener('change', render);
+  el('tiktokStatus').addEventListener('change', () => { applyTikTokStatusPreset(); render(); });
   el('printButton').addEventListener('click', () => window.print());
   el('printButtonTop').addEventListener('click', () => window.print());
   el('wordButton').addEventListener('click', () => downloadWord(el('wordButton')));
@@ -756,6 +804,7 @@
   });
 
   applyState(loadState());
+  if (el('tiktokPhotos') && !('tiktokPhotos' in getState())) applyTikTokStatusPreset();
   syncProposalMode();
   render();
 })();
