@@ -299,7 +299,7 @@ table { width: 100%; border-collapse: collapse; }
 .page.dense .summary-table th, .page.dense .summary-table td { height: 5.8mm; }
 .page.dense .service-list { font-size: 8pt; line-height: 1.06; }
 .page.dense .doc-section { margin-top: 1.05mm; }
-.page-two { padding-top: 18mm; }
+.page-two { padding-top: 15.8mm; }
 .fee-table { margin: 0 0 8mm; table-layout: fixed; border: .35mm solid var(--teal); }
 .fee-table th, .fee-table td {
   height: auto;
@@ -314,7 +314,7 @@ table { width: 100%; border-collapse: collapse; }
 .page-two .doc-section { margin-top: 5.2mm; }
 .page-two .doc-section + .doc-section { margin-top: 6.8mm; }
 .page-two .exclusion-note { margin-top: 3mm; }
-.page-two.compact { padding-top: 16.5mm; }
+.page-two.compact { padding-top: 15.8mm; }
 .page-two.compact .fee-table { margin-bottom: 5.7mm; }
 .page-two.compact .doc-section { margin-top: 4.4mm; }
 .page-two.compact .doc-section + .doc-section { margin-top: 5.4mm; }

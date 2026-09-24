@@ -35,3 +35,15 @@ Sostituire `index.html`, `styles.css`, `app.js` e `README.md`. Se nel repository
 - titolo e sottotitolo del documento cambiano in base a proposta classica, TikTok Shop o proposta integrata;
 - esportazione Word resa più fedele all’anteprima: colori SOMO, tabelle, footer e loghi incorporati nel file quando gli asset sono disponibili;
 - i loghi vengono letti da `assets/somo.png` e `assets/black-noodles.png` e incorporati nel `.docx`, quindi non restano semplici riferimenti esterni.
+
+
+## Versione 12
+
+- titolo del documento realmente dinamico in base al tipo di proposta selezionato;
+- TikTok Shop: titolo dedicato e sottotitolo diverso tra Shop da attivare e Shop già attivo;
+- proposta integrata: titolo distinto da classica e TikTok-only;
+- i loghi Word vengono prima letti dagli asset mostrati nell’anteprima e, se il browser non permette il caricamento (per esempio apertura locale `file://`), vengono presi da una copia incorporata direttamente nel generatore;
+- nel `.docx` i loghi sono file immagine interni al pacchetto Word, non collegamenti esterni;
+- colori e gerarchie Word riallineati all’anteprima;
+- seconda pagina allineata agli stessi margini superiori della prima, per ridurre lo stacco visivo.
+- lo ZIP include anche la cartella `assets` con i loghi ufficiali recuperati da un Allegato SOMO esistente.
