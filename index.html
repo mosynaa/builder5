@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Builder SOMO per creare Allegati A uniformi, scaricabili in Word e PDF.">
+  <title>Allegato A Builder · SOMO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <aside class="builder" aria-label="Compilazione Allegato A">
+      <header class="builder-head">
+        <img src="assets/somo.png" alt="SOMO">
+        <h1>Allegato A Builder</h1>
+        <p>Scegli cliente e servizi. Il documento usa testi sintetici e coerenti con gli Allegati SOMO.</p>
+      </header>
+
+      <form id="builderForm" class="builder-form">
+        <section id="proposalSection" class="form-section proposal-section">
+          <h2>Che proposta vuoi creare?</h2>
+          <label class="field">
+            <span>Tipo di proposta</span>
+            <select id="proposalMode" name="proposalMode">
+              <option value="classic">Proposta classica</option>
+              <option value="tiktok">TikTok Shop</option>
+              <option value="both">Classica + TikTok Shop</option>
+            </select>
+            <small>Scegli prima la struttura: il builder mostrerà soltanto i campi utili.</small>
+          </label>
+        </section>
+
+        <section id="clientSection" class="form-section">
+          <h2><span class="step">1</span>Dati del cliente</h2>
+          <label class="field">
+            <span>Tipologia del cliente</span>
+            <select id="clientType" name="clientType">
+              <option value="retail">Negozio / showroom</option>
+              <option value="emporium">Emporio / grande store multicategoria</option>
+              <option value="omnichannel">Negozio con e-commerce</option>
+              <option value="online">Brand / e-commerce</option>
+              <option value="food">Ristorante / food</option>
+              <option value="nightlife">Locale / club / nightlife</option>
+              <option value="wellness">Fitness / wellness / centro servizi</option>
+              <option value="recreation">Parco / struttura ricreativa</option>
+              <option value="b2b">Ingrosso / attività B2B</option>
+              <option value="services">Servizi / professionista</option>
+              <option value="brand">Brand / altra attività</option>
+            </select>
+          </label>
+          <div class="grid-2">
+            <label class="field">
+              <span>Nome commerciale</span>
+              <input id="clientName" name="clientName" type="text" placeholder="Es. Gloria">
+            </label>
+            <label class="field">
+              <span>Ragione sociale</span>
+              <input id="legalName" name="legalName" type="text" placeholder="Es. Gloria S.r.l.">
+            </label>
+          </div>
+          <label class="field">
+            <span>Indirizzo</span>
+            <input id="address" name="address" type="text" placeholder="Via e numero civico">
+          </label>
+          <div class="grid-2">
+            <label class="field">
+              <span>CAP, città e provincia</span>
+              <input id="city" name="city" type="text" placeholder="80014 Giugliano (NA)">
+            </label>
+            <label class="field">
+              <span>Partita IVA</span>
+              <input id="vat" name="vat" type="text" inputmode="numeric" placeholder="00000000000">
+            </label>
+          </div>
+          <label class="field">
+            <span>Data della proposta</span>
+            <input id="documentDate" name="documentDate" type="date">
+          </label>
+        </section>
+
+        <section id="objectiveSection" class="form-section">
+          <h2><span class="step">2</span>Obiettivi</h2>
+          <p class="form-note section-note">Vengono selezionati automaticamente gli obiettivi abituali per la tipologia scelta.</p>
+          <div id="objectiveGrid" class="check-list check-grid">
+            <label class="check objective-card" data-objective="objectiveBrand"><input id="objectiveBrand" name="objectiveBrand" type="checkbox"><span><strong>Notorietà e posizionamento</strong><em>Rafforzare identità e riconoscibilità.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveContinuity"><input id="objectiveContinuity" name="objectiveContinuity" type="checkbox"><span><strong>Continuità social</strong><em>Mantenere una presenza costante e riconoscibile.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveRange"><input id="objectiveRange" name="objectiveRange" type="checkbox"><span><strong>Offerta da valorizzare</strong><em>Articoli, prodotti, servizi, piatti o attività.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveExperience"><input id="objectiveExperience" name="objectiveExperience" type="checkbox"><span><strong>Identità ed esperienza</strong><em>Raccontare atmosfera, servizio ed esperienza.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveFootfall"><input id="objectiveFootfall" name="objectiveFootfall" type="checkbox"><span><strong>Affluenza / visite</strong><em>Favorire visite, presenze o partecipazione.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveEvents"><input id="objectiveEvents" name="objectiveEvents" type="checkbox"><span><strong>Eventi e iniziative</strong><em>Dare visibilità a programmazione e attività.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveEcommerce"><input id="objectiveEcommerce" name="objectiveEcommerce" type="checkbox"><span><strong>Vendita online</strong><em>Supportare e-commerce e opportunità di vendita.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveLeads"><input id="objectiveLeads" name="objectiveLeads" type="checkbox"><span><strong>Contatti e richieste</strong><em>Sostenere acquisizione di contatti o iscritti.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveCommunity"><input id="objectiveCommunity" name="objectiveCommunity" type="checkbox"><span><strong>Community e interazione</strong><em>Favorire interazione e crescita della community.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveLaunch"><input id="objectiveLaunch" name="objectiveLaunch" type="checkbox"><span><strong>Lancio / apertura / nuova fase</strong><em>Accompagnare una novità importante.</em></span></label>
+          </div>
+          <button id="toggleObjectivesButton" class="text-button" type="button">+ Aggiungi altri obiettivi</button>
+          <label class="field optional-field">
+            <span>Priorità specifiche da comunicare <small>(facoltativo)</small></span>
+            <input id="focus" name="focus" type="text" placeholder="Es. nuova apertura, reparto Natale, Hyrox, aperitivo">
+          </label>
+          <label class="field optional-field">
+            <span>Obiettivo aggiuntivo <small>(facoltativo)</small></span>
+            <input id="customObjective" name="customObjective" type="text" placeholder="Aggiungi solo se serve qualcosa di specifico">
+          </label>
+        </section>
+
+        <section id="servicesSection" class="form-section">
+          <h2><span class="step">3</span>Servizi inclusi</h2>
+          <p class="form-note section-note">Le voci restano sintetiche: montaggio, post-produzione e adattamenti sono compresi nella produzione.</p>
+          <div class="check-list">
+            <label class="check"><input id="serviceStrategy" name="serviceStrategy" type="checkbox"><span><strong>Strategia e piano editoriale</strong><em>Linea di comunicazione, temi e pianificazione.</em></span></label>
+            <label class="check"><input id="serviceProduction" name="serviceProduction" type="checkbox"><span><strong>Produzione dei contenuti</strong><em>Video, fotografie e/o grafiche.</em></span></label>
+            <label class="check"><input id="serviceSocial" name="serviceSocial" type="checkbox"><span><strong>Gestione dei canali social</strong><em>Copy, programmazione e pubblicazione.</em></span></label>
+            <label class="check"><input id="serviceAdvCreative" name="serviceAdvCreative" type="checkbox"><span><strong>Creatività per campagne ADV</strong><em>Materiali foto, video o grafici per le campagne.</em></span></label>
+            <label class="check"><input id="serviceInfluencer" name="serviceInfluencer" type="checkbox"><span><strong>Coordinamento creator e influencer</strong><em>Ricerca, selezione e coordinamento.</em></span></label>
+            <label class="check"><input id="serviceCommunity" name="serviceCommunity" type="checkbox"><span><strong>Community management</strong><em>Messaggi, commenti e recensioni.</em></span></label>
+            <label class="check"><input id="serviceEventCoverage" name="serviceEventCoverage" type="checkbox"><span><strong>Copertura dedicata di eventi</strong><em>Fotografo o videomaker negli appuntamenti concordati.</em></span></label>
+          </div>
+          <div id="eventCoveragePanel" class="dependent-panel is-hidden">
+            <label class="field">
+              <span>Frequenza della copertura</span>
+              <select id="eventCoverageFrequency" name="eventCoverageFrequency">
+                <option value="agreed">Negli eventi concordati</option>
+                <option value="monthly">1 evento al mese</option>
+                <option value="twiceMonthly">Fino a 2 eventi al mese</option>
+                <option value="plan">In base alla programmazione</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section id="productionSection" class="form-section">
+          <h2><span class="step">4</span>Produzione dei contenuti</h2>
+          <div class="grid-2">
+            <label class="field">
+              <span>Frequenza</span>
+              <select id="productionCadence" name="productionCadence">
+                <option value="monthly">Ogni mese</option>
+                <option value="bimonthly">Ogni 2 mesi</option>
+                <option value="quarterly">Ogni 3 mesi</option>
+                <option value="plan">In base al piano editoriale</option>
+                <option value="none">Nessuna giornata dedicata</option>
+              </select>
+            </label>
+            <label id="productionDaysField" class="field">
+              <span>Giornate per sessione</span>
+              <input id="productionDays" name="productionDays" type="number" min="1" max="10" step="1">
+            </label>
+          </div>
+          <span class="group-label">Tipologia dei contenuti</span>
+          <div class="check-list check-grid compact-checks">
+            <label class="check"><input id="productionVideo" name="productionVideo" type="checkbox"><span><strong>Video</strong></span></label>
+            <label class="check"><input id="productionPhoto" name="productionPhoto" type="checkbox"><span><strong>Fotografie</strong></span></label>
+            <label class="check"><input id="productionGraphics" name="productionGraphics" type="checkbox"><span><strong>Grafiche</strong></span></label>
+          </div>
+          <label class="field quantity-mode">
+            <span>Quantità</span>
+            <select id="quantityMode" name="quantityMode">
+              <option value="fixed">Quantità definite</option>
+              <option value="plan">Definite in base al piano editoriale</option>
+            </select>
+          </label>
+          <div id="fixedQuantityPanel" class="dependent-panel">
+            <div class="grid-3">
+              <label id="videosField" class="field"><span>Video al mese</span><input id="videos" name="videos" type="number" min="0" max="100" step="1"></label>
+              <label id="photosField" class="field"><span>Fotografie al mese</span><input id="photos" name="photos" type="text" placeholder="Es. 15–20"></label>
+              <label id="graphicsField" class="field"><span>Grafiche al mese</span><input id="graphicsCount" name="graphicsCount" type="number" min="0" max="100" step="1"></label>
+            </div>
+          </div>
+        </section>
+
+        <section id="adsSection" class="form-section">
+          <h2><span class="step">5</span>ADS</h2>
+          <div class="check-list">
+            <label class="check feature-check"><input id="serviceAds" name="serviceAds" type="checkbox"><span><strong>Gestione campagne Meta Ads</strong><em>Attivazione, monitoraggio e ottimizzazione. Budget separato.</em></span></label>
+          </div>
+          <div id="adsPanel" class="dependent-panel is-hidden">
+            <label class="field"><span>Budget ADS mensile consigliato</span><input id="adsBudget" name="adsBudget" type="number" min="0" step="50" placeholder="Es. 200"><small>È a carico del Cliente e non entra nel compenso SOMO.</small></label>
+          </div>
+        </section>
+
+        <section id="tiktokSection" class="form-section is-hidden">
+          <h2><span class="step">T</span>TikTok Shop</h2>
+          <input id="serviceTikTok" name="serviceTikTok" type="checkbox" class="is-hidden" aria-hidden="true" tabindex="-1">
+          <p class="form-note section-note">Preset automatico basato sulla proposta Supermercato Cinese. Quantità e importo restano modificabili.</p>
+          <div id="tiktokPanel" class="dependent-panel tiktok-builder-panel">
+            <label class="field">
+              <span>TikTok Shop già attivo?</span>
+              <select id="tiktokStatus" name="tiktokStatus">
+                <option value="new">No, da attivare</option>
+                <option value="active">Sì, già attivo</option>
+              </select>
+            </label>
+            <p class="preset-title">Il preset comprende:</p>
+            <div class="locked-list">
+              <span id="tiktokPreset1">01 Configurazione Shop</span>
+              <span id="tiktokPreset2">02 Produzione fotografica</span>
+              <span id="tiktokPreset3">03 Catalogo</span>
+              <span id="tiktokPreset4">04 Schede + pubblicazione</span>
+            </div>
+            <div class="grid-2">
+              <label class="field"><span>Quantità</span><input id="tiktokProductCount" name="tiktokProductCount" type="number" min="1" max="1000" step="1"><small>Default: 30. Si aggiorna automaticamente in tutto il documento.</small></label>
+              <label class="field"><span>Investimento TikTok Shop una tantum</span><input id="tiktokFee" name="tiktokFee" type="number" min="0" step="50"><small>Default: € 1.200 + IVA.</small></label>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2><span class="step">6</span>Durata e compenso</h2>
+          <div id="tiktokOnlyEconomicNote" class="dependent-panel is-hidden">
+            <strong>Proposta TikTok Shop autonoma</strong>
+            <p>Quantità e investimento si modificano direttamente nel blocco TikTok Shop.</p>
+          </div>
+          <div id="mainEconomicControls">
+            <label class="field">
+              <span>Tipologia economica dei servizi principali</span>
+              <select id="economicMode" name="economicMode">
+                <option value="monthly">Contratto con compenso mensile</option>
+                <option value="oneTime">Attività una tantum</option>
+              </select>
+            </label>
+            <div id="monthlyEconomicPanel">
+              <div class="grid-2">
+                <label class="field"><span>Durata</span><select id="duration" name="duration"><option value="3">3 mesi</option><option value="6">6 mesi</option><option value="12">12 mesi</option></select></label>
+                <label class="field"><span>Compenso mensile</span><input id="monthlyFee" name="monthlyFee" type="number" min="0" step="50"></label>
+              </div>
+              <label class="check extra-toggle"><input id="extraEnabled" name="extraEnabled" type="checkbox"><span><strong>Aggiungi altra attività una tantum</strong><em>Solo per extra diversi dal TikTok Shop.</em></span></label>
+              <div id="extraPanel" class="dependent-panel is-hidden">
+                <div class="grid-2">
+                  <label class="field"><span>Descrizione</span><input id="extraLabel" name="extraLabel" type="text" placeholder="Es. Produzione straordinaria"></label>
+                  <label class="field"><span>Importo</span><input id="extraFee" name="extraFee" type="number" min="0" step="50"></label>
+                </div>
+              </div>
+            </div>
+            <div id="oneTimeEconomicPanel" class="is-hidden">
+              <label class="field"><span>Compenso una tantum servizi principali</span><input id="oneTimeFee" name="oneTimeFee" type="number" min="0" step="50"></label>
+            </div>
+          </div>
+          <div class="total-card" aria-live="polite">
+            <div><span id="installmentsLabel">RATE MENSILI</span><strong id="installmentsPreview">6</strong></div>
+            <div><span id="contractTotalLabel">TOTALE</span><strong id="contractTotalPreview">€ 0,00</strong></div>
+          </div>
+        </section>
+      </form>
+
+      <div class="builder-actions three-actions">
+        <button id="wordButton" class="button button-primary" type="button">Scarica Word</button>
+        <button id="printButton" class="button button-secondary" type="button">PDF</button>
+        <button id="resetButton" class="button button-secondary" type="button">Azzera</button>
+      </div>
+    </aside>
+
+    <section class="preview" aria-label="Anteprima Allegato A">
+      <div class="preview-toolbar">
+        <p><strong>Anteprima del documento</strong>Struttura sintetica SOMO: BabyChic/Gloria + preset TikTok Shop quando selezionato.</p>
+        <div class="toolbar-actions">
+          <button id="wordButtonTop" class="button button-primary" type="button">Word</button>
+          <button id="printButtonTop" class="button button-secondary" type="button">PDF</button>
+        </div>
+      </div>
+
+      <article id="document" class="document">
+        <section id="pageOne" class="page page-one">
+          <header class="doc-header">
+            <img class="logo-somo" src="assets/somo.png" alt="SOMO">
+            <img class="logo-noodles" src="assets/black-noodles.png" alt="Black Noodles">
+          </header>
+          <h1 class="doc-title">ALLEGATO A – OFFERTA ECONOMICA E SCOPE OF WORK</h1>
+
+          <table class="parties">
+            <thead><tr><th>FORNITORE</th><th>CLIENTE</th></tr></thead>
+            <tbody><tr>
+              <td><strong>SOMO S.r.l.</strong><br>Vico Sant’Eframo Vecchio, 20<br>80137 Napoli (NA)<br>P. IVA 10895731213</td>
+              <td id="clientBlock" class="placeholder"><strong>[Ragione sociale Cliente]</strong><br>[Indirizzo]<br>[CAP e città]<br>P. IVA [Partita IVA]</td>
+            </tr></tbody>
+          </table>
+
+          <h2 class="label-title">OGGETTO</h2>
+          <p id="objectText" class="object-text"></p>
+
+          <h2 class="section-title">SINTESI DELL’OFFERTA</h2>
+          <table class="summary-table">
+            <tbody>
+              <tr><th>DURATA</th><td id="summaryDuration"></td></tr>
+              <tr><th>OBIETTIVO</th><td id="summaryObjective"></td></tr>
+              <tr><th>PRODUZIONE</th><td id="summaryProduction"></td></tr>
+              <tr><th>CONTENUTI</th><td id="summaryContent"></td></tr>
+              <tr><th>GESTIONE</th><td id="summaryManagement"></td></tr>
+              <tr id="summaryTikTokRow" class="is-hidden"><th>TIKTOK SHOP</th><td id="summaryTikTok"></td></tr>
+              <tr><th>INVESTIMENTO</th><td id="summaryInvestment"></td></tr>
+              <tr><th>ADS</th><td id="summaryAds"></td></tr>
+            </tbody>
+          </table>
+
+          <section class="doc-section">
+            <h2 class="section-title">1. OBIETTIVO DELLA COLLABORAZIONE</h2>
+            <div id="objectiveText"></div>
+          </section>
+
+          <section class="doc-section">
+            <h2 class="section-title">2. SERVIZI INCLUSI</h2>
+            <ul id="serviceList" class="service-list"></ul>
+          </section>
+
+          <section id="productionDocumentSection" class="doc-section production-section">
+            <h2 id="productionHeading" class="section-title">3. PRODUZIONE DEI CONTENUTI</h2>
+            <p id="productionText"></p>
+          </section>
+
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli (NA) · P. IVA 10895731213 · PEC somonapoli@pec.it</footer>
+          <span class="page-number">1</span>
+        </section>
+
+        <section id="pageTwo" class="page page-two">
+          <section>
+            <h2 class="section-title">4. COMPENSO</h2>
+            <table class="fee-table"><tbody id="feeTableBody"></tbody></table>
+          </section>
+
+          <section class="doc-section">
+            <h2 class="section-title">5. NON INCLUSO</h2>
+            <ul id="exclusionList" class="exclusion-list"></ul>
+            <p class="exclusion-note">Le eventuali attività aggiuntive saranno concordate e preventivate separatamente.</p>
+          </section>
+
+          <section class="doc-section">
+            <h2 class="section-title">6. PAGAMENTO E VALIDITÀ</h2>
+            <p id="paymentText"></p>
+            <p id="invoiceText"></p>
+            <p id="validityText"></p>
+          </section>
+
+          <section class="signature">
+            <p>Data: <span id="signatureDate">___-___-______</span></p>
+            <p>Per accettazione<br><strong>Firma e Timbro del Cliente</strong><br>_____________________________________________</p>
+          </section>
+
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli (NA) · P. IVA 10895731213 · PEC somonapoli@pec.it</footer>
+          <span class="page-number">2</span>
+        </section>
+      </article>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
