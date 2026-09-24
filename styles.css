@@ -408,3 +408,9 @@ table { width: 100%; border-collapse: collapse; }
 .autocomplete-option:hover, .autocomplete-option:focus { background: var(--teal-soft); outline: none; }
 .autocomplete-option strong { font-size: 12px; }
 .autocomplete-option span { color: var(--muted); font-size: 10px; text-align: right; }
+
+
+/* v10: controlli produzione flessibili e fallback loghi */
+.builder-head img[hidden], .doc-header img[hidden] { display: none !important; }
+#fixedQuantityPanel > .field { margin-bottom: 12px; }
+#productionSessionsLabel { min-height: 1em; }

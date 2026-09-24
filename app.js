@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'somo-allegato-a-builder-v8';
+  const STORAGE_KEY = 'somo-allegato-a-builder-v10';
   const form = document.getElementById('builderForm');
   const fields = [...form.querySelectorAll('input, select')];
   const objectiveIds = [
@@ -131,7 +131,7 @@
     serviceStrategy: true, serviceProduction: true, serviceSocial: true, serviceAdvCreative: false,
     serviceInfluencer: false, serviceCommunity: false, serviceEventCoverage: false,
     eventCoverageFrequency: 'agreed', productionCadence: 'monthly', productionDays: '1',
-    productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan',
+    productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
     videos: '8', photos: '15–20', graphicsCount: '4', serviceAds: false, adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
     economicMode: 'monthly', duration: '6', monthlyFee: '1200', extraEnabled: false,
@@ -187,19 +187,27 @@
     if (el('tiktokSetup')) el('tiktokSetup').checked = !tiktokIsActive();
     ['tiktokPhotos','tiktokCatalog','tiktokPublish'].forEach((id) => { if (el(id)) el(id).checked = true; });
   }
-  function applyKnownClient() {
-    const key = value('clientName').toLowerCase();
-    const preset = knownClients[key];
+  function normalizedClientKey(text) {
+    return String(text || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+  function exactKnownClient(text = value('clientName')) {
+    return knownClients[normalizedClientKey(text)] || null;
+  }
+  function applyKnownClient(options = {}) {
+    const preset = exactKnownClient();
     if (!preset) return false;
+    const onlyMissing = Boolean(options.onlyMissing);
     if (el('clientName')) el('clientName').value = preset.clientName;
-    if (el('clientType')) el('clientType').value = preset.clientType;
-    if (el('legalName')) el('legalName').value = preset.legalName || '';
-    if (el('address')) el('address').value = preset.address || '';
-    if (el('city')) el('city').value = preset.city || '';
-    if (el('vat')) el('vat').value = preset.vat || '';
-    const defaults = profile().defaults;
-    objectiveIds.forEach((id) => { el(id).checked = defaults.includes(id); });
-    showAllObjectives = false;
+    if (!onlyMissing || !value('clientType')) el('clientType').value = preset.clientType;
+    [['legalName','legalName'],['address','address'],['city','city'],['vat','vat']].forEach(([id,key]) => {
+      if (!el(id) || !preset[key]) return;
+      if (!onlyMissing || !value(id)) el(id).value = preset[key];
+    });
+    if (!onlyMissing) {
+      const defaults = profile().defaults;
+      objectiveIds.forEach((id) => { el(id).checked = defaults.includes(id); });
+      showAllObjectives = false;
+    }
     return true;
   }
 
@@ -340,6 +348,7 @@
     setHidden('oneTimeEconomicPanel', !oneTime || tikOnly);
     setHidden('extraPanel', oneTime || tikOnly || !checked('extraEnabled'));
     updateTikTokPresetLabels();
+    updateProductionLabels();
     updateObjectiveVisibility();
   }
 
@@ -402,10 +411,14 @@
       if (tiktokHas('tiktokPhotos') && steps.length === 1) return 'Produzione fotografica per TikTok Shop';
       return 'Organizzazione e sviluppo delle attività TikTok Shop selezionate';
     }
-    if (objectivesAreDefault() && !value('customObjective')) return profile().summary;
-    const parts = selectedObjectives().map((o) => o.summary);
+    const selected = selectedObjectives();
+    if (objectivesAreDefault() && !value('customObjective') && !value('focus')) return profile().summary;
+    const parts = selected.map((o) => o.summary);
     if (parts.length > 4) return `${joinNatural(parts.slice(0,4))} e altri obiettivi concordati`;
-    return sentence(joinNatural(parts) || profile().summary).replace(/\.$/, '');
+    if (parts.length) return sentence(joinNatural(parts)).replace(/\.$/, '');
+    if (value('customObjective')) return sentence(value('customObjective')).replace(/\.$/, '');
+    if (value('focus')) return `Priorità: ${value('focus')}`;
+    return 'Da definire';
   }
 
   function renderObjectives() {
@@ -421,12 +434,14 @@
       paragraphs.push(safe(profile().objectiveSentence));
     } else {
       const actions = selectedObjectives().map((o) => o.action);
-      paragraphs.push(`Le attività saranno orientate a ${safe(joinNatural(actions) || 'rafforzare la comunicazione del Cliente')}.`);
+      if (actions.length) paragraphs.push(`Le attività saranno orientate a ${safe(joinNatural(actions))}.`);
     }
 
     if (!isTikTokOnly() && value('focus')) paragraphs.push(`La comunicazione darà particolare priorità a <strong>${safe(value('focus'))}</strong>.`);
     if (!isTikTokOnly() && value('customObjective')) paragraphs.push(`Obiettivo aggiuntivo: ${safe(sentence(value('customObjective')))}`);
+    if (!paragraphs.length) paragraphs.push('Obiettivi da definire con il Cliente.');
     el('objectiveText').innerHTML = paragraphs.map((p) => `<p>${p}</p>`).join('');
+    setHidden('objectiveDocumentSection', false);
     return paragraphs.length;
   }
 
@@ -452,7 +467,16 @@
       tiktokServiceSteps().forEach((s) => services.push(s));
     } else {
       if (checked('serviceStrategy')) services.push(['Strategia e piano editoriale', 'Definizione della linea di comunicazione, dei temi e della pianificazione in funzione degli obiettivi concordati.']);
-      if (checked('serviceProduction')) services.push([productionTitle(), 'Ideazione, riprese, montaggio, post-produzione e adattamento dei materiali ai formati social.']);
+      if (checked('serviceProduction')) {
+        const types = selectedContentTypes();
+        let desc = types.length ? `Produzione di ${joinNatural(types)}` : 'Produzione dei contenuti concordati';
+        if (value('quantityMode') === 'fixed') {
+          const fixed = fixedContentParts();
+          if (fixed.length) desc = `Produzione prevista: ${joinNatural(fixed)}`;
+        } else desc += ', con quantità definite in funzione del piano editoriale';
+        desc += '. Comprende ideazione, riprese, montaggio, post-produzione e adattamento ai formati social.';
+        services.push([productionTitle(), desc]);
+      }
       if (checked('serviceSocial')) {
         let desc = 'Piano editoriale, redazione dei copy, programmazione e pubblicazione dei contenuti sui canali concordati.';
         if (checked('serviceCommunity')) desc += ' Comprende anche la gestione di messaggi, commenti e recensioni.';
@@ -478,29 +502,52 @@
     }
 
     el('serviceList').innerHTML = services.map(([title, desc]) => `<li><strong>${safe(title)}</strong><span class="service-description">${safe(desc)}</span></li>`).join('');
+    setHidden('servicesDocumentSection', services.length === 0);
     return services.length;
   }
 
   function productionCadenceText() {
     const cadence = value('productionCadence');
-    const days = Math.max(1, numberValue('productionDays', 1));
-    const unit = days === 1 ? 'giornata' : 'giornate';
-    if (cadence === 'monthly') return `È prevista ${days === 1 ? '1 giornata' : `${days} giornate`} di produzione al mese presso la sede del Cliente.`;
-    if (cadence === 'bimonthly') return `Sono previste ${days} ${unit} di produzione ogni 2 mesi presso la sede del Cliente.`;
-    if (cadence === 'quarterly') return `Sono previste ${days} ${unit} di produzione ogni 3 mesi presso la sede del Cliente.`;
-    if (cadence === 'plan') return 'Le sessioni di produzione saranno definite in base al piano editoriale e alle priorità di comunicazione.';
-    return 'Non è prevista una giornata di produzione dedicata.';
+    const count = Math.max(1, numberValue('productionDays', 1));
+    const singular = count === 1;
+    const subject = singular ? 'È previsto 1 appuntamento' : `Sono previsti ${count} appuntamenti`;
+    if (cadence === 'monthly') return `${subject} di produzione al mese presso la sede del Cliente.`;
+    if (cadence === 'weekly') return `${subject} di produzione a settimana presso la sede del Cliente.`;
+    if (cadence === 'fortnightly') return `${subject} di produzione ogni 2 settimane presso la sede del Cliente.`;
+    if (cadence === 'bimonthly') return `${subject} di produzione ogni 2 mesi presso la sede del Cliente.`;
+    if (cadence === 'quarterly') return `${subject} di produzione ogni 3 mesi presso la sede del Cliente.`;
+    if (cadence === 'plan') return 'Gli appuntamenti di produzione saranno definiti in base al piano editoriale e alle priorità di comunicazione.';
+    return 'Non sono previsti appuntamenti di produzione dedicati.';
+  }
+
+  function quantityPeriodText() {
+    return { month:'al mese', week:'a settimana', appointment:'per appuntamento', project:'complessivi nel progetto' }[value('quantityPeriod')] || 'al mese';
+  }
+  function quantityPeriodShort() {
+    return { month:'al mese', week:'a settimana', appointment:'per appuntamento', project:'nel progetto' }[value('quantityPeriod')] || 'al mese';
+  }
+  function updateProductionLabels() {
+    const cadence = value('productionCadence');
+    const sessionLabel = { monthly:'Appuntamenti al mese', weekly:'Appuntamenti a settimana', fortnightly:'Appuntamenti ogni 2 settimane', bimonthly:'Appuntamenti ogni 2 mesi', quarterly:'Appuntamenti ogni 3 mesi' }[cadence] || 'Numero di appuntamenti';
+    setText('productionSessionsLabel', sessionLabel);
+    const q = quantityPeriodShort();
+    setText('videosLabel', `Video ${q}`);
+    setText('photosLabel', `Fotografie ${q}`);
+    setText('graphicsLabel', `Grafiche ${q}`);
   }
 
   function fixedContentParts() {
     const parts = [];
-    if (checked('productionVideo')) { const n = numberValue('videos'); if (n) parts.push(`fino a ${n} video`); }
-    if (checked('productionPhoto') && value('photos')) parts.push(`${value('photos')} fotografie`);
-    if (checked('productionGraphics')) { const n = numberValue('graphicsCount'); if (n) parts.push(`fino a ${n} ${n === 1 ? 'grafica' : 'grafiche'}`); }
+    const period = quantityPeriodText();
+    if (checked('productionVideo')) { const n = numberValue('videos'); if (n) parts.push(`fino a ${n} video ${period}`); }
+    if (checked('productionPhoto') && value('photos')) parts.push(`${value('photos')} fotografie ${period}`);
+    if (checked('productionGraphics')) { const n = numberValue('graphicsCount'); if (n) parts.push(`fino a ${n} ${n === 1 ? 'grafica' : 'grafiche'} ${period}`); }
     return parts;
   }
 
   function renderProduction() {
+    const visible = isTikTokOnly() || checked('serviceProduction');
+    setHidden('productionDocumentSection', !visible);
     if (isTikTokOnly()) {
       setText('productionHeading', '3. INFORMAZIONI OPERATIVE');
       const count = tiktokCount();
@@ -518,28 +565,30 @@
       if (value('quantityMode') === 'plan') parts.push('Quantità e tipologia dei contenuti saranno definite in funzione del piano editoriale, delle esigenze commerciali e delle priorità di comunicazione del periodo.');
       else {
         const fixed = fixedContentParts();
-        if (fixed.length) parts.push(`La produzione comprende ${joinNatural(fixed)} al mese.`);
+        if (fixed.length) parts.push(`La produzione comprende ${joinNatural(fixed)}.`);
       }
       parts.push('Eventuali giornate aggiuntive o produzioni straordinarie saranno concordate separatamente.');
       setText('productionText', parts.join(' '));
       return;
     }
 
-    setText('productionHeading', '3. ORGANIZZAZIONE DEL LAVORO');
-    setText('productionText', 'Le attività saranno pianificate in funzione degli obiettivi, del calendario e delle priorità concordate con il Cliente.');
+    setText('productionHeading', '3. PRODUZIONE DEI CONTENUTI');
+    setText('productionText', '');
   }
 
   function productionSummary() {
     if (isTikTokOnly()) return tiktokHas('tiktokPhotos') ? `Shooting dedicato a ${tiktokCount()} ${itemWord()}` : 'Non prevista';
     if (checked('serviceProduction')) {
-      const days = Math.max(1, numberValue('productionDays',1));
-      const unit = days === 1 ? 'giornata' : 'giornate';
+      const count = Math.max(1, numberValue('productionDays',1));
+      const unit = count === 1 ? 'appuntamento' : 'appuntamenti';
       const c = value('productionCadence');
-      if (c === 'monthly') return `${days} ${unit} di produzione al mese`;
-      if (c === 'bimonthly') return `${days} ${unit} di produzione ogni 2 mesi`;
-      if (c === 'quarterly') return `${days} ${unit} di produzione ogni 3 mesi`;
+      if (c === 'monthly') return `${count} ${unit} di produzione al mese`;
+      if (c === 'weekly') return `${count} ${unit} di produzione a settimana`;
+      if (c === 'fortnightly') return `${count} ${unit} di produzione ogni 2 settimane`;
+      if (c === 'bimonthly') return `${count} ${unit} di produzione ogni 2 mesi`;
+      if (c === 'quarterly') return `${count} ${unit} di produzione ogni 3 mesi`;
       if (c === 'plan') return 'Produzione definita in base al piano editoriale';
-      return 'Nessuna giornata dedicata';
+      return 'Nessun appuntamento dedicato';
     }
     return 'Non prevista';
   }
@@ -563,7 +612,8 @@
 
   function adsSummary() {
     if (isTikTokOnly()) return 'Non previste';
-    if (!checked('serviceAds')) return 'Gestione e budget pubblicitario non inclusi';
+    if (!checked('serviceAds') && checked('serviceAdvCreative')) return 'Creatività ADV incluse; gestione campagne e budget esclusi';
+    if (!checked('serviceAds')) return 'Non previste';
     const budget = numberValue('adsBudget');
     return budget ? `Gestione inclusa; budget consigliato ${money(budget)} al mese, escluso` : 'Gestione inclusa; budget pubblicitario escluso';
   }
@@ -582,8 +632,11 @@
     setText('summaryContent', contentSummary());
     setText('summaryManagement', managementSummary());
     setText('summaryAds', adsSummary());
-    setHidden('summaryManagementRow', tikOnly);
-    setHidden('summaryAdsRow', tikOnly);
+    const productionIncluded = tikOnly || checked('serviceProduction');
+    setHidden('summaryProductionRow', !productionIncluded);
+    setHidden('summaryContentRow', !productionIncluded);
+    setHidden('summaryManagementRow', tikOnly || (!checked('serviceSocial') && !checked('serviceCommunity')));
+    setHidden('summaryAdsRow', tikOnly || (!checked('serviceAds') && !checked('serviceAdvCreative')));
 
     const tiktokSelected = checked('serviceTikTok');
     setHidden('summaryTikTokRow', !tiktokSelected);
@@ -799,12 +852,18 @@
     body.push(wParagraph(domText('#objectText'), { size:19, after:130 }));
     body.push(wParagraph('SINTESI DELL’OFFERTA', { bold:true, size:23, after:80 }));
     body.push(wTable(summaryRows.map((r) => [r[0], r[1]]), false, [3600,6000]));
-    body.push(wParagraph('1. OBIETTIVO DELLA COLLABORAZIONE', { bold:true, size:23, before:160, after:70 }));
-    objectiveParagraphs.forEach((p) => body.push(wParagraph(p, { size:19, after:55 })));
-    body.push(wParagraph('2. SERVIZI INCLUSI', { bold:true, size:23, before:120, after:70 }));
-    serviceItems.forEach((p) => body.push(wParagraph(`• ${p}`, { size:18, after:45 })));
-    body.push(wParagraph(domText('#productionHeading'), { bold:true, size:23, before:120, after:70 }));
-    body.push(wParagraph(domText('#productionText'), { size:18, after:80 }));
+    if (!el('objectiveDocumentSection')?.classList.contains('is-hidden')) {
+      body.push(wParagraph('1. OBIETTIVO DELLA COLLABORAZIONE', { bold:true, size:23, before:160, after:70 }));
+      objectiveParagraphs.forEach((p) => body.push(wParagraph(p, { size:19, after:55 })));
+    }
+    if (!el('servicesDocumentSection')?.classList.contains('is-hidden')) {
+      body.push(wParagraph('2. SERVIZI INCLUSI', { bold:true, size:23, before:120, after:70 }));
+      serviceItems.forEach((p) => body.push(wParagraph(`• ${p}`, { size:18, after:45 })));
+    }
+    if (!el('productionDocumentSection')?.classList.contains('is-hidden')) {
+      body.push(wParagraph(domText('#productionHeading'), { bold:true, size:23, before:120, after:70 }));
+      body.push(wParagraph(domText('#productionText'), { size:18, after:80 }));
+    }
     body.push(wParagraph('', { pageBreak:true, after:0 }));
     body.push(wParagraph('4. COMPENSO', { bold:true, size:23, after:80 }));
     body.push(wTable(feeRows, false, [4800,4800]));
@@ -846,10 +905,16 @@
     }
   }
 
-  fields.forEach((field) => field.addEventListener('input', render));
+  fields.forEach((field) => {
+    field.addEventListener('input', render);
+    field.addEventListener('change', render);
+  });
   el('proposalMode').addEventListener('change', () => { syncProposalMode(); render(); });
   el('clientType').addEventListener('change', applyClientPreset);
-  el('clientName').addEventListener('input', () => { showClientSuggestions(); });
+  el('clientName').addEventListener('input', () => {
+    showClientSuggestions();
+    if (exactKnownClient()) { applyKnownClient(); hideClientSuggestions(); render(); }
+  });
   el('clientName').addEventListener('focus', () => { showClientSuggestions(); });
   el('clientName').addEventListener('change', () => { if (applyKnownClient()) render(); });
   el('clientName').addEventListener('keydown', (event) => {
@@ -879,6 +944,7 @@
   });
 
   applyState(loadState());
+  if (exactKnownClient()) applyKnownClient({ onlyMissing: true });
   if (el('tiktokPhotos') && !('tiktokPhotos' in getState())) applyTikTokStatusPreset();
   syncProposalMode();
   render();

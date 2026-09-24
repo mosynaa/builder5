@@ -14,7 +14,7 @@
   <main class="app">
     <aside class="builder" aria-label="Compilazione Allegato A">
       <header class="builder-head">
-        <img src="assets/somo.png" alt="SOMO">
+        <img src="assets/somo.png" alt="SOMO" onerror="this.remove()">
         <h1>Allegato A Builder</h1>
         <p>Scegli cliente e servizi. Il documento usa testi sintetici e coerenti con gli Allegati SOMO.</p>
       </header>
@@ -134,18 +134,20 @@
           <h2><span class="step">4</span>Produzione dei contenuti</h2>
           <div class="grid-2">
             <label class="field">
-              <span>Frequenza</span>
+              <span>Frequenza degli appuntamenti</span>
               <select id="productionCadence" name="productionCadence">
-                <option value="monthly">Ogni mese</option>
+                <option value="monthly">Al mese</option>
+                <option value="weekly">A settimana</option>
+                <option value="fortnightly">Ogni 2 settimane</option>
                 <option value="bimonthly">Ogni 2 mesi</option>
                 <option value="quarterly">Ogni 3 mesi</option>
                 <option value="plan">In base al piano editoriale</option>
-                <option value="none">Nessuna giornata dedicata</option>
+                <option value="none">Nessun appuntamento dedicato</option>
               </select>
             </label>
             <label id="productionDaysField" class="field">
-              <span>Giornate per sessione</span>
-              <input id="productionDays" name="productionDays" type="number" min="1" max="10" step="1">
+              <span id="productionSessionsLabel">Numero di appuntamenti</span>
+              <input id="productionDays" name="productionDays" type="number" min="1" max="31" step="1">
             </label>
           </div>
           <span class="group-label">Tipologia dei contenuti</span>
@@ -162,10 +164,20 @@
             </select>
           </label>
           <div id="fixedQuantityPanel" class="dependent-panel">
+            <label class="field">
+              <span>Periodo delle quantità</span>
+              <select id="quantityPeriod" name="quantityPeriod">
+                <option value="month">Al mese</option>
+                <option value="week">A settimana</option>
+                <option value="appointment">Per appuntamento</option>
+                <option value="project">Complessive nel progetto</option>
+              </select>
+              <small>Es.: 4 video a settimana = Video 4 + periodo “A settimana”.</small>
+            </label>
             <div class="grid-3">
-              <label id="videosField" class="field"><span>Video al mese</span><input id="videos" name="videos" type="number" min="0" max="100" step="1"></label>
-              <label id="photosField" class="field"><span>Fotografie al mese</span><input id="photos" name="photos" type="text" placeholder="Es. 15–20"></label>
-              <label id="graphicsField" class="field"><span>Grafiche al mese</span><input id="graphicsCount" name="graphicsCount" type="number" min="0" max="100" step="1"></label>
+              <label id="videosField" class="field"><span id="videosLabel">Video al mese</span><input id="videos" name="videos" type="number" min="0" max="500" step="1"></label>
+              <label id="photosField" class="field"><span id="photosLabel">Fotografie al mese</span><input id="photos" name="photos" type="text" placeholder="Es. 15–20"></label>
+              <label id="graphicsField" class="field"><span id="graphicsLabel">Grafiche al mese</span><input id="graphicsCount" name="graphicsCount" type="number" min="0" max="500" step="1"></label>
             </div>
           </div>
         </section>
@@ -259,8 +271,8 @@
       <article id="document" class="document">
         <section id="pageOne" class="page page-one">
           <header class="doc-header">
-            <img class="logo-somo" src="assets/somo.png" alt="SOMO">
-            <img class="logo-noodles" src="assets/black-noodles.png" alt="Black Noodles">
+            <img class="logo-somo" src="assets/somo.png" alt="SOMO" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
+            <img class="logo-noodles" src="assets/black-noodles.png" alt="Black Noodles" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
           </header>
           <h1 class="doc-title">ALLEGATO A – OFFERTA ECONOMICA E SCOPE OF WORK</h1>
 
@@ -280,8 +292,8 @@
             <tbody>
               <tr><th id="summaryDurationLabel">DURATA</th><td id="summaryDuration"></td></tr>
               <tr><th>OBIETTIVO</th><td id="summaryObjective"></td></tr>
-              <tr><th>PRODUZIONE</th><td id="summaryProduction"></td></tr>
-              <tr><th>CONTENUTI</th><td id="summaryContent"></td></tr>
+              <tr id="summaryProductionRow"><th>PRODUZIONE</th><td id="summaryProduction"></td></tr>
+              <tr id="summaryContentRow"><th>CONTENUTI</th><td id="summaryContent"></td></tr>
               <tr id="summaryManagementRow"><th>GESTIONE</th><td id="summaryManagement"></td></tr>
               <tr id="summaryTikTokRow" class="is-hidden"><th>TIKTOK SHOP</th><td id="summaryTikTok"></td></tr>
               <tr><th>INVESTIMENTO</th><td id="summaryInvestment"></td></tr>
@@ -289,12 +301,12 @@
             </tbody>
           </table>
 
-          <section class="doc-section">
+          <section id="objectiveDocumentSection" class="doc-section">
             <h2 class="section-title">1. OBIETTIVO DELLA COLLABORAZIONE</h2>
             <div id="objectiveText"></div>
           </section>
 
-          <section class="doc-section">
+          <section id="servicesDocumentSection" class="doc-section">
             <h2 class="section-title">2. SERVIZI INCLUSI</h2>
             <ul id="serviceList" class="service-list"></ul>
           </section>
