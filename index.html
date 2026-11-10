@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20">
+  <link rel="stylesheet" href="styles.css?v=21">
 </head>
 <body>
   <main class="app">
     <aside class="builder" aria-label="Compilazione Allegato A">
       <header class="builder-head">
-        <img src="assets/somo.png?v=20" alt="SOMO" onerror="this.remove()">
+        <img src="assets/somo.png?v=21" alt="SOMO" onerror="this.remove()">
         <h1>Allegato A Builder</h1>
         <p>Scegli cliente, servizi e stile del testo. Il documento si adatta al tipo di attività mantenendo una struttura SOMO chiara e coerente.</p>
       </header>
@@ -328,8 +328,8 @@
       <article id="document" class="document">
         <section id="pageOne" class="page page-one">
           <header class="doc-header">
-            <img class="logo-somo" src="assets/somo.png?v=20" alt="SOMO" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
-            <img class="logo-noodles" src="assets/black-noodles.png?v=20" alt="Black Noodles" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
+            <img class="logo-somo" src="assets/somo.png?v=21" alt="SOMO" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
+            <img class="logo-noodles" src="assets/black-noodles.png?v=21" alt="Black Noodles" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
           </header>
           <h1 id="docTitle" class="doc-title">Allegato A al Contratto di Collaborazione</h1>
           <p id="docSubtitle" class="doc-subtitle">OFFERTA ECONOMICA E SCOPE OF WORK</p>
@@ -366,7 +366,7 @@
           </div>
 
           <section id="objectiveDocumentSection" class="doc-section">
-            <h2 class="section-title">1. OBIETTIVO DELLA COLLABORAZIONE</h2>
+            <h2 id="objectiveHeading" class="section-title">1. OBIETTIVO DELLA COLLABORAZIONE</h2>
             <div id="objectiveText"></div>
           </section>
 
@@ -414,8 +414,10 @@
           </section>
 
           <section class="signature">
-            <p id="chosenFormulaRow" class="is-hidden">Formula prescelta: ________________________________</p>
-            <p>Data: <span id="signatureDate">____ / ____ / ______</span></p>
+            <div class="signature-top">
+              <p id="chosenFormulaRow" class="is-hidden">Formula prescelta: ________________________________</p>
+              <p>Data: <span id="signatureDate">____ / ____ / ______</span></p>
+            </div>
             <p>Per accettazione<br><strong>Firma e Timbro del Cliente</strong><br>_____________________________________________</p>
           </section>
 
@@ -425,6 +427,6 @@
       </article>
     </section>
   </main>
-  <script src="app.js?v=20"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>
