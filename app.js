@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'somo-allegato-a-builder-v11';
+  const STORAGE_KEY = 'somo-allegato-a-builder-v18';
   const form = document.getElementById('builderForm');
   const fields = [...form.querySelectorAll('input, select')];
   const objectiveIds = [
@@ -23,69 +23,170 @@
   const clientProfiles = {
     retail: {
       itemWord: 'articoli',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveFootfall'],
-      summary: 'Notorietà del punto vendita, valorizzazione degli articoli e visite in store',
+      defaults: ['objectiveBrand','objectiveFootfall','objectiveRange','objectiveEvents','objectiveContinuity'],
+      summary: 'Notorietà del punto vendita, valorizzazione degli articoli, promozioni e visite in store',
       objectiveSentence: 'Rafforzare la notorietà del punto vendita e valorizzare articoli, novità e categorie attraverso una comunicazione social continuativa.'
     },
     emporium: {
       itemWord: 'articoli',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveFootfall'],
-      summary: 'Notorietà, valorizzazione dell’assortimento e visite in negozio',
+      defaults: ['objectiveBrand','objectiveFootfall','objectiveRange','objectiveEcommerce','objectiveEvents','objectiveCommunity'],
+      summary: 'Visibilità, assortimento, promozioni, interazione e affluenza in negozio',
       objectiveSentence: 'Aumentare la notorietà del punto vendita, valorizzare assortimento, reparti e nuovi arrivi e favorire le visite in negozio.'
     },
     omnichannel: {
       itemWord: 'articoli',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveFootfall','objectiveEcommerce'],
-      summary: 'Notorietà, drive to store e supporto alle vendite online',
+      defaults: ['objectiveBrand','objectiveFootfall','objectiveRange','objectiveEcommerce','objectiveEvents','objectiveContinuity'],
+      summary: 'Visibilità, assortimento, visite in negozio e supporto alle vendite online',
       objectiveSentence: 'Rafforzare la notorietà del punto vendita, valorizzare articoli e categorie e sostenere sia le visite in store sia le opportunità di vendita online.'
     },
     online: {
       itemWord: 'prodotti',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveEcommerce'],
-      summary: 'Identità del brand, presenza digitale e supporto alle vendite online',
+      defaults: ['objectiveBrand','objectiveRange','objectiveEcommerce','objectiveContinuity','objectiveCommunity'],
+      summary: 'Identità del brand, prodotti, community e supporto alle vendite online',
       objectiveSentence: 'Rafforzare identità e presenza digitale del brand, valorizzando prodotti, collezioni e novità e supportando le opportunità di vendita online.'
     },
     food: {
       itemWord: 'prodotti',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveExperience','objectiveFootfall'],
+      defaults: ['objectiveBrand','objectiveFootfall','objectiveRange','objectiveExperience','objectiveContinuity'],
       summary: 'Visibilità del ristorante, identità gastronomica ed esperienza',
       objectiveSentence: 'Rafforzare la visibilità del ristorante e raccontarne identità, proposta gastronomica ed esperienza attraverso contenuti continuativi.'
     },
     nightlife: {
       itemWord: 'prodotti',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveExperience','objectiveFootfall','objectiveEvents'],
-      summary: 'Notorietà del locale, programmazione e partecipazione del pubblico',
+      defaults: ['objectiveBrand','objectiveFootfall','objectiveExperience','objectiveEvents','objectiveCommunity'],
+      summary: 'Notorietà del locale, programmazione, interazione e partecipazione del pubblico',
       objectiveSentence: 'Rafforzare la notorietà del locale, dare visibilità alla programmazione e raccontarne l’esperienza per favorire la partecipazione del pubblico.'
     },
     wellness: {
       itemWord: 'servizi',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveLeads'],
-      summary: 'Posizionamento, valorizzazione dei servizi e acquisizione di contatti',
+      defaults: ['objectiveBrand','objectiveRange','objectiveLeads','objectiveExperience','objectiveContinuity'],
+      summary: 'Visibilità, valorizzazione dei servizi, fiducia e acquisizione di contatti',
       objectiveSentence: 'Rafforzare il posizionamento della struttura, valorizzare servizi e attività e sostenere l’acquisizione di nuovi contatti.'
     },
     recreation: {
       itemWord: 'servizi',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveExperience','objectiveFootfall','objectiveEvents'],
-      summary: 'Visibilità della struttura, esperienza e affluenza',
+      defaults: ['objectiveBrand','objectiveFootfall','objectiveExperience','objectiveEvents','objectiveCommunity'],
+      summary: 'Visibilità della struttura, esperienza, iniziative e affluenza',
       objectiveSentence: 'Aumentare la visibilità della struttura, valorizzarne attività ed esperienza e sostenere l’affluenza nei periodi strategici.'
     },
     b2b: {
       itemWord: 'prodotti',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveLeads'],
+      defaults: ['objectiveBrand','objectiveRange','objectiveLeads','objectiveExperience','objectiveContinuity'],
       summary: 'Posizionamento, offerta commerciale e nuove opportunità B2B',
       objectiveSentence: 'Rafforzare il posizionamento dell’azienda, valorizzare l’offerta commerciale e sostenere nuove opportunità con clienti professionali.'
     },
     services: {
       itemWord: 'servizi',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange','objectiveLeads'],
-      summary: 'Posizionamento, servizi e acquisizione di contatti',
+      defaults: ['objectiveBrand','objectiveRange','objectiveLeads','objectiveExperience','objectiveContinuity'],
+      summary: 'Posizionamento, servizi, fiducia e acquisizione di contatti',
       objectiveSentence: 'Rafforzare il posizionamento dell’attività, valorizzare servizi e competenze e sostenere l’acquisizione di nuovi contatti.'
     },
     brand: {
       itemWord: 'prodotti',
-      defaults: ['objectiveBrand','objectiveContinuity','objectiveRange'],
-      summary: 'Identità, riconoscibilità e valorizzazione dell’offerta',
+      defaults: ['objectiveBrand','objectiveRange','objectiveCommunity','objectiveContinuity','objectiveEvents'],
+      summary: 'Identità, riconoscibilità, valorizzazione dell’offerta e community',
       objectiveSentence: 'Rafforzare identità e riconoscibilità del brand e valorizzarne prodotti, servizi e iniziative attraverso una comunicazione continuativa.'
+    }
+  };
+
+
+  const genericObjectiveUi = {
+    objectiveBrand: ['Notorietà e posizionamento', 'Rafforzare identità e riconoscibilità.'],
+    objectiveContinuity: ['Continuità social', 'Mantenere una presenza costante e riconoscibile.'],
+    objectiveRange: ['Offerta da valorizzare', 'Mettere in evidenza prodotti, servizi o attività.'],
+    objectiveExperience: ['Identità ed esperienza', 'Raccontare atmosfera, servizio ed esperienza.'],
+    objectiveFootfall: ['Affluenza / visite', 'Favorire visite, presenze o partecipazione.'],
+    objectiveEvents: ['Eventi e iniziative', 'Dare visibilità a programmazione e attività.'],
+    objectiveEcommerce: ['Vendita online', 'Supportare e-commerce e opportunità di vendita.'],
+    objectiveLeads: ['Contatti e richieste', 'Sostenere acquisizione di contatti o iscritti.'],
+    objectiveCommunity: ['Community e interazione', 'Favorire interazione e crescita della community.'],
+    objectiveLaunch: ['Lancio / apertura / nuova fase', 'Accompagnare una novità importante.']
+  };
+
+  const objectiveUiByClient = {
+    retail: {
+      objectiveBrand: ['Visibilità e notorietà locale', 'Rafforzare la presenza digitale e la riconoscibilità del punto vendita.'],
+      objectiveFootfall: ['Affluenza in negozio', 'Favorire le visite al punto vendita.'],
+      objectiveRange: ['Prodotti e nuovi arrivi', 'Valorizzare articoli, categorie, novità e punti di forza dell’assortimento.'],
+      objectiveEvents: ['Offerte e iniziative stagionali', 'Comunicare promozioni, ricorrenze e iniziative commerciali.'],
+      objectiveContinuity: ['Presenza social costante', 'Mantenere una comunicazione continuativa e riconoscibile.'],
+      objectiveCommunity: ['Interazione con il pubblico', 'Stimolare interesse e relazione con i contenuti.']
+    },
+    emporium: {
+      objectiveBrand: ['Presenza digitale del punto vendita', 'Rafforzare notorietà e riconoscibilità sul territorio.'],
+      objectiveFootfall: ['Visibilità locale e affluenza', 'Aumentare la visibilità locale e favorire le visite in negozio.'],
+      objectiveRange: ['Ampiezza dell’assortimento', 'Valorizzare reparti, varietà dei prodotti e nuovi arrivi.'],
+      objectiveEcommerce: ['Convenienza e competitività dei prezzi', 'Mettere in evidenza offerte, convenienza e vantaggi per il cliente.'],
+      objectiveEvents: ['Promozioni, eventi e stagionalità', 'Comunicare in modo efficace offerte, iniziative e periodi commerciali.'],
+      objectiveCommunity: ['Punto di riferimento per lo shopping', 'Consolidare il negozio come soluzione completa e riconoscibile sul territorio.']
+    },
+    omnichannel: {
+      objectiveBrand: ['Visibilità del punto vendita', 'Rafforzare riconoscibilità e presenza digitale.'],
+      objectiveFootfall: ['Visite in negozio', 'Favorire l’affluenza al punto vendita.'],
+      objectiveRange: ['Prodotti, categorie e novità', 'Valorizzare l’assortimento disponibile in store e online.'],
+      objectiveEcommerce: ['Vendite online', 'Sostenere le opportunità di vendita tramite e-commerce.'],
+      objectiveEvents: ['Promozioni e iniziative', 'Dare visibilità a offerte e momenti stagionali.'],
+      objectiveContinuity: ['Comunicazione continuativa', 'Mantenere una presenza costante tra punto vendita e canali digitali.']
+    },
+    online: {
+      objectiveBrand: ['Identità e riconoscibilità del brand', 'Rendere il brand più riconoscibile online.'],
+      objectiveRange: ['Prodotti, collezioni e novità', 'Valorizzare l’offerta commerciale e i lanci.'],
+      objectiveEcommerce: ['Supporto alle vendite online', 'Accompagnare le opportunità di vendita digitale.'],
+      objectiveContinuity: ['Presenza digitale continuativa', 'Mantenere una comunicazione costante e coerente.'],
+      objectiveCommunity: ['Community e interazione', 'Favorire interesse e relazione con il pubblico.']
+    },
+    food: {
+      objectiveBrand: ['Visibilità del ristorante', 'Rafforzare notorietà e riconoscibilità del locale.'],
+      objectiveFootfall: ['Prenotazioni e affluenza', 'Favorire prenotazioni e visite al ristorante.'],
+      objectiveRange: ['Proposta gastronomica', 'Valorizzare piatti, menu, novità e specialità.'],
+      objectiveExperience: ['Esperienza del locale', 'Raccontare cucina, ambienti, servizio e atmosfera.'],
+      objectiveContinuity: ['Presenza social continuativa', 'Mantenere una comunicazione costante e riconoscibile.'],
+      objectiveEvents: ['Eventi e occasioni speciali', 'Dare visibilità a serate, menu speciali e iniziative del locale.']
+    },
+    nightlife: {
+      objectiveBrand: ['Notorietà del locale', 'Rafforzare identità e riconoscibilità.'],
+      objectiveEvents: ['Serate e programmazione', 'Dare visibilità a eventi, format e calendario.'],
+      objectiveFootfall: ['Partecipazione del pubblico', 'Favorire presenze e partecipazione alle serate.'],
+      objectiveExperience: ['Atmosfera ed esperienza', 'Raccontare il locale e i momenti più riconoscibili.'],
+      objectiveCommunity: ['Community e interazione', 'Stimolare interesse e relazione con il pubblico.'],
+      objectiveContinuity: ['Presenza social costante', 'Mantenere il pubblico aggiornato tra una serata e l’altra.']
+    },
+    wellness: {
+      objectiveBrand: ['Visibilità e posizionamento', 'Rendere la struttura più riconoscibile e autorevole.'],
+      objectiveRange: ['Servizi e attività', 'Valorizzare corsi, trattamenti, servizi e punti di forza.'],
+      objectiveLeads: ['Nuovi contatti e richieste', 'Sostenere richieste, prove, iscrizioni o appuntamenti.'],
+      objectiveExperience: ['Fiducia ed esperienza', 'Raccontare ambienti, professionisti e qualità dell’esperienza.'],
+      objectiveContinuity: ['Presenza social costante', 'Mantenere una comunicazione continuativa e riconoscibile.'],
+      objectiveCommunity: ['Relazione con il pubblico', 'Rafforzare fiducia e relazione con clienti e potenziali clienti.']
+    },
+    recreation: {
+      objectiveBrand: ['Visibilità della struttura', 'Rafforzare notorietà e riconoscibilità.'],
+      objectiveFootfall: ['Affluenza', 'Sostenere visite e partecipazione del pubblico.'],
+      objectiveExperience: ['Attività ed esperienza', 'Raccontare spazi, attrazioni e momenti vissuti.'],
+      objectiveEvents: ['Eventi e periodi strategici', 'Dare visibilità a iniziative e stagionalità.'],
+      objectiveCommunity: ['Interazione con il pubblico', 'Stimolare interesse e partecipazione.'],
+      objectiveContinuity: ['Presenza social continuativa', 'Mantenere una comunicazione costante nei periodi di attività.']
+    },
+    b2b: {
+      objectiveBrand: ['Posizionamento dell’azienda', 'Rafforzare autorevolezza e riconoscibilità nel mercato professionale.'],
+      objectiveRange: ['Prodotti, servizi e vantaggi', 'Rendere più chiara e concreta l’offerta commerciale.'],
+      objectiveLeads: ['Nuove opportunità B2B', 'Generare interesse, richieste e contatti professionali.'],
+      objectiveExperience: ['Applicazioni e utilizzi reali', 'Mostrare prodotti e servizi nel loro contesto d’uso.'],
+      objectiveContinuity: ['Presenza digitale continuativa', 'Mantenere una comunicazione costante e autorevole.']
+    },
+    services: {
+      objectiveBrand: ['Posizionamento e autorevolezza', 'Rafforzare riconoscibilità e fiducia.'],
+      objectiveRange: ['Servizi e competenze', 'Spiegare in modo chiaro cosa offre l’attività.'],
+      objectiveLeads: ['Nuovi contatti e richieste', 'Sostenere l’acquisizione di potenziali clienti.'],
+      objectiveExperience: ['Metodo e qualità del servizio', 'Raccontare approccio, processo e valore del lavoro.'],
+      objectiveContinuity: ['Presenza digitale costante', 'Mantenere una comunicazione continuativa e professionale.']
+    },
+    brand: {
+      objectiveBrand: ['Identità e riconoscibilità', 'Rafforzare il posizionamento del brand.'],
+      objectiveRange: ['Prodotti, servizi e iniziative', 'Valorizzare le priorità commerciali e di comunicazione.'],
+      objectiveCommunity: ['Community e interazione', 'Favorire interesse e relazione con il pubblico.'],
+      objectiveContinuity: ['Continuità della comunicazione', 'Mantenere una presenza coerente e riconoscibile.'],
+      objectiveEvents: ['Lanci e momenti strategici', 'Dare visibilità a novità, campagne e iniziative importanti.']
     }
   };
 
@@ -96,44 +197,75 @@
       address: 'SS 18, Viale Giuseppe Verdi, 12/13',
       city: '84090 Montecorvino Pugliano (SA)'
     },
-    'mega family': {
-      clientName: 'Mega Family', clientType: 'emporium',
-      legalName: 'Mega Family S.r.l.s.',
-      address: 'Via Nazionale, 120',
-      city: '84015 Nocera Superiore (SA)',
-      vat: '05839780656'
-    },
+    'mega family': { clientName: 'Mega Family', clientType: 'emporium' },
     'ipermondo': {
       clientName: 'Ipermondo', clientType: 'emporium',
-      address: 'Via Pietro Nenni, 54',
-      city: '80018 Mugnano di Napoli (NA)'
+      address: 'Via Pietro Nenni, 54', city: '80018 Mugnano di Napoli (NA)'
     },
     'gold center': {
       clientName: 'Gold Center', clientType: 'emporium',
-      address: 'Via Torre',
-      city: '80039 Saviano (NA)'
+      address: 'Via Torre', city: '80039 Saviano (NA)'
     },
     'supermercato cinese': {
       clientName: 'Supermercato Cinese', clientType: 'emporium',
-      legalName: 'Supermercato Cinese S.A.S. di Wang Chenghong',
-      address: 'Via Emanuele Gianturco, 92',
-      city: '80146 Napoli (NA)',
-      vat: '07914881219'
+      address: 'Via Emanuele Gianturco, 93', city: 'Napoli (NA)'
+    },
+    'horizon': {
+      clientName: 'Horizon', clientType: 'emporium', legalName: 'Horizon srl',
+      address: 'Via Atellana 60', city: '80022 Arzano (NA)'
+    },
+    'horizon srl': {
+      clientName: 'Horizon', clientType: 'emporium', legalName: 'Horizon srl',
+      address: 'Via Atellana 60', city: '80022 Arzano (NA)'
+    },
+    'emporio d’oriente': {
+      clientName: 'Emporio d’Oriente', clientType: 'emporium',
+      address: 'Viale Carlo III di Borbone 11', city: '81025 Caserta (CE)'
+    },
+    "emporio d'oriente": {
+      clientName: 'Emporio d’Oriente', clientType: 'emporium',
+      address: 'Viale Carlo III di Borbone 11', city: '81025 Caserta (CE)'
+    },
+    'lz store': {
+      clientName: 'LZ Store', clientType: 'emporium',
+      address: 'SS265, KM 27/550', city: '81025 Marcianise (CE)'
+    },
+    'family shop': {
+      clientName: 'Family Shop', clientType: 'emporium',
+      address: 'SS7 285', city: '81043 Vitulazio (CE)'
+    },
+    'casa issima': { clientName: 'Casa Issima', clientType: 'emporium' },
+    'max cina': { clientName: 'Max Cina', clientType: 'emporium' },
+    'max world': { clientName: 'Max World', clientType: 'emporium' },
+    'mia casa': { clientName: 'Mia Casa', clientType: 'emporium' },
+    'one more': { clientName: 'One More', clientType: 'emporium' },
+    'solo l’emporio': { clientName: 'Solo l’Emporio', clientType: 'emporium' },
+    "solo l'emporio": { clientName: 'Solo l’Emporio', clientType: 'emporium' },
+    'vale di più': { clientName: 'Vale di Più', clientType: 'emporium' },
+    'vogue store': { clientName: 'Vogue Store', clientType: 'retail' },
+    'ristorante 9 gradi': {
+      clientName: 'Ristorante 9 Gradi', clientType: 'food', legalName: 'Ristorante 9 Gradi',
+      address: 'Via Santa Maria del Pozzo, 72', city: '80049 Somma Vesuviana (NA)', vat: 'IT09882841217'
+    },
+    '9 gradi': {
+      clientName: 'Ristorante 9 Gradi', clientType: 'food', legalName: 'Ristorante 9 Gradi',
+      address: 'Via Santa Maria del Pozzo, 72', city: '80049 Somma Vesuviana (NA)', vat: 'IT09882841217'
     }
   };
 
   const defaultState = {
-    proposalMode: 'classic', clientType: 'retail', clientName: '', legalName: '', address: '', city: '', vat: '',
+    proposalMode: 'classic', clientType: 'retail', textStyle: 'professional', clientName: '', legalName: '', address: '', city: '', vat: '',
     focus: '', customObjective: '',
     objectiveBrand: true, objectiveContinuity: true, objectiveRange: true, objectiveExperience: false,
-    objectiveFootfall: true, objectiveEvents: false, objectiveEcommerce: false, objectiveLeads: false,
+    objectiveFootfall: true, objectiveEvents: true, objectiveEcommerce: false, objectiveLeads: false,
     objectiveCommunity: false, objectiveLaunch: false,
-    serviceStrategy: true, serviceProduction: true, serviceSocial: true, serviceAdvCreative: false,
+    serviceStrategy: true, serviceProduction: true, serviceClientContent: false, serviceSocial: true, serviceAdvCreative: false,
     serviceInfluencer: false, serviceCommunity: false, serviceEventCoverage: false,
     eventCoverageFrequency: 'agreed', productionCadence: 'monthly', productionDays: '1',
     productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
-    videos: '8', photos: '15–20', graphicsCount: '4', serviceAds: false, adsBudget: '200',
+    videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
+    offerLayout: 'single', formulaAName: 'CONTENT', formulaBName: 'CONTENT + META ADS', formulaAFee: '1300', formulaBFee: '1500', formulaAAds: false, formulaBAds: true, comparisonAdsBudget: '',
     economicMode: 'monthly', duration: '6', monthlyFee: '1200', extraEnabled: false,
     extraLabel: 'Fase iniziale / servizio extra', extraFee: '0', oneTimeFee: '0'
   };
@@ -148,7 +280,9 @@
 
   function money(amount) {
     const numeric = Math.max(0, Number(amount) || 0);
-    return '€ ' + new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(numeric);
+    const [integer, decimals] = numeric.toFixed(2).split('.');
+    const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `€ ${grouped},${decimals}`;
   }
   function dateItalian(iso) {
     if (!iso) return '___-___-______';
@@ -167,14 +301,65 @@
   }
   function numberValue(id, fallback = 0) { return Math.max(0, Number(value(id)) || fallback); }
   function proposalMode() { return value('proposalMode') || 'classic'; }
+  function offerLayout() { return value('offerLayout') || 'single'; }
+  function comparisonEnabled() { return classicEnabled() && offerLayout() === 'compare'; }
+  function columnSummaryEnabled() { return comparisonEnabled() || (proposalMode() === 'both' && checked('serviceTikTok')); }
+  function formulaName(which) { return value(which === 'A' ? 'formulaAName' : 'formulaBName') || (which === 'A' ? 'FORMULA 1' : 'FORMULA 2'); }
+  function formulaFee(which) { return numberValue(which === 'A' ? 'formulaAFee' : 'formulaBFee'); }
+  function formulaAds(which) { return checked(which === 'A' ? 'formulaAAds' : 'formulaBAds'); }
+  function anyFormulaAds() { return comparisonEnabled() && (formulaAds('A') || formulaAds('B')); }
+  function clientContentCount() { return Math.max(1, numberValue('clientContentCount', 8)); }
+  function clientContentPeriodText() { return { month:'al mese', week:'a settimana', project:'complessivi nel progetto' }[value('clientContentPeriod')] || 'al mese'; }
   function classicEnabled() { return proposalMode() !== 'tiktok'; }
+  function syncProposalChoiceUI() {
+    const mode = proposalMode();
+    document.querySelectorAll('.proposal-choice').forEach((button) => {
+      const active = button.dataset.mode === mode;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+  function syncOfferLayoutUI() {
+    const layout = comparisonEnabled() ? 'compare' : 'single';
+    document.querySelectorAll('.offer-layout-choice').forEach((button) => {
+      const active = button.dataset.layout === layout;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+  function setOfferLayout(layout) {
+    if (!el('offerLayout')) return;
+    el('offerLayout').value = layout === 'compare' ? 'compare' : 'single';
+    if (layout === 'compare' && el('economicMode')) el('economicMode').value = 'monthly';
+    render();
+  }
+  function setProposalMode(mode) {
+    const allowed = ['classic','tiktok','both'];
+    el('proposalMode').value = allowed.includes(mode) ? mode : 'classic';
+    if (mode === 'tiktok' && el('offerLayout')) el('offerLayout').value = 'single';
+    syncProposalMode();
+    render();
+  }
   function syncProposalMode() {
     const mode = proposalMode();
+    syncProposalChoiceUI();
     if (el('serviceTikTok')) el('serviceTikTok').checked = mode === 'tiktok' || mode === 'both';
     if ((mode === 'tiktok' || mode === 'both') && !value('tiktokProductCount')) el('tiktokProductCount').value = '30';
     if ((mode === 'tiktok' || mode === 'both') && !value('tiktokFee')) el('tiktokFee').value = '1200';
+    syncOfferLayoutUI();
   }
   function profile() { return clientProfiles[value('clientType')] || clientProfiles.brand; }
+  function clientTypeLabel(type = value('clientType')) {
+    const options = el('clientType')?.options ? [...el('clientType').options] : [];
+    return options.find((item) => item.value === type)?.textContent?.trim() || 'cliente';
+  }
+  function textStyle() { return ['professional','simple','concise'].includes(value('textStyle')) ? value('textStyle') : 'professional'; }
+  function recommendedTextStyle(type = value('clientType')) { return type === 'emporium' ? 'simple' : 'professional'; }
+  function styledText(professional, simple, concise) {
+    if (textStyle() === 'simple') return simple;
+    if (textStyle() === 'concise') return concise;
+    return professional;
+  }
   function itemWord() { return profile().itemWord; }
   function tiktokCount() { return Math.max(1, numberValue('tiktokProductCount', 30)); }
   function tiktokFee() { return numberValue('tiktokFee', 1200); }
@@ -206,6 +391,7 @@
     if (!onlyMissing) {
       const defaults = profile().defaults;
       objectiveIds.forEach((id) => { el(id).checked = defaults.includes(id); });
+      if (el('textStyle')) el('textStyle').value = recommendedTextStyle(preset.clientType);
       showAllObjectives = false;
     }
     return true;
@@ -270,7 +456,15 @@
   function clientDisplayName() { return value('clientName') || value('legalName') || 'il Cliente'; }
 
   function selectedObjectiveIds() { return objectiveIds.filter((id) => checked(id)); }
-  function selectedObjectives() { return selectedObjectiveIds().map((id) => objectives[id]).filter(Boolean); }
+  function objectiveDescriptor(id) {
+    const copy = (objectiveUiByClient[value('clientType')] || {})[id] || genericObjectiveUi[id];
+    if (!copy) return objectives[id] || null;
+    const summary = String(copy[0] || '').trim().toLowerCase();
+    const actionRaw = String(copy[1] || '').trim().replace(/[.!?]+$/, '');
+    const action = actionRaw ? actionRaw.charAt(0).toLowerCase() + actionRaw.slice(1) : '';
+    return { summary, action };
+  }
+  function selectedObjectives() { return selectedObjectiveIds().map(objectiveDescriptor).filter(Boolean); }
   function objectivesAreDefault() {
     const a = [...selectedObjectiveIds()].sort();
     const b = [...profile().defaults].sort();
@@ -293,17 +487,25 @@
   }
 
   function hasMainServices() {
-    return ['serviceStrategy','serviceProduction','serviceSocial','serviceAdvCreative','serviceAds','serviceInfluencer','serviceCommunity','serviceEventCoverage'].some(checked);
+    return ['serviceStrategy','serviceProduction','serviceClientContent','serviceSocial','serviceAdvCreative','serviceAds','serviceInfluencer','serviceCommunity','serviceEventCoverage'].some(checked);
   }
   function isTikTokOnly() { return proposalMode() === 'tiktok'; }
 
   function updateObjectiveVisibility() {
     const defaults = profile().defaults;
+    const ui = objectiveUiByClient[value('clientType')] || {};
     document.querySelectorAll('.objective-card').forEach((card) => {
       const id = card.dataset.objective;
       const visible = showAllObjectives || defaults.includes(id) || checked(id);
+      const copy = ui[id] || genericObjectiveUi[id];
+      const title = card.querySelector('strong');
+      const description = card.querySelector('em');
+      if (copy && title) title.textContent = copy[0];
+      if (copy && description) description.textContent = copy[1];
       card.classList.toggle('is-objective-hidden', !visible);
+      card.classList.toggle('is-recommended-objective', defaults.includes(id));
     });
+    setText('objectivePresetHint', `Preset “${clientTypeLabel()}”: ${defaults.length} obiettivi già impostati. Puoi togliere una spunta o aggiungerne altre.`);
     setText('toggleObjectivesButton', showAllObjectives ? '− Nascondi gli altri obiettivi' : '+ Aggiungi altri obiettivi');
   }
 
@@ -326,12 +528,14 @@
 
   function renderVisibility() {
     const classic = classicEnabled();
+    const compare = comparisonEnabled();
     setHidden('objectiveSection', !classic);
     setHidden('servicesSection', !classic);
-    setHidden('adsSection', !classic);
-    setHidden('productionSection', !classic || !checked('serviceProduction'));
+    setHidden('adsSection', !classic || compare);
+    setHidden('productionSection', !classic || (!checked('serviceProduction') && !checked('serviceClientContent')));
+    setHidden('clientContentPanel', !classic || !checked('serviceClientContent'));
     setHidden('eventCoveragePanel', !checked('serviceEventCoverage'));
-    setHidden('adsPanel', !checked('serviceAds'));
+    setHidden('adsPanel', compare || !checked('serviceAds'));
     setHidden('tiktokSection', !checked('serviceTikTok'));
     setHidden('tiktokPanel', !checked('serviceTikTok'));
     setHidden('fixedQuantityPanel', value('quantityMode') !== 'fixed');
@@ -341,15 +545,22 @@
     setHidden('graphicsField', !checked('productionGraphics'));
 
     const tikOnly = isTikTokOnly();
+    setHidden('offerLayoutControls', proposalMode() === 'tiktok');
     setHidden('mainEconomicControls', tikOnly);
+    setHidden('economicModeField', compare);
 
     const oneTime = value('economicMode') === 'oneTime';
-    setHidden('monthlyEconomicPanel', oneTime || tikOnly);
-    setHidden('oneTimeEconomicPanel', !oneTime || tikOnly);
-    setHidden('extraPanel', oneTime || tikOnly || !checked('extraEnabled'));
+    setHidden('monthlyEconomicPanel', tikOnly || (!compare && oneTime));
+    setHidden('singleMonthlyFeeField', compare);
+    setHidden('singleExtraControls', compare);
+    setHidden('oneTimeEconomicPanel', tikOnly || compare || !oneTime);
+    setHidden('comparisonEconomicPanel', !compare);
+    setHidden('comparisonAdsBudgetField', !compare || !anyFormulaAds());
+    setHidden('extraPanel', oneTime || tikOnly || compare || !checked('extraEnabled'));
     updateTikTokPresetLabels();
     updateProductionLabels();
     updateObjectiveVisibility();
+    syncOfferLayoutUI();
   }
 
   function renderClientBlock() {
@@ -383,23 +594,29 @@
 
   function buildObjectText() {
     if (isTikTokOnly()) return sentence(tiktokObjectDescription());
-
     const activities = [];
-    const completeSocial = checked('serviceStrategy') && checked('serviceProduction') && checked('serviceSocial');
-    if (completeSocial) activities.push('strategia, produzione di contenuti e gestione editoriale dei canali social');
-    else {
-      if (checked('serviceStrategy')) activities.push('strategia e pianificazione editoriale');
-      if (checked('serviceProduction')) activities.push(`produzione di ${objectContentLabel()} per i social media`);
-      if (checked('serviceSocial')) activities.push('gestione dei canali social');
-    }
-    if (checked('serviceAdvCreative') && checked('serviceAds')) activities.push('creatività e gestione delle campagne Meta Ads');
-    else if (checked('serviceAdvCreative')) activities.push('creatività per campagne ADV');
-    else if (checked('serviceAds')) activities.push('gestione delle campagne Meta Ads');
-    if (checked('serviceTikTok')) activities.push(tiktokObjectDescription());
+    if (checked('serviceProduction')) activities.push(productionCadenceObjectText());
+    if (checked('serviceClientContent')) activities.push('supporto alla realizzazione e post-produzione dei contenuti registrati dal Cliente');
+    if (checked('serviceSocial')) activities.push('gestione dei canali social');
+    if (comparisonEnabled() && anyFormulaAds()) activities.push('gestione Meta Ads secondo la formula prescelta');
+    else if (!comparisonEnabled() && checked('serviceAds')) activities.push('gestione delle campagne Meta Ads');
     if (checked('serviceInfluencer')) activities.push('coordinamento di creator e influencer');
-    if (checked('serviceCommunity') && !checked('serviceSocial')) activities.push('community management');
-    if (checked('serviceEventCoverage')) activities.push('copertura dedicata degli eventi');
+    if (checked('serviceEventCoverage')) activities.push('copertura degli eventi concordati');
+    if (checked('serviceTikTok')) activities.push(tiktokObjectDescription());
+    if (!activities.length && checked('serviceStrategy')) activities.push('strategia e pianificazione della comunicazione social');
     return sentence(joinNatural(activities) || 'servizi di comunicazione definiti nella presente proposta');
+  }
+
+  function productionCadenceObjectText() {
+    const types = objectContentLabel().replace('contenuti ', '').replace(' per i social media','');
+    const c = value('productionCadence');
+    const label = types || 'contenuti';
+    if (c === 'monthly') return `produzione mensile di ${label}`;
+    if (c === 'weekly') return `produzione settimanale di ${label}`;
+    if (c === 'fortnightly') return `produzione ogni 2 settimane di ${label}`;
+    if (c === 'bimonthly') return `produzione ogni 2 mesi di ${label}`;
+    if (c === 'quarterly') return `produzione ogni 3 mesi di ${label}`;
+    return `produzione di ${label}`;
   }
 
   function summaryObjective() {
@@ -421,6 +638,101 @@
     return 'Da definire';
   }
 
+  function clientNameForText() {
+    return value('clientName') || value('legalName') || 'il Cliente';
+  }
+
+  function defaultObjectiveParagraphs() {
+    const name = clientNameForText();
+    const type = value('clientType');
+    const professional = {
+      retail: [`Il progetto è finalizzato a rafforzare la presenza digitale di ${name} e aumentare la visibilità del punto vendita, valorizzando articoli, novità e categorie.`, `La comunicazione darà spazio a prodotti, promozioni e iniziative stagionali attraverso contenuti pensati per mantenere una presenza costante e favorire le visite in store.`],
+      emporium: [`Il progetto è finalizzato a rafforzare la presenza digitale di ${name} e aumentare visibilità e affluenza al punto vendita, valorizzando l’ampiezza e la varietà dell’assortimento.`, `La comunicazione darà spazio a reparti, prodotti, nuovi arrivi, promozioni e iniziative stagionali, con contenuti pensati per coinvolgere il pubblico e consolidare il punto vendita come riferimento sul territorio.`],
+      omnichannel: [`Il progetto è finalizzato a rafforzare la presenza digitale di ${name}, valorizzando il punto vendita e l’offerta disponibile anche online.`, `La comunicazione unirà prodotti, novità e iniziative commerciali per sostenere sia le visite in store sia le opportunità di vendita e contatto attraverso i canali digitali.`],
+      online: [`Il progetto è finalizzato a rafforzare identità e presenza digitale di ${name}, valorizzando prodotti, collezioni e novità.`, `La comunicazione sarà costruita per rendere l’offerta più riconoscibile, sostenere la continuità del brand e accompagnare le opportunità di vendita online.`],
+      food: [`Il progetto è finalizzato ad aumentare la visibilità di ${name} e sostenere prenotazioni e affluenza, valorizzando la proposta gastronomica, gli ambienti e l’esperienza del locale.`, `La comunicazione racconterà preparazioni, servizio e momenti reali attraverso contenuti continuativi, riconoscibili e coerenti con l’identità del ristorante.`],
+      nightlife: [`Il progetto è finalizzato a rafforzare la notorietà di ${name}, dare continuità alla comunicazione e sostenere la partecipazione del pubblico.`, `I contenuti valorizzeranno programmazione, serate, atmosfera e momenti distintivi del locale, accompagnando le iniziative più importanti del calendario.`],
+      wellness: [`Il progetto è finalizzato a rafforzare il posizionamento di ${name}, valorizzando servizi, attività e competenze della struttura.`, `La comunicazione racconterà spazi, servizi, professionisti e momenti di attività per aumentare riconoscibilità e sostenere l’acquisizione di nuovi contatti.`],
+      recreation: [`Il progetto è finalizzato ad aumentare la visibilità di ${name}, valorizzando attività, spazi ed esperienza offerta al pubblico.`, `La comunicazione accompagnerà iniziative, periodi strategici ed eventi con contenuti capaci di sostenere interesse, partecipazione e affluenza.`],
+      b2b: [`Il progetto è finalizzato a rafforzare il posizionamento di ${name} e rendere più chiara e riconoscibile l’offerta commerciale.`, `La comunicazione valorizzerà prodotti, servizi, applicazioni e vantaggi concreti, con contenuti utili a generare interesse e nuove opportunità con clienti professionali.`],
+      services: [`Il progetto è finalizzato a rafforzare il posizionamento di ${name}, valorizzando servizi, competenze e modalità di lavoro.`, `La comunicazione sarà orientata a rendere più comprensibile l’offerta, costruire fiducia e sostenere l’acquisizione di nuovi contatti e richieste.`],
+      brand: [`Il progetto è finalizzato a rafforzare identità e riconoscibilità di ${name}, valorizzandone prodotti, servizi e iniziative.`, `La comunicazione garantirà continuità al racconto del brand attraverso contenuti coerenti con il posizionamento e le priorità del periodo.`]
+    };
+    const simple = {
+      retail: [`L’obiettivo è aumentare la visibilità di ${name} e favorire le visite in negozio, mettendo in evidenza prodotti, novità, offerte e iniziative stagionali.`, `La comunicazione sarà chiara e continuativa, per mostrare cosa offre il punto vendita e mantenerlo presente e riconoscibile sui social.`],
+      emporium: [`L’obiettivo è aumentare la visibilità di ${name} e favorire l’affluenza in negozio, valorizzando prodotti, reparti, novità, offerte e iniziative stagionali.`, `La comunicazione sarà pensata per raccontare in modo chiaro l’ampiezza dell’assortimento, mettere in evidenza la convenienza e mantenere il punto vendita presente e riconoscibile sui social.`],
+      omnichannel: [`L’obiettivo è aumentare la visibilità di ${name}, valorizzando sia il punto vendita sia i prodotti disponibili online.`, `La comunicazione mostrerà novità, offerte e categorie in modo chiaro, sostenendo le visite in negozio e le opportunità di vendita attraverso i canali digitali.`],
+      online: [`L’obiettivo è rendere ${name} più riconoscibile online e valorizzare prodotti, collezioni e novità.`, `La comunicazione sarà continuativa e chiara, con contenuti pensati per presentare l’offerta e accompagnare le vendite online.`],
+      food: [`L’obiettivo è aumentare la visibilità di ${name} e sostenere prenotazioni e affluenza, mostrando cucina, ambienti e atmosfera.`, `La comunicazione racconterà piatti, preparazioni, servizio e momenti reali del locale in modo curato e riconoscibile.`],
+      nightlife: [`L’obiettivo è aumentare la visibilità di ${name} e dare più forza alla programmazione del locale.`, `La comunicazione metterà in evidenza serate, atmosfera e iniziative, mantenendo il pubblico aggiornato e favorendo la partecipazione.`],
+      wellness: [`L’obiettivo è aumentare la visibilità di ${name} e far conoscere meglio servizi, attività e punti di forza della struttura.`, `La comunicazione mostrerà spazi, professionisti e attività in modo chiaro, sostenendo nuove richieste e contatti.`],
+      recreation: [`L’obiettivo è aumentare la visibilità di ${name} e far conoscere attività, spazi ed esperienza offerta al pubblico.`, `La comunicazione darà evidenza a iniziative, eventi e periodi strategici per sostenere interesse e affluenza.`],
+      b2b: [`L’obiettivo è rendere più chiara e riconoscibile l’offerta di ${name}, valorizzando prodotti, servizi e vantaggi concreti.`, `La comunicazione mostrerà applicazioni e utilizzi reali, così da generare interesse e nuove opportunità con clienti professionali.`],
+      services: [`L’obiettivo è far conoscere meglio ${name}, valorizzando servizi, competenze e modo di lavorare.`, `La comunicazione renderà l’offerta più semplice da capire e aiuterà a costruire fiducia e nuove richieste.`],
+      brand: [`L’obiettivo è rendere ${name} più riconoscibile e valorizzare prodotti, servizi e iniziative.`, `La comunicazione manterrà il brand presente sui social con contenuti chiari, coerenti e continuativi.`]
+    };
+    const concise = {
+      retail: [`Aumentare la visibilità di ${name}, valorizzare prodotti, novità e offerte e favorire le visite in negozio attraverso contenuti social continuativi.`],
+      emporium: [`Aumentare la visibilità di ${name}, valorizzare assortimento, reparti, novità e offerte e favorire l’affluenza in negozio attraverso contenuti social continuativi.`],
+      omnichannel: [`Aumentare la visibilità di ${name}, valorizzare il punto vendita e l’offerta online e sostenere visite e vendite attraverso i canali digitali.`],
+      online: [`Rafforzare la presenza online di ${name}, valorizzare prodotti e novità e sostenere le opportunità di vendita.`],
+      food: [`Aumentare la visibilità di ${name}, valorizzare cucina, ambienti ed esperienza e sostenere prenotazioni e affluenza.`],
+      nightlife: [`Aumentare la visibilità di ${name}, valorizzare programmazione e atmosfera e favorire la partecipazione del pubblico.`],
+      wellness: [`Aumentare la visibilità di ${name}, valorizzare servizi e attività e sostenere nuove richieste e contatti.`],
+      recreation: [`Aumentare la visibilità di ${name}, valorizzare attività ed esperienza e sostenere interesse e affluenza.`],
+      b2b: [`Rendere più riconoscibile l’offerta di ${name}, valorizzare prodotti e servizi e generare nuove opportunità B2B.`],
+      services: [`Rafforzare la visibilità di ${name}, valorizzare servizi e competenze e sostenere nuove richieste.`],
+      brand: [`Rafforzare identità e riconoscibilità di ${name} e valorizzare prodotti, servizi e iniziative attraverso una comunicazione continuativa.`]
+    };
+    const map = textStyle() === 'simple' ? simple : textStyle() === 'concise' ? concise : professional;
+    return map[type] || [profile().objectiveSentence];
+  }
+
+  function productionContextSentence() {
+    const type = value('clientType');
+    const professional = {
+      retail: 'Le riprese saranno organizzate per raccontare prodotti, novità, categorie, promozioni e momenti di acquisto, alternando panoramiche del punto vendita e focus sugli articoli.',
+      emporium: 'Le riprese saranno organizzate per valorizzare assortimento, reparti, nuovi arrivi, promozioni e stagionalità, così da rendere riconoscibile la varietà dell’offerta e l’esperienza in negozio.',
+      omnichannel: 'La produzione sarà organizzata per valorizzare prodotti, reparti, novità e iniziative commerciali, creando materiali utilizzabili sia per la comunicazione del punto vendita sia per i canali digitali.',
+      online: 'La produzione sarà organizzata per raccontare prodotti, collezioni, novità e lanci con contenuti pensati per la comunicazione social e il supporto alle attività commerciali online.',
+      food: 'Le riprese saranno organizzate per raccontare preparazioni, piatti, servizio, ambienti e atmosfera, costruendo un racconto riconoscibile dell’esperienza del locale.',
+      nightlife: 'La produzione sarà organizzata per raccontare programmazione, atmosfera, pubblico, momenti della serata e iniziative speciali, con materiali adatti alla comunicazione prima, durante e dopo gli eventi.',
+      wellness: 'Le riprese saranno organizzate per raccontare servizi, attività, spazi e professionisti della struttura, mostrando in modo concreto l’esperienza proposta al pubblico.',
+      recreation: 'La produzione sarà organizzata per raccontare attività, spazi, esperienza, iniziative ed eventuali momenti stagionali, con contenuti utili a sostenere interesse e affluenza.',
+      b2b: 'La produzione sarà organizzata per mostrare prodotti o servizi nel loro contesto d’uso, mettendo in evidenza caratteristiche, applicazioni, vantaggi e casi concreti utili al pubblico professionale.',
+      services: 'La produzione sarà organizzata per raccontare servizi, competenze, processi e casi concreti, rendendo l’offerta più semplice da comprendere e più credibile sui canali digitali.',
+      brand: 'La produzione sarà organizzata per valorizzare identità, prodotti, servizi, novità e lanci, mantenendo coerenza visiva e continuità nel racconto del brand.'
+    };
+    const simple = {
+      retail: 'Durante le riprese daremo spazio a prodotti, novità, offerte e categorie, alternando panoramiche del negozio e focus sugli articoli.',
+      emporium: 'Durante le riprese daremo spazio a reparti, nuovi arrivi, offerte e prodotti stagionali, così da mostrare in modo chiaro cosa si trova in negozio.',
+      omnichannel: 'Durante le riprese mostreremo prodotti, reparti, novità e offerte, creando contenuti utili sia per il punto vendita sia per i canali digitali.',
+      online: 'La produzione mostrerà prodotti, collezioni, novità e lanci con contenuti adatti ai social e alle attività di vendita online.',
+      food: 'Le riprese mostreranno piatti, preparazioni, servizio, ambienti e atmosfera per raccontare in modo concreto l’esperienza del locale.',
+      nightlife: 'Le riprese mostreranno serate, atmosfera, pubblico e iniziative speciali, con contenuti utili prima, durante e dopo gli eventi.',
+      wellness: 'Le riprese mostreranno servizi, attività, spazi e professionisti per far capire in modo concreto cosa offre la struttura.',
+      recreation: 'Le riprese mostreranno attività, spazi, iniziative ed esperienza offerta al pubblico, con attenzione ai periodi più importanti.',
+      b2b: 'Le riprese mostreranno prodotti o servizi in uso, evidenziando caratteristiche, vantaggi e applicazioni utili ai clienti professionali.',
+      services: 'Le riprese mostreranno servizi, competenze e casi concreti, così da rendere l’offerta più chiara e credibile.',
+      brand: 'Le riprese valorizzeranno prodotti, servizi, novità e lanci mantenendo un’immagine coerente del brand.'
+    };
+    const concise = {
+      retail: 'Le riprese mostreranno prodotti, novità, offerte e categorie del punto vendita.',
+      emporium: 'Le riprese mostreranno reparti, nuovi arrivi, offerte e prodotti stagionali.',
+      omnichannel: 'Le riprese mostreranno prodotti, reparti, novità e offerte per store e canali digitali.',
+      online: 'La produzione mostrerà prodotti, collezioni, novità e lanci.',
+      food: 'Le riprese mostreranno piatti, preparazioni, ambienti e atmosfera.',
+      nightlife: 'Le riprese mostreranno serate, atmosfera e iniziative del locale.',
+      wellness: 'Le riprese mostreranno servizi, attività, spazi e professionisti.',
+      recreation: 'Le riprese mostreranno attività, spazi, iniziative ed esperienza.',
+      b2b: 'Le riprese mostreranno prodotti o servizi, utilizzi e vantaggi concreti.',
+      services: 'Le riprese mostreranno servizi, competenze e casi concreti.',
+      brand: 'Le riprese valorizzeranno prodotti, servizi, novità e lanci.'
+    };
+    const map = textStyle() === 'simple' ? simple : textStyle() === 'concise' ? concise : professional;
+    return map[type] || professional.brand;
+  }
+
   function renderObjectives() {
     const paragraphs = [];
     if (isTikTokOnly()) {
@@ -431,10 +743,15 @@
       else if (tiktokIsActive() && tiktokHas('tiktokCatalog') && tiktokHas('tiktokPublish')) paragraphs.push(`Ampliare il TikTok Shop già attivo attraverso la preparazione e pubblicazione di <strong>${count} nuovi ${safe(word)}</strong>.`);
       else paragraphs.push(`Sviluppare le attività TikTok Shop selezionate per <strong>${count} ${safe(word)}</strong> in modo coordinato e pronto all'utilizzo sulla piattaforma.`);
     } else if (objectivesAreDefault()) {
-      paragraphs.push(safe(profile().objectiveSentence));
+      defaultObjectiveParagraphs().forEach((p) => paragraphs.push(safe(p)));
     } else {
       const actions = selectedObjectives().map((o) => o.action);
-      if (actions.length) paragraphs.push(`Le attività saranno orientate a ${safe(joinNatural(actions))}.`);
+      if (actions.length) {
+        const joined = safe(joinNatural(actions));
+        if (textStyle() === 'simple') paragraphs.push(`La comunicazione avrà l’obiettivo di ${joined}.`);
+        else if (textStyle() === 'concise') paragraphs.push(`Obiettivo: ${joined}.`);
+        else paragraphs.push(`Le attività saranno orientate a ${joined}.`);
+      }
     }
 
     if (!isTikTokOnly() && value('focus')) paragraphs.push(`La comunicazione darà particolare priorità a <strong>${safe(value('focus'))}</strong>.`);
@@ -466,7 +783,7 @@
     if (isTikTokOnly()) {
       tiktokServiceSteps().forEach((s) => services.push(s));
     } else {
-      if (checked('serviceStrategy')) services.push(['Strategia e piano editoriale', 'Definizione della linea di comunicazione, dei temi e della pianificazione in funzione degli obiettivi concordati.']);
+      if (checked('serviceStrategy')) services.push(['Strategia e piano editoriale', styledText('Definizione della linea di comunicazione, dei temi e della pianificazione in funzione degli obiettivi concordati.', 'Definizione dei contenuti da realizzare e organizzazione della pubblicazione in base agli obiettivi concordati.', 'Idee, temi e pianificazione dei contenuti.')]);
       if (checked('serviceProduction')) {
         const types = selectedContentTypes();
         let desc = types.length ? `Produzione di ${joinNatural(types)}` : 'Produzione dei contenuti concordati';
@@ -474,24 +791,40 @@
           const fixed = fixedContentParts();
           if (fixed.length) desc = `Produzione prevista: ${joinNatural(fixed)}`;
         } else desc += ', con quantità definite in funzione del piano editoriale';
-        desc += '. Comprende ideazione, riprese, montaggio, post-produzione e adattamento ai formati social.';
+        desc += styledText('. Comprende ideazione, riprese, montaggio, post-produzione e adattamento ai formati social.', '. Sono inclusi ideazione, riprese, montaggio e adattamento per i social.', '. Include realizzazione, montaggio e adattamento social.');
         services.push([productionTitle(), desc]);
       }
+      if (checked('serviceClientContent')) {
+        const n = clientContentCount();
+        const period = clientContentPeriodText();
+        services.push(['Contenuti interni guidati', styledText('Setup iniziale e supporto continuativo su attrezzatura, inquadrature, luce, audio e modalità di ripresa.', 'Indicazioni pratiche per registrare i contenuti in autonomia: attrezzatura, inquadrature, luce e audio.', 'Indicazioni pratiche per registrare i contenuti in autonomia.')]);
+        services.push(['Editing dei contenuti interni', styledText(`Ideazione e post-produzione di fino a ${n} video ${period} registrati dal Cliente, con testi, sottotitoli, musica e grafiche essenziali.`, `Montaggio e rifinitura di fino a ${n} video ${period} registrati dal Cliente, con testi, sottotitoli, musica e grafiche essenziali.`, `Editing di fino a ${n} video ${period} registrati dal Cliente.`)]);
+      }
       if (checked('serviceSocial')) {
-        let desc = 'Piano editoriale, redazione dei copy, programmazione e pubblicazione dei contenuti sui canali concordati.';
-        if (checked('serviceCommunity')) desc += ' Comprende anche la gestione di messaggi, commenti e recensioni.';
+        let desc = styledText('Piano editoriale, redazione dei copy, programmazione e pubblicazione dei contenuti sui canali concordati.', 'Preparazione dei testi, programmazione e pubblicazione dei contenuti sui canali concordati.', 'Testi, programmazione e pubblicazione sui canali concordati.');
+        if (checked('serviceCommunity')) desc += styledText(' Comprende anche la gestione di messaggi, commenti e recensioni.', ' Comprende anche la gestione di messaggi, commenti e recensioni.', ' Inclusa gestione della community.');
         services.push(['Gestione dei canali social', desc]);
       } else if (checked('serviceCommunity')) services.push(['Community management', 'Gestione di messaggi, commenti e recensioni sui canali concordati.']);
 
-      if (checked('serviceAdvCreative') && checked('serviceAds')) services.push(['Campagne ADV', 'Ideazione delle creatività e gestione delle campagne Meta Ads, con attivazione, monitoraggio e ottimizzazione.']);
-      else {
-        if (checked('serviceAdvCreative')) services.push(['Creatività per campagne ADV', 'Produzione di foto, video e grafiche sviluppate per le campagne pubblicitarie.']);
-        if (checked('serviceAds')) services.push(['Gestione campagne Meta Ads', 'Configurazione, attivazione, monitoraggio e ottimizzazione delle campagne in funzione degli obiettivi e del budget disponibile.']);
+      if (!comparisonEnabled()) {
+        if (checked('serviceAdvCreative') && checked('serviceAds')) services.push(['Campagne ADV', styledText('Ideazione delle creatività e gestione delle campagne Meta Ads, con attivazione, monitoraggio e ottimizzazione.', 'Preparazione dei materiali e gestione delle campagne Meta Ads, con controllo e ottimizzazione.', 'Creatività e gestione delle campagne Meta Ads.')]);
+        else {
+          if (checked('serviceAdvCreative')) services.push(['Creatività per campagne ADV', styledText('Produzione di foto, video e grafiche sviluppate per le campagne pubblicitarie.', 'Realizzazione di foto, video e grafiche da utilizzare nelle campagne pubblicitarie.', 'Foto, video e grafiche per le campagne.')]);
+          if (checked('serviceAds')) services.push(['Gestione campagne Meta Ads', styledText('Configurazione, attivazione, monitoraggio e ottimizzazione delle campagne in funzione degli obiettivi e del budget disponibile.', 'Gestione delle campagne Meta Ads per raggiungere il pubblico concordato, con controllo e ottimizzazione. Il budget pubblicitario resta escluso.', 'Gestione e ottimizzazione delle campagne Meta Ads. Budget escluso.')]);
+        }
+      } else {
+        if (checked('serviceAdvCreative')) services.push(['Creatività per campagne ADV', 'Produzione di foto, video e grafiche sviluppate per le campagne pubblicitarie previste nelle formule selezionate.']);
+        if (anyFormulaAds()) {
+          const adsNames = [formulaAds('A') ? formulaName('A') : '', formulaAds('B') ? formulaName('B') : ''].filter(Boolean);
+          services.push([`Gestione Meta Ads${adsNames.length === 1 ? ` (solo ${adsNames[0]})` : ''}`, styledText('Configurazione delle campagne, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica. Il budget pubblicitario resta escluso dal compenso.', 'Gestione delle campagne Meta Ads, scelta del pubblico, controllo e ottimizzazione. Il budget pubblicitario resta escluso dal compenso.', 'Gestione e ottimizzazione Meta Ads. Budget pubblicitario escluso.')]);
+        }
       }
 
       if (checked('serviceTikTok')) {
         const steps = tiktokServiceSteps();
-        const desc = steps.length ? sentence(steps.map((s) => s[0].toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' e $1')) : 'Attività da definire.';
+        let desc = steps.length ? sentence(steps.map((s) => s[0].toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' e $1')) : 'Attività da definire.';
+        if (steps.length && textStyle() === 'simple') desc = `Preparazione dello Shop con ${steps.map((s) => s[0].toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' e $1')}.`;
+        if (steps.length && textStyle() === 'concise') desc = `${sentence(steps.map((s) => s[0].toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' e $1'))}`;
         services.push(['TikTok Shop', desc]);
       }
       if (checked('serviceInfluencer')) services.push(['Creator e influencer', 'Ricerca, selezione, proposta dei profili e coordinamento delle collaborazioni approvate dal Cliente.']);
@@ -546,7 +879,7 @@
   }
 
   function renderProduction() {
-    const visible = isTikTokOnly() || checked('serviceProduction');
+    const visible = isTikTokOnly() || checked('serviceProduction') || checked('serviceClientContent');
     setHidden('productionDocumentSection', !visible);
     if (isTikTokOnly()) {
       setText('productionHeading', '3. INFORMAZIONI OPERATIVE');
@@ -559,21 +892,31 @@
       return;
     }
 
+    const parts = [];
     if (checked('serviceProduction')) {
-      setText('productionHeading', value('productionCadence') === 'monthly' ? '3. PRODUZIONE MENSILE' : '3. PRODUZIONE DEI CONTENUTI');
-      const parts = [productionCadenceText()];
-      if (value('quantityMode') === 'plan') parts.push('Quantità e tipologia dei contenuti saranno definite in funzione del piano editoriale, delle esigenze commerciali e delle priorità di comunicazione del periodo.');
-      else {
+      parts.push(productionCadenceText());
+      if (value('quantityMode') === 'plan') {
+        parts.push('Quantità e tipologia dei contenuti professionali saranno definite in funzione del piano editoriale, delle esigenze commerciali e delle priorità del periodo.');
+      } else {
         const fixed = fixedContentParts();
         if (fixed.length) parts.push(`La produzione comprende ${joinNatural(fixed)}.`);
       }
-      parts.push('Eventuali giornate aggiuntive o produzioni straordinarie saranno concordate separatamente.');
-      setText('productionText', parts.join(' '));
-      return;
+      parts.push(productionContextSentence());
     }
-
-    setText('productionHeading', '3. PRODUZIONE DEI CONTENUTI');
-    setText('productionText', '');
+    if (checked('serviceClientContent')) {
+      const n = clientContentCount();
+      const period = clientContentPeriodText();
+      parts.push(`A questi si aggiungono fino a ${n} video ${period} registrati direttamente dal Cliente seguendo le indicazioni SOMO e successivamente editati e ottimizzati.`);
+      if (checked('serviceProduction') && value('quantityMode') === 'fixed' && value('quantityPeriod') === 'month' && checked('productionVideo')) {
+        const pro = numberValue('videos');
+        if (pro && value('clientContentPeriod') === 'month') parts.push(`Il modello consente quindi di disporre di fino a ${pro + n} video al mese, tra produzione professionale e contenuti interni guidati.`);
+      }
+    }
+    parts.push(styledText('Eventuali giornate aggiuntive o produzioni straordinarie saranno concordate separatamente.', 'Eventuali produzioni o giornate aggiuntive saranno concordate separatamente.', 'Attività aggiuntive da concordare separatamente.'));
+    const cadence = value('productionCadence');
+    const heading = checked('serviceClientContent') ? '3. MODELLO DI PRODUZIONE' : cadence === 'monthly' ? '3. PRODUZIONE MENSILE' : cadence === 'weekly' ? '3. PRODUZIONE SETTIMANALE' : '3. PRODUZIONE DEI CONTENUTI';
+    setText('productionHeading', heading);
+    setText('productionText', parts.join(' '));
   }
 
   function productionSummary() {
@@ -595,12 +938,13 @@
 
   function contentSummary() {
     if (isTikTokOnly()) { const parts=[]; if (tiktokHas('tiktokPhotos')) parts.push('immagini'); if (tiktokHas('tiktokCatalog')) parts.push('catalogo'); if (tiktokHas('tiktokPublish')) parts.push(`${tiktokCount()} schede prodotto`); return parts.length ? joinNatural(parts) : 'Da definire'; }
+    const parts = [];
     if (checked('serviceProduction')) {
-      if (value('quantityMode') === 'plan') return 'Quantità e tipologia definite in base al piano editoriale';
-      const parts = fixedContentParts();
-      return parts.length ? sentence(joinNatural(parts)).replace(/\.$/,'') : 'Tipologia definita in base alle esigenze concordate';
+      if (value('quantityMode') === 'plan') parts.push('contenuti professionali definiti in base al piano editoriale');
+      else parts.push(...fixedContentParts());
     }
-    return 'Non previsti';
+    if (checked('serviceClientContent')) parts.push(`fino a ${clientContentCount()} video interni guidati ${clientContentPeriodText()}`);
+    return parts.length ? sentence(joinNatural(parts)).replace(/\.$/,'') : 'Non previsti';
   }
 
   function managementSummary() {
@@ -612,13 +956,100 @@
 
   function adsSummary() {
     if (isTikTokOnly()) return 'Non previste';
+    if (comparisonEnabled()) {
+      if (!anyFormulaAds()) return 'Non previste';
+      const included = [formulaAds('A') ? formulaName('A') : '', formulaAds('B') ? formulaName('B') : ''].filter(Boolean);
+      const budget = numberValue('comparisonAdsBudget');
+      return `Inclusa in ${joinNatural(included)}; ${budget ? `budget consigliato ${money(budget)} al mese, escluso` : 'budget pubblicitario escluso'}`;
+    }
     if (!checked('serviceAds') && checked('serviceAdvCreative')) return 'Creatività ADV incluse; gestione campagne e budget esclusi';
     if (!checked('serviceAds')) return 'Non previste';
     const budget = numberValue('adsBudget');
     return budget ? `Gestione inclusa; budget consigliato ${money(budget)} al mese, escluso` : 'Gestione inclusa; budget pubblicitario escluso';
   }
 
+  function productionComparisonValue() {
+    if (!checked('serviceProduction')) return '-';
+    const count = Math.max(1, numberValue('productionDays',1));
+    const noun = count === 1 ? 'giornata' : 'giornate';
+    const c = value('productionCadence');
+    if (c === 'monthly') return `${count} ${noun}/mese`;
+    if (c === 'weekly') return `${count} ${noun}/settimana`;
+    if (c === 'fortnightly') return `${count} ${noun} ogni 2 settimane`;
+    if (c === 'bimonthly') return `${count} ${noun} ogni 2 mesi`;
+    if (c === 'quarterly') return `${count} ${noun} ogni 3 mesi`;
+    if (c === 'plan') return 'Secondo piano editoriale';
+    return '-';
+  }
+  function compareQuantityValue(kind) {
+    if (value('quantityMode') !== 'fixed') return 'Secondo piano editoriale';
+    const period = quantityPeriodShort();
+    if (kind === 'video') { const n=numberValue('videos'); return n ? `${n} ${period}` : '-'; }
+    if (kind === 'photo') return value('photos') ? `${value('photos')} ${period}` : '-';
+    if (kind === 'graphics') { const n=numberValue('graphicsCount'); return n ? `${n} ${period}` : '-'; }
+    return '-';
+  }
+  function tiktokColumnValue(row) {
+    const count = tiktokCount();
+    const word = itemWord();
+    if (row === 'Durata') return tiktokIsActive() ? 'Ampliamento catalogo' : (tiktokHas('tiktokSetup') ? 'Fase di avvio' : 'TikTok Shop');
+    if (row === 'Shooting') return tiktokHas('tiktokPhotos') ? `Dedicato a ${count} ${word}` : '-';
+    if (row === 'Fotografie') return tiktokHas('tiktokPhotos') ? `${count} ${word}` : '-';
+    if (row === 'Gestione social') return '-';
+    if (row === 'Gestione Meta Ads') return '-';
+    if (row === 'Configurazione Shop') return tiktokHas('tiktokSetup') ? 'Inclusa' : (tiktokIsActive() ? 'Già attivo' : '-');
+    if (row === 'Catalogo') return tiktokHas('tiktokCatalog') ? (tiktokIsActive() ? 'Aggiornamento' : 'Costruzione iniziale') : '-';
+    if (row === 'Schede prodotto') return tiktokHas('tiktokPublish') ? `${count} schede` : '-';
+    if (row === 'Compenso') return `${money(tiktokFee())} + IVA`;
+    return '-';
+  }
+
+  function renderComparisonSummary() {
+    const compare = comparisonEnabled();
+    const withTikTok = proposalMode() === 'both' && checked('serviceTikTok');
+    const duration = Math.max(1, numberValue('duration', 6));
+    const columns = compare ? [formulaName('A'), formulaName('B')] : ['PROPOSTA BASIC'];
+    if (withTikTok) columns.push('TIKTOK SHOP');
+    el('summaryCompareHead').innerHTML = `<tr><th>SERVIZIO</th>${columns.map((c) => `<th>${safe(c)}</th>`).join('')}</tr>`;
+    el('summaryCompareTable').classList.toggle('has-tiktok', withTikTok);
+
+    const rows = [];
+    const basicVals = (a, b=a) => compare ? [a,b] : [a];
+    rows.push(['Durata', ...basicVals(`${duration} mesi`), ...(withTikTok ? [tiktokColumnValue('Durata')] : [])]);
+    if (checked('serviceProduction') || (withTikTok && tiktokHas('tiktokPhotos'))) rows.push(['Shooting', ...basicVals(checked('serviceProduction') ? productionComparisonValue() : '-'), ...(withTikTok ? [tiktokColumnValue('Shooting')] : [])]);
+    if (checked('serviceProduction')) {
+      if (value('quantityMode') === 'fixed') {
+        if (checked('productionVideo')) rows.push(['Video', ...basicVals(compareQuantityValue('video')), ...(withTikTok ? ['-'] : [])]);
+        if (checked('productionPhoto')) rows.push(['Foto', ...basicVals(compareQuantityValue('photo')), ...(withTikTok ? [tiktokColumnValue('Fotografie')] : [])]);
+        if (checked('productionGraphics')) rows.push(['Grafiche', ...basicVals(compareQuantityValue('graphics')), ...(withTikTok ? ['-'] : [])]);
+      } else rows.push(['Contenuti professionali', ...basicVals('Secondo piano editoriale'), ...(withTikTok ? ['-'] : [])]);
+    } else if (withTikTok && tiktokHas('tiktokPhotos')) rows.push(['Foto', ...basicVals('-'), tiktokColumnValue('Fotografie')]);
+    if (checked('serviceClientContent')) {
+      const val = `${clientContentCount()} ${clientContentPeriodText()}`;
+      rows.push(['Contenuti interni guidati', ...basicVals(val), ...(withTikTok ? ['-'] : [])]);
+    }
+    if (checked('serviceSocial')) rows.push(['Gestione social', ...basicVals('Inclusa'), ...(withTikTok ? ['-'] : [])]);
+    const hasAds = compare ? anyFormulaAds() : checked('serviceAds');
+    if (hasAds) {
+      const vals = compare ? [formulaAds('A') ? 'Inclusa' : '-', formulaAds('B') ? 'Inclusa' : '-'] : ['Inclusa'];
+      rows.push(['Gestione Meta Ads', ...vals, ...(withTikTok ? ['-'] : [])]);
+      const budgetVals = compare ? [formulaAds('A') ? 'Escluso, a carico del Cliente' : '-', formulaAds('B') ? 'Escluso, a carico del Cliente' : '-'] : ['Escluso, a carico del Cliente'];
+      rows.push(['Budget pubblicitario', ...budgetVals, ...(withTikTok ? ['-'] : [])]);
+    }
+    if (withTikTok && tiktokHas('tiktokSetup')) rows.push(['Configurazione Shop', ...basicVals('-'), tiktokColumnValue('Configurazione Shop')]);
+    if (withTikTok && tiktokHas('tiktokCatalog')) rows.push(['Catalogo', ...basicVals('-'), tiktokColumnValue('Catalogo')]);
+    if (withTikTok && tiktokHas('tiktokPublish')) rows.push(['Schede prodotto', ...basicVals('-'), tiktokColumnValue('Schede prodotto')]);
+    const basicFees = compare ? [`${money(formulaFee('A'))} + IVA`, `${money(formulaFee('B'))} + IVA`] : [`${money(numberValue('monthlyFee'))} + IVA`];
+    rows.push(['Compenso', ...basicFees, ...(withTikTok ? [tiktokColumnValue('Compenso')] : [])]);
+    el('summaryCompareBody').innerHTML = rows.map((row) => `<tr><th>${safe(row[0])}</th>${row.slice(1).map((v) => `<td>${safe(v)}</td>`).join('')}</tr>`).join('');
+  }
+
   function renderSummary() {
+    const columns = columnSummaryEnabled();
+    setHidden('summarySingleTable', columns);
+    setHidden('summaryCompareWrap', !columns);
+    if (columns) { renderComparisonSummary(); return; }
+
     const tikOnly = isTikTokOnly();
     const oneTime = value('economicMode') === 'oneTime';
     const duration = Math.max(1, numberValue('duration',6));
@@ -632,7 +1063,7 @@
     setText('summaryContent', contentSummary());
     setText('summaryManagement', managementSummary());
     setText('summaryAds', adsSummary());
-    const productionIncluded = tikOnly || checked('serviceProduction');
+    const productionIncluded = tikOnly || checked('serviceProduction') || checked('serviceClientContent');
     setHidden('summaryProductionRow', !productionIncluded);
     setHidden('summaryContentRow', !productionIncluded);
     setHidden('summaryManagementRow', tikOnly || (!checked('serviceSocial') && !checked('serviceCommunity')));
@@ -658,7 +1089,9 @@
       exclusions.push('Contenuti video social o produzioni ulteriori non comprese nella presente proposta;');
       exclusions.push('Gestione logistica degli ordini, spedizioni, resi, reclami e assistenza clienti;');
     } else {
-      exclusions.push(checked('serviceAds') ? 'Budget pubblicitario destinato alle piattaforme Meta Ads;' : 'Gestione delle campagne Meta Ads e relativo budget pubblicitario;');
+      if (comparisonEnabled()) exclusions.push(anyFormulaAds() ? 'Budget pubblicitario destinato alle piattaforme Meta Ads;' : 'Gestione delle campagne Meta Ads e relativo budget pubblicitario;');
+      else exclusions.push(checked('serviceAds') ? 'Budget pubblicitario destinato alle piattaforme Meta Ads;' : 'Gestione delle campagne Meta Ads e relativo budget pubblicitario;');
+      if (checked('serviceClientContent')) exclusions.push('Acquisto di attrezzatura o accessori destinati alla produzione dei contenuti interni;');
       if (!checked('serviceCommunity')) exclusions.push('Gestione di messaggi, commenti, recensioni e attività di community management;');
       if (checked('serviceProduction')) exclusions.push('Giornate di produzione aggiuntive, trasferte o richieste straordinarie;');
       if ((value('clientType') === 'nightlife' || checked('objectiveEvents')) && !checked('serviceEventCoverage')) exclusions.push('Copertura dedicata degli eventi con fotografo o videomaker;');
@@ -676,8 +1109,15 @@
 
   function renderEconomics() {
     const tikOnly = isTikTokOnly();
-    const tikFee = checked('serviceTikTok') ? tiktokFee() : 0;
+    const hasTikTok = checked('serviceTikTok');
+    const tikFee = hasTikTok ? tiktokFee() : 0;
     const count = tiktokCount();
+    const duration = Math.max(1, numberValue('duration',6));
+
+    setHidden('formulaDetailSection', true);
+    setHidden('tiktokDetailSection', true);
+    setHidden('chosenFormulaRow', true);
+    setText('compensoHeading', '4. COMPENSO');
 
     if (tikOnly) {
       const label = tiktokIsActive() ? `AMPLIAMENTO SHOP · ${count} ${itemWord().toUpperCase()}` : (tiktokHas('tiktokSetup') ? `FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · ${count} ${itemWord().toUpperCase()}`);
@@ -686,79 +1126,181 @@
       setText('installmentsPreview', tiktokIsActive() ? 'Ampliamento' : (tiktokHas('tiktokSetup') ? 'Fase di avvio' : 'TikTok Shop'));
       setText('contractTotalLabel', 'TOTALE PROPOSTA');
       setText('contractTotalPreview', money(tikFee));
+      setText('exclusionsHeading', '5. ULTERIORI EXTRA');
+      setText('paymentHeading', '6. PAGAMENTO E VALIDITÀ');
       el('paymentText').innerHTML = tiktokIsActive() ? `L'investimento previsto per l'ampliamento del TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong>.` : `L'investimento previsto per le attività TikTok Shop selezionate è pari a <strong>${safe(money(tikFee))} + IVA</strong>.`;
       setText('invoiceText', tiktokIsActive() ? 'L’importo sarà fatturato all’avvio delle attività di ampliamento del catalogo, secondo le modalità concordate.' : 'L’importo sarà fatturato all’avvio delle attività TikTok Shop, secondo le modalità concordate.');
       setText('validityText', 'La proposta ha validità 15 giorni. Le tempistiche operative decorreranno dalla conferma e dalla disponibilità degli articoli e delle informazioni necessarie.');
       return 2;
     }
 
-    const oneTime = value('economicMode') === 'oneTime';
-    const duration = Math.max(1, numberValue('duration',6));
-    const monthly = numberValue('monthlyFee');
-    const mainOneTime = numberValue('oneTimeFee');
-    const extra = !oneTime && checked('extraEnabled') ? numberValue('extraFee') : 0;
-    const extraLabel = value('extraLabel') || 'Fase iniziale / servizio extra';
     const rows = [];
-    let total = 0;
-
-    if (oneTime) {
-      rows.push(feeRow('PROGETTO · IMPORTO COMPLESSIVO', `${money(mainOneTime)} + IVA`));
-      total += mainOneTime;
+    let totalPreview = 0;
+    if (comparisonEnabled()) {
+      const aName = formulaName('A'), bName = formulaName('B');
+      const aFee = formulaFee('A'), bFee = formulaFee('B');
+      const aTotal = aFee * duration, bTotal = bFee * duration;
+      rows.push(feeRow(aName.toUpperCase(), `${money(aFee)}/mese + IVA - totale ${money(aTotal)}`));
+      rows.push(feeRow(bName.toUpperCase(), `${money(bFee)}/mese + IVA - totale ${money(bTotal)}`));
+      setText('installmentsLabel', aName);
+      setText('installmentsPreview', `${money(aFee)}/mese`);
+      setText('contractTotalLabel', bName);
+      setText('contractTotalPreview', `${money(bFee)}/mese`);
+      setHidden('chosenFormulaRow', false);
+      const adsNames = [formulaAds('A') ? aName : '', formulaAds('B') ? bName : ''].filter(Boolean);
+      if (adsNames.length) {
+        setHidden('formulaDetailSection', false);
+        setText('formulaDetailHeading', adsNames.length === 1 ? `5. FORMULA ${adsNames[0].toUpperCase()}` : '5. GESTIONE META ADS');
+        const budget = numberValue('comparisonAdsBudget');
+        const intro = adsNames.length === 1 ? `La Formula ${adsNames[0]} comprende` : `Le formule ${joinNatural(adsNames)} comprendono`;
+        const budgetText = budget ? ` Il budget pubblicitario consigliato è pari a ${money(budget)} al mese e resta escluso dal compenso.` : ' Il budget pubblicitario resta escluso dal compenso ed è sostenuto direttamente dal Cliente.';
+        const profText = `${intro} la gestione professionale delle campagne sulle piattaforme Meta, inclusi configurazione, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`;
+        const simpleText = `${intro} la gestione delle campagne Meta Ads: impostazione, scelta del pubblico, controllo e ottimizzazione.${budgetText}`;
+        const conciseText = `${intro} la gestione e ottimizzazione delle campagne Meta Ads.${budgetText}`;
+        setText('formulaDetailText', styledText(profText, simpleText, conciseText));
+      }
+      if (hasTikTok) rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`));
+      const tiktokTail = hasTikTok ? ` A entrambe le formule si aggiunge la fase TikTok Shop pari a <strong>${safe(money(tikFee))} + IVA</strong>.` : '';
+      const adsTail = adsNames.length ? ' Il budget pubblicitario è sempre escluso.' : '';
+      el('paymentText').innerHTML = `La collaborazione ha durata di ${duration} mesi. Il compenso complessivo è pari a <strong>${safe(money(aTotal))} + IVA</strong> per la Formula ${safe(aName)} oppure a <strong>${safe(money(bTotal))} + IVA</strong> per la Formula ${safe(bName)}, corrisposto in ${duration} rate mensili secondo la formula prescelta.${tiktokTail}${adsTail}`;
+      setText('invoiceText', 'La fatturazione dei servizi continuativi avverrà mensilmente secondo la formula prescelta; le eventuali fasi iniziali o attività aggiuntive saranno fatturate all’avvio delle relative attività.');
+      setText('validityText', `La proposta ha validità 15 giorni. La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività.`);
     } else {
-      const baseTotal = duration * monthly;
-      rows.push(feeRow('COMPENSO MENSILE', `${money(monthly)} + IVA`));
-      rows.push(feeRow(`TOTALE ${duration} MESI`, `${money(baseTotal)} + IVA`));
-      total += baseTotal;
+      const oneTime = value('economicMode') === 'oneTime';
+      const monthly = numberValue('monthlyFee');
+      const mainOneTime = numberValue('oneTimeFee');
+      const extra = !oneTime && checked('extraEnabled') ? numberValue('extraFee') : 0;
+      const extraLabel = value('extraLabel') || 'Fase iniziale / servizio extra';
+      if (oneTime) {
+        rows.push(feeRow('PROGETTO · IMPORTO COMPLESSIVO', `${money(mainOneTime)} + IVA`));
+        totalPreview += mainOneTime;
+      } else {
+        const baseTotal = duration * monthly;
+        rows.push(feeRow('COMPENSO MENSILE', `${money(monthly)} + IVA`));
+        rows.push(feeRow(`TOTALE ${duration} MESI`, `${money(baseTotal)} + IVA`));
+        totalPreview += baseTotal;
+      }
+      if (hasTikTok) { rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`)); totalPreview += tikFee; }
+      if (extra) { rows.push(feeRow(extraLabel.toUpperCase(), `${money(extra)} + IVA`)); totalPreview += extra; }
+      if (rows.length > 2 || hasTikTok || extra || oneTime) rows.push(feeRow('TOTALE COMPLESSIVO', `${money(totalPreview)} + IVA`));
+      setText('installmentsLabel', oneTime ? 'TIPOLOGIA' : 'RATE MENSILI');
+      setText('installmentsPreview', oneTime ? 'Progetto' : String(duration));
+      setText('contractTotalLabel', 'TOTALE COMPLESSIVO');
+      setText('contractTotalPreview', money(totalPreview));
+      const payment = [];
+      if (oneTime) payment.push(`L'importo complessivo previsto per il progetto è pari a <strong>${safe(money(mainOneTime))} + IVA</strong>.`);
+      else payment.push(`Il compenso per i servizi continuativi è pari a <strong>${safe(money(monthly))} + IVA al mese</strong>, per ${duration} mesi.`);
+      if (hasTikTok) payment.push(`Le attività TikTok Shop selezionate prevedono un investimento di <strong>${safe(money(tikFee))} + IVA</strong>.`);
+      if (extra) payment.push(`L’attività “${safe(extraLabel)}” è pari a <strong>${safe(money(extra))} + IVA</strong>.`);
+      el('paymentText').innerHTML = payment.join(' ');
+      setText('invoiceText', oneTime ? 'La fatturazione avverrà all’avvio del progetto, secondo le modalità concordate.' : 'La fatturazione dei servizi continuativi avverrà mensilmente; eventuali fasi iniziali o servizi extra saranno fatturati all’avvio delle relative attività.');
+      setText('validityText', oneTime ? 'La proposta ha validità 15 giorni.' : `La proposta ha validità 15 giorni. La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività.`);
+      if (checked('serviceAds')) {
+        setHidden('formulaDetailSection', false);
+        setText('formulaDetailHeading', '5. GESTIONE META ADS');
+        const budget = numberValue('adsBudget');
+        const budgetText = budget ? ` Il budget pubblicitario consigliato è pari a ${money(budget)} al mese e resta escluso dal compenso.` : ' Il budget pubblicitario resta escluso dal compenso ed è sostenuto direttamente dal Cliente.';
+        setText('formulaDetailText', styledText(`La gestione Meta Ads comprende configurazione delle campagne, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`, `La gestione Meta Ads comprende impostazione delle campagne, scelta del pubblico, controllo e ottimizzazione.${budgetText}`, `Gestione e ottimizzazione delle campagne Meta Ads.${budgetText}`));
+      }
     }
 
-    if (checked('serviceTikTok')) {
-      rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : (tiktokHas('tiktokSetup') ? `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · ${count} ${itemWord().toUpperCase()}`), `${money(tikFee)} + IVA`));
-      total += tikFee;
-    }
-    if (extra) { rows.push(feeRow(extraLabel.toUpperCase(), `${money(extra)} + IVA`)); total += extra; }
-    if (rows.length > 2 || checked('serviceTikTok') || extra || oneTime) rows.push(feeRow('TOTALE COMPLESSIVO', `${money(total)} + IVA`));
     el('feeTableBody').innerHTML = rows.join('');
 
-    setText('installmentsLabel', oneTime ? 'TIPOLOGIA' : 'RATE MENSILI');
-    setText('installmentsPreview', oneTime ? 'Progetto' : String(duration));
-    setText('contractTotalLabel', 'TOTALE COMPLESSIVO');
-    setText('contractTotalPreview', money(total));
-
-    const payment = [];
-    if (oneTime) payment.push(`L'importo complessivo previsto per il progetto è pari a <strong>${safe(money(mainOneTime))} + IVA</strong>.`);
-    else payment.push(`Il compenso per i servizi continuativi è pari a <strong>${safe(money(monthly))} + IVA al mese</strong>, per ${duration} mesi.`);
-    if (checked('serviceTikTok')) payment.push(tiktokIsActive() ? `L’ampliamento del TikTok Shop prevede un investimento di <strong>${safe(money(tikFee))} + IVA</strong>.` : `Le attività TikTok Shop selezionate prevedono un investimento di <strong>${safe(money(tikFee))} + IVA</strong>.`);
-    if (extra) payment.push(`L’attività “${safe(extraLabel)}” è pari a <strong>${safe(money(extra))} + IVA</strong>.`);
-    el('paymentText').innerHTML = payment.join(' ');
-    setText('invoiceText', oneTime ? 'La fatturazione avverrà all’avvio del progetto, secondo le modalità concordate.' : 'La fatturazione dei servizi continuativi avverrà mensilmente; eventuali fasi iniziali o servizi extra saranno fatturati all’avvio delle relative attività.');
-    setText('validityText', oneTime ? 'La proposta ha validità 15 giorni.' : `La proposta ha validità 15 giorni. La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività.`);
+    let next = 5;
+    if (!el('formulaDetailSection').classList.contains('is-hidden')) next = 6;
+    if (hasTikTok) {
+      setHidden('tiktokDetailSection', false);
+      setText('tiktokDetailHeading', `${next}. TIKTOK SHOP`);
+      const acts = tiktokServiceSteps().map(([title]) => title.toLowerCase());
+      const status = tiktokIsActive() ? 'Lo Shop è già attivo e la proposta riguarda' : 'La fase TikTok Shop comprende';
+      const subject = acts.length ? joinNatural(acts) : 'le attività selezionate nel builder';
+      const profText = `${status} ${subject}, per ${count} ${itemWord()}. Le attività vengono svolte sulla base delle informazioni, dei prezzi e della disponibilità forniti dal Cliente; eventuali inserimenti ulteriori saranno concordati separatamente.`;
+      const simpleText = `${status} ${subject} per ${count} ${itemWord()}. Prezzi, disponibilità e informazioni sui prodotti saranno forniti o confermati dal Cliente.`;
+      const conciseText = `${status} ${subject} per ${count} ${itemWord()}.`;
+      setText('tiktokDetailText', styledText(profText, simpleText, conciseText));
+      next += 1;
+    }
+    setText('exclusionsHeading', `${next}. ULTERIORI EXTRA`);
+    setText('paymentHeading', `${next + 1}. PAGAMENTO E VALIDITÀ`);
     return rows.length;
   }
 
   function documentHeading() {
     const mode = proposalMode();
-    const activeShop = tiktokIsActive();
-    if (mode === 'tiktok') return {
-      title: 'ALLEGATO A – PROPOSTA TIKTOK SHOP',
-      subtitle: activeShop
-        ? 'Sviluppo e aggiornamento del canale TikTok Shop'
-        : 'Attivazione e sviluppo del canale TikTok Shop'
-    };
-    if (mode === 'both') return {
-      title: 'ALLEGATO A – OFFERTA INTEGRATA SOCIAL E TIKTOK SHOP',
-      subtitle: activeShop
-        ? 'Comunicazione social e aggiornamento del canale TikTok Shop'
-        : 'Comunicazione social e sviluppo del canale TikTok Shop'
-    };
-    return {
-      title: 'ALLEGATO A – OFFERTA ECONOMICA E SCOPE OF WORK',
-      subtitle: 'Servizi di comunicazione e gestione social'
-    };
+    if (mode === 'tiktok') return { title:'Allegato A al Contratto di Collaborazione', subtitle:'PROPOSTA TIKTOK SHOP' };
+    if (mode === 'both') return { title:'Allegato A al Contratto di Collaborazione', subtitle:'OFFERTA INTEGRATA · SOCIAL + TIKTOK SHOP' };
+    return { title:'Allegato A al Contratto di Collaborazione', subtitle:'OFFERTA ECONOMICA E SCOPE OF WORK' };
+  }
+
+  function visibleDirectChildren(page) {
+    return [...page.children].filter((node) => {
+      if (node.classList?.contains('doc-footer') || node.classList?.contains('page-number')) return false;
+      if (node.classList?.contains('is-hidden')) return false;
+      return getComputedStyle(node).display !== 'none';
+    });
+  }
+
+  function harmonizePage(page, maxExtraPx = 18) {
+    if (!page) return;
+    page.style.setProperty('--fill-gap', '0px');
+    const footer = page.querySelector('.doc-footer');
+    const items = visibleDirectChildren(page);
+    if (!items.length || !footer) return;
+    const targetBottom = footer.offsetTop - 10;
+    const contentBottom = Math.max(...items.map((node) => node.offsetTop + node.offsetHeight));
+    const free = targetBottom - contentBottom;
+    if (free <= 6) return;
+    const gapCount = page.classList.contains('page-two')
+      ? Math.max(3, items.length - 1)
+      : Math.max(5, items.length - 2);
+    const extra = Math.max(0, Math.min(maxExtraPx, free / gapCount));
+    page.style.setProperty('--fill-gap', `${extra.toFixed(2)}px`);
+  }
+
+  function harmonizePages() {
+    const doc = el('document');
+    if (doc) doc.style.zoom = '1';
+    // La prima pagina usa lo spazio libero per distribuire i blocchi.
+    harmonizePage(el('pageOne'), 46);
+    // Anche la seconda pagina distribuisce lo spazio libero tra i blocchi, senza creare buchi enormi.
+    harmonizePage(el('pageTwo'), 64);
+    updatePreviewScale();
+  }
+
+  function updatePreviewScale() {
+    const doc = el('document');
+    const preview = document.querySelector('.preview');
+    const page = el('pageOne');
+    if (!doc || !preview || !page) return;
+    // Su smartphone la preview è reflow e resta leggibile: niente miniatura A4.
+    if (window.innerWidth <= 700 || window.innerWidth > 900) {
+      doc.style.zoom = '1';
+      return;
+    }
+    const available = Math.max(320, preview.clientWidth - 8);
+    const pageWidth = page.offsetWidth || 794;
+    const scale = Math.min(1, available / pageWidth);
+    doc.style.zoom = String(Math.max(.58, scale));
+  }
+
+  function syncProductionPlacement() {
+    const section = el('productionDocumentSection');
+    const pageOne = el('pageOne');
+    const pageTwo = el('pageTwo');
+    if (!section || !pageOne || !pageTwo) return;
+    if (isTikTokOnly()) {
+      const footer = pageOne.querySelector('.doc-footer');
+      if (footer && section.parentElement !== pageOne) pageOne.insertBefore(section, footer);
+    } else {
+      const firstSection = pageTwo.querySelector(':scope > section');
+      if (firstSection && section.parentElement !== pageTwo) pageTwo.insertBefore(section, firstSection);
+    }
   }
 
   function render() {
     syncProposalMode();
     renderVisibility();
+    syncProductionPlacement();
     renderClientBlock();
     const heading = documentHeading();
     setText('docTitle', heading.title);
@@ -774,13 +1316,17 @@
 
     el('pageOne').classList.toggle('compact', serviceCount > 5 || objectiveCount > 2 || checked('serviceTikTok'));
     el('pageOne').classList.toggle('dense', serviceCount > 6 || (checked('serviceTikTok') && hasMainServices() && serviceCount > 5));
-    el('pageTwo').classList.toggle('compact', exclusionCount > 4 || feeRows > 3);
+    el('pageOne').classList.toggle('comparison-mode', columnSummaryEnabled());
+    el('pageTwo').classList.toggle('comparison-mode', columnSummaryEnabled());
+    el('pageTwo').classList.toggle('compact', columnSummaryEnabled() || exclusionCount > 4 || feeRows > 3);
     saveState();
+    requestAnimationFrame(harmonizePages);
   }
 
   function applyClientPreset() {
     const defaults = profile().defaults;
     objectiveIds.forEach((id) => { el(id).checked = defaults.includes(id); });
+    if (el('textStyle')) el('textStyle').value = recommendedTextStyle();
     showAllObjectives = false;
     render();
   }
@@ -836,7 +1382,7 @@
   }
 
   const WORD = {
-    teal: '2F6F6D', tealDark: '245957', paper: 'F1F4F3', line: 'D2D7D6', ink: '171717', muted: '666666'
+    teal: '2F6F6D', tealDark: '245957', paper: 'EAF2F1', line: 'CCD9D7', ink: '171717', muted: '666666', font: 'Nunito'
   };
 
   // Fallback incorporati: garantiscono i loghi nel Word anche aprendo il builder da file locale.
@@ -856,35 +1402,38 @@
 
   function wRun(text, opts = {}) {
     const { bold = false, size = 19, color = WORD.ink, italic = false } = opts;
-    const props = `${bold ? '<w:b/>' : ''}${italic ? '<w:i/>' : ''}<w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:eastAsia="Nunito"/><w:sz w:val="${size}"/><w:szCs w:val="${size}"/>${color ? `<w:color w:val="${color}"/>` : ''}`;
+    const props = `${bold ? '<w:b w:val="1"/><w:bCs w:val="1"/>' : ''}${italic ? '<w:i w:val="1"/><w:iCs w:val="1"/>' : ''}<w:rFonts w:ascii="${WORD.font}" w:hAnsi="${WORD.font}" w:cs="${WORD.font}" w:eastAsia="${WORD.font}"/><w:sz w:val="${size}"/><w:szCs w:val="${size}"/><w:lang w:val="it-IT"/>${color ? `<w:color w:val="${color}"/>` : ''}`;
     return `<w:r><w:rPr>${props}</w:rPr><w:t xml:space="preserve">${xmlSafe(text)}</w:t></w:r>`;
   }
   function wParagraph(text, opts = {}) {
-    const { bold = false, size = 19, color = WORD.ink, before = 0, after = 70, align = '', pageBreak = false, keepNext = false } = opts;
-    const spacing = `<w:spacing w:before="${before}" w:after="${after}"/>`;
-    const pPr = `<w:pPr>${spacing}${align ? `<w:jc w:val="${align}"/>` : ''}${keepNext ? '<w:keepNext/>' : ''}</w:pPr>`;
+    const { bold = false, size = 19, color = WORD.ink, before = 0, after = 70, align = '', pageBreak = false, pageBreakBefore = false, keepNext = false, style = '' } = opts;
+    const spacing = `<w:spacing w:before="${before}" w:after="${after}" w:line="240" w:lineRule="auto"/>`;
+    const pPr = `<w:pPr>${style ? `<w:pStyle w:val="${style}"/>` : ''}${spacing}${align ? `<w:jc w:val="${align}"/>` : ''}${pageBreakBefore ? '<w:pageBreakBefore/>' : ''}${keepNext ? '<w:keepNext/>' : ''}</w:pPr>`;
     return `<w:p>${pPr}${pageBreak ? '<w:r><w:br w:type="page"/></w:r>' : ''}${text ? wRun(text, { bold, size, color }) : ''}</w:p>`;
   }
   function wRichParagraph(runs, opts = {}) {
-    const { before = 0, after = 70, align = '', bullet = false } = opts;
-    const pPr = `<w:pPr><w:spacing w:before="${before}" w:after="${after}"/>${align ? `<w:jc w:val="${align}"/>` : ''}${bullet ? '<w:ind w:left="260" w:hanging="160"/>' : ''}</w:pPr>`;
+    const { before = 0, after = 70, align = '', bullet = false, style = '' } = opts;
+    const pPr = `<w:pPr>${style ? `<w:pStyle w:val="${style}"/>` : ''}<w:spacing w:before="${before}" w:after="${after}" w:line="240" w:lineRule="auto"/>${align ? `<w:jc w:val="${align}"/>` : ''}${bullet ? '<w:ind w:left="280" w:hanging="180"/>' : ''}</w:pPr>`;
     const prefix = bullet ? wRun('• ', { size:18 }) : '';
     return `<w:p>${pPr}${prefix}${runs.map((run) => wRun(run.text, run)).join('')}</w:p>`;
   }
   function wLinesParagraph(lines, opts = {}) {
-    const { before = 0, after = 60, align = '', firstBold = false, size = 18, color = WORD.ink } = opts;
-    const pPr = `<w:pPr><w:spacing w:before="${before}" w:after="${after}"/>${align ? `<w:jc w:val="${align}"/>` : ''}</w:pPr>`;
+    const { before = 0, after = 60, align = '', firstBold = false, size = 18, color = WORD.ink, style = '' } = opts;
+    const pPr = `<w:pPr>${style ? `<w:pStyle w:val="${style}"/>` : ''}<w:spacing w:before="${before}" w:after="${after}" w:line="240" w:lineRule="auto"/>${align ? `<w:jc w:val="${align}"/>` : ''}</w:pPr>`;
     const runs = lines.map((line, idx) => `${idx ? '<w:r><w:br/></w:r>' : ''}${wRun(line, { bold:firstBold && idx === 0, size, color })}`).join('');
     return `<w:p>${pPr}${runs}</w:p>`;
   }
   function wCell(content, width, opts = {}) {
     const { fill = '', valign = 'top' } = opts;
-    return `<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/><w:vAlign w:val="${valign}"/>${fill ? `<w:shd w:fill="${fill}"/>` : ''}</w:tcPr>${content}</w:tc>`;
+    const shading = fill ? `<w:shd w:val="clear" w:color="auto" w:fill="${fill}"/>` : '';
+    const margins = '<w:tcMar><w:top w:w="90" w:type="dxa"/><w:left w:w="130" w:type="dxa"/><w:bottom w:w="90" w:type="dxa"/><w:right w:w="130" w:type="dxa"/></w:tcMar>';
+    return `<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/><w:vAlign w:val="${valign}"/>${margins}${shading}</w:tcPr>${content}</w:tc>`;
   }
   function wTableShell(rows, opts = {}) {
     const { border = WORD.line, size = 4, widths = [4800,4800] } = opts;
     const grid = widths.map((width) => `<w:gridCol w:w="${width}"/>`).join('');
-    return `<w:tbl><w:tblPr><w:tblW w:w="${widths.reduce((a,b)=>a+b,0)}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblBorders><w:top w:val="single" w:sz="${size}" w:color="${border}"/><w:left w:val="single" w:sz="${size}" w:color="${border}"/><w:bottom w:val="single" w:sz="${size}" w:color="${border}"/><w:right w:val="single" w:sz="${size}" w:color="${border}"/><w:insideH w:val="single" w:sz="${size}" w:color="${border}"/><w:insideV w:val="single" w:sz="${size}" w:color="${border}"/></w:tblBorders></w:tblPr><w:tblGrid>${grid}</w:tblGrid>${rows.join('')}</w:tbl>`;
+    const borders = `<w:tblBorders><w:top w:val="single" w:sz="${size}" w:space="0" w:color="${border}"/><w:left w:val="single" w:sz="${size}" w:space="0" w:color="${border}"/><w:bottom w:val="single" w:sz="${size}" w:space="0" w:color="${border}"/><w:right w:val="single" w:sz="${size}" w:space="0" w:color="${border}"/><w:insideH w:val="single" w:sz="${size}" w:space="0" w:color="${border}"/><w:insideV w:val="single" w:sz="${size}" w:space="0" w:color="${border}"/></w:tblBorders>`;
+    return `<w:tbl><w:tblPr><w:tblW w:w="${widths.reduce((a,b)=>a+b,0)}" w:type="dxa"/><w:tblLayout w:type="fixed"/>${borders}<w:tblLook w:val="04A0" w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="1"/></w:tblPr><w:tblGrid>${grid}</w:tblGrid>${rows.join('')}</w:tbl>`;
   }
   function wPartiesTable(client) {
     const widths = [4800,4800];
@@ -897,6 +1446,21 @@
   function wSummaryTable(rows) {
     const widths = [3600,6000];
     const xmlRows = rows.map(([label, value]) => `<w:tr>${wCell(wParagraph(label, { bold:true, size:17, color:WORD.teal, after:20 }), widths[0], { fill:WORD.paper, valign:'center' })}${wCell(wParagraph(value, { size:16, after:20 }), widths[1], { valign:'center' })}</w:tr>`);
+    return wTableShell(xmlRows, { widths, border:WORD.line, size:4 });
+  }
+  function wComparisonTable(rows) {
+    const colCount = Math.max(2, rows[0]?.length || 3);
+    const total = 9600;
+    const first = colCount === 4 ? 2200 : 2700;
+    const rest = Math.floor((total - first) / (colCount - 1));
+    const widths = [first, ...Array(colCount - 1).fill(rest)];
+    const xmlRows = rows.map((row, idx) => {
+      const cells = row.map((value, cellIdx) => {
+        const header = idx === 0 || cellIdx === 0;
+        return wCell(wParagraph(value, { bold:header, size:idx === 0 ? 15 : 14, color:header ? WORD.teal : WORD.ink, after:16 }), widths[cellIdx], { fill:header ? WORD.paper : '', valign:'center' });
+      }).join('');
+      return `<w:tr>${cells}</w:tr>`;
+    });
     return wTableShell(xmlRows, { widths, border:WORD.line, size:4 });
   }
   function wFeeTable(rows) {
@@ -918,13 +1482,13 @@
     const dim = pngDimensions(bytes) || { width:4, height:1 };
     const cx = Math.round(widthMm * 36000);
     const cy = Math.round(cx * dim.height / dim.width);
-    return `<w:p><w:pPr><w:jc w:val="${align}"/><w:spacing w:after="0"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${docPrId}" name="${xmlSafe(name)}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="${xmlSafe(name)}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
+    return `<w:p><w:pPr><w:jc w:val="${align}"/><w:spacing w:after="0"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${docPrId}" name="${xmlSafe(name)}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${docPrId}" name="${xmlSafe(name)}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
   }
   function wBrandTable(somo, black) {
     const widths = [4800,4800];
     const borderNil = '<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>';
-    const left = somo ? imageDrawing('rIdSomoLogo', 'SOMO', somo, 38, 'left', 1) : wParagraph('SOMO S.r.l.', { bold:true, size:19, color:WORD.teal, after:0 });
-    const right = black ? imageDrawing('rIdBlackLogo', 'Black Noodles', black, 31, 'right', 2) : wParagraph('BLACK NOODLES', { bold:true, size:19, color:WORD.teal, align:'right', after:0 });
+    const left = somo ? imageDrawing('rId7', 'SOMO', somo, 38, 'left', 1) : wParagraph('SOMO S.r.l.', { bold:true, size:19, color:WORD.teal, after:0 });
+    const right = black ? imageDrawing('rId8', 'Black Noodles', black, 31, 'right', 2) : wParagraph('BLACK NOODLES', { bold:true, size:19, color:WORD.teal, align:'right', after:0 });
     return `<w:tbl><w:tblPr><w:tblW w:w="9600" w:type="dxa"/><w:tblLayout w:type="fixed"/>${borderNil}</w:tblPr><w:tblGrid><w:gridCol w:w="4800"/><w:gridCol w:w="4800"/></w:tblGrid><w:tr>${wCell(left,widths[0])}${wCell(right,widths[1])}</w:tr></w:tbl>`;
   }
   async function fetchBinary(path) {
@@ -972,9 +1536,12 @@
 
   async function buildDocx() {
     render();
-    const summaryRows = [...document.querySelectorAll('.summary-table tr')]
+    const compare = columnSummaryEnabled();
+    const summaryRows = [...document.querySelectorAll('#summarySingleTable tr')]
       .filter((tr) => !tr.classList.contains('is-hidden'))
       .map((tr) => [tr.children[0]?.textContent?.trim() || '', tr.children[1]?.textContent?.trim() || '']);
+    const comparisonRows = [...document.querySelectorAll('#summaryCompareTable tr')]
+      .map((tr) => [...tr.children].map((cell) => cell.textContent?.trim() || ''));
     const feeRows = [...document.querySelectorAll('.fee-table tr')].map((tr) => [tr.children[0]?.textContent?.trim() || '', tr.children[1]?.textContent?.trim() || '']);
     const serviceItems = [...document.querySelectorAll('#serviceList li')].map((li) => ({
       title: li.querySelector('strong')?.textContent?.trim() || '',
@@ -996,47 +1563,380 @@
 
     const body = [];
     body.push(wBrandTable(somoLogo, blackLogo));
-    body.push(wParagraph(domText('#docTitle'), { bold:true, size:33, color:WORD.ink, after:35, keepNext:true }));
-    body.push(wParagraph(domText('#docSubtitle'), { bold:true, size:19, color:WORD.teal, after:100 }));
+    body.push(wParagraph(domText('#docTitle'), { bold:true, size:33, color:WORD.ink, after:55, keepNext:true }));
+    body.push(wParagraph(domText('#docSubtitle'), { bold:true, size:19, color:WORD.teal, after:120 }));
     body.push(wPartiesTable(client));
-    body.push(wParagraph('OGGETTO', { bold:true, size:19, color:WORD.teal, before:100, after:30, keepNext:true }));
-    body.push(wParagraph(domText('#objectText'), { size:19, after:100 }));
-    body.push(wParagraph('SINTESI DELL’OFFERTA', { bold:true, size:23, color:WORD.ink, after:55, keepNext:true }));
-    body.push(wSummaryTable(summaryRows));
+    body.push(wParagraph('OGGETTO', { bold:true, size:19, color:WORD.teal, before:120, after:40, keepNext:true }));
+    body.push(wParagraph(domText('#objectText'), { size:19, after:125 }));
+    body.push(wParagraph('SINTESI DELL’OFFERTA', { bold:true, size:23, color:WORD.ink, after:70, keepNext:true }));
+    body.push(compare ? wComparisonTable(comparisonRows) : wSummaryTable(summaryRows));
 
     if (!el('objectiveDocumentSection')?.classList.contains('is-hidden')) {
-      body.push(wParagraph('1. OBIETTIVO DELLA COLLABORAZIONE', { bold:true, size:23, color:WORD.ink, before:110, after:45, keepNext:true }));
-      objectiveParagraphs.forEach((text) => body.push(wParagraph(text, { size:18, after:35 })));
+      body.push(wParagraph('1. OBIETTIVO DELLA COLLABORAZIONE', { bold:true, size:23, color:WORD.ink, before:150, after:65, keepNext:true }));
+      objectiveParagraphs.forEach((text) => body.push(wParagraph(text, { size:18, after:55 })));
     }
     if (!el('servicesDocumentSection')?.classList.contains('is-hidden')) {
-      body.push(wParagraph('2. SERVIZI INCLUSI', { bold:true, size:23, color:WORD.ink, before:90, after:45, keepNext:true }));
+      body.push(wParagraph('2. SERVIZI INCLUSI', { bold:true, size:23, color:WORD.ink, before:145, after:65, keepNext:true }));
       serviceItems.forEach((item) => body.push(wRichParagraph([
         { text:item.title + (item.description ? ' — ' : ''), bold:true, size:18 },
         { text:item.description, size:18 }
-      ], { bullet:true, after:26 })));
+      ], { bullet:true, after:52 })));
     }
-    if (!el('productionDocumentSection')?.classList.contains('is-hidden')) {
-      body.push(wParagraph(domText('#productionHeading'), { bold:true, size:23, color:WORD.ink, before:90, after:45, keepNext:true }));
-      body.push(wParagraph(domText('#productionText'), { size:18, after:40 }));
+    const productionVisible = !el('productionDocumentSection')?.classList.contains('is-hidden');
+    if (productionVisible) {
+      body.push(wParagraph(domText('#productionHeading'), { bold:true, size:23, color:WORD.ink, after:65, keepNext:true, pageBreakBefore:!isTikTokOnly() }));
+      body.push(wParagraph(domText('#productionText'), { size:18, after:80 }));
     }
-
-    body.push(wParagraph('', { pageBreak:true, after:0 }));
-    body.push(wParagraph('4. COMPENSO', { bold:true, size:23, color:WORD.ink, after:60, keepNext:true }));
+    body.push(wParagraph(domText('#compensoHeading') || '4. COMPENSO', { bold:true, size:23, color:WORD.ink, after:80, keepNext:true, pageBreakBefore:isTikTokOnly() || (!productionVisible && !isTikTokOnly()) }));
     body.push(wFeeTable(feeRows));
-    body.push(wParagraph('5. NON INCLUSO', { bold:true, size:23, color:WORD.ink, before:105, after:45, keepNext:true }));
-    exclusions.forEach((text) => body.push(wRichParagraph([{ text, size:18 }], { bullet:true, after:26 })));
-    body.push(wParagraph('Le eventuali attività aggiuntive saranno concordate e preventivate separatamente.', { size:18, after:85 }));
-    body.push(wParagraph('6. PAGAMENTO E VALIDITÀ', { bold:true, size:23, color:WORD.ink, before:80, after:45, keepNext:true }));
-    [domText('#paymentText'),domText('#invoiceText'),domText('#validityText')].filter(Boolean).forEach((text) => body.push(wParagraph(text, { size:18, after:38 })));
-    body.push(wParagraph('Data: ____ / ____ / ______', { size:18, before:130, after:90 }));
-    body.push(wParagraph('Per accettazione', { bold:true, size:18, after:28 }));
+    if (!el('formulaDetailSection')?.classList.contains('is-hidden')) {
+      body.push(wParagraph(domText('#formulaDetailHeading'), { bold:true, size:23, color:WORD.ink, before:200, after:72, keepNext:true }));
+      body.push(wParagraph(domText('#formulaDetailText'), { size:18, after:90 }));
+    }
+    if (!el('tiktokDetailSection')?.classList.contains('is-hidden')) {
+      body.push(wParagraph(domText('#tiktokDetailHeading'), { bold:true, size:23, color:WORD.ink, before:200, after:72, keepNext:true }));
+      body.push(wParagraph(domText('#tiktokDetailText'), { size:18, after:90 }));
+    }
+    body.push(wParagraph(domText('#exclusionsHeading') || '5. ULTERIORI EXTRA', { bold:true, size:23, color:WORD.ink, before:240, after:72, keepNext:true }));
+    exclusions.forEach((text) => body.push(wRichParagraph([{ text, size:18 }], { bullet:true, after:52 })));
+    body.push(wParagraph('Le eventuali attività aggiuntive saranno concordate e preventivate separatamente.', { size:18, after:110 }));
+    body.push(wParagraph(domText('#paymentHeading') || '6. PAGAMENTO E VALIDITÀ', { bold:true, size:23, color:WORD.ink, before:240, after:72, keepNext:true }));
+    [domText('#paymentText'),domText('#invoiceText'),domText('#validityText')].filter(Boolean).forEach((text) => body.push(wParagraph(text, { size:18, after:68 })));
+    const extraContentPenalty = (!el('formulaDetailSection')?.classList.contains('is-hidden') ? 800 : 0) + (!el('tiktokDetailSection')?.classList.contains('is-hidden') ? 800 : 0) + (compare ? 450 : 0);
+    const pageTwoSignatureBefore = Math.max(1000, Math.min(3800, 5800 - (feeRows.length * 420) - (exclusions.length * 280) - extraContentPenalty));
+    if (!el('chosenFormulaRow')?.classList.contains('is-hidden')) body.push(wParagraph('Formula prescelta: ________________________________', { size:18, before:pageTwoSignatureBefore, after:130 }));
+    body.push(wParagraph('Data: ____ / ____ / ______', { size:18, before:el('chosenFormulaRow')?.classList.contains('is-hidden') ? pageTwoSignatureBefore : 0, after:130 }));
+    body.push(wParagraph('Per accettazione', { bold:true, size:18, after:50 }));
     body.push(wParagraph('Firma e Timbro del Cliente  _____________________________________________', { size:18, after:30 }));
 
     const footerText = 'SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it';
     const footerXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="30"/></w:pPr>${wRun(footerText,{size:14,color:'181818'})}</w:p><w:p><w:pPr><w:jc w:val="right"/><w:spacing w:after="0"/></w:pPr><w:fldSimple w:instr="PAGE"><w:r><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito"/><w:sz w:val="14"/><w:color w:val="666666"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple></w:p></w:ftr>`;
 
-    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><w:body>${body.join('')}<w:sectPr><w:footerReference w:type="default" r:id="rIdFooter"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="895" w:right="1134" w:bottom="1020" w:left="1134" w:header="360" w:footer="470" w:gutter="0"/></w:sectPr></w:body></w:document>`;
-    const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:eastAsia="Nunito"/><w:sz w:val="19"/><w:color w:val="${WORD.ink}"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="60"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito"/></w:rPr></w:style></w:styles>`;
+    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><w:body>${body.join('')}<w:sectPr><w:footerReference w:type="default" r:id="rId2"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="895" w:right="1134" w:bottom="1020" w:left="1134" w:header="360" w:footer="470" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+    const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:cs="Nunito" w:eastAsia="Nunito"/><w:sz w:val="19"/><w:szCs w:val="19"/><w:lang w:val="it-IT"/><w:color w:val="${WORD.ink}"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="60" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:cs="Nunito"/></w:rPr></w:style><w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:uiPriority w:val="99"/><w:semiHidden/><w:unhideWhenUsed/></w:style></w:styles>`
+    const settingsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:zoom w:val="bestFit"/><w:defaultTabStop w:val="720"/><w:characterSpacingControl w:val="doNotCompress"/><w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/><w:compatSetting w:name="overrideTableStyleFontSizeAndJustification" w:uri="http://schemas.microsoft.com/office/word" w:val="1"/></w:compat><w:themeFontLang w:val="it-IT"/><w:doNotAutoCompressPictures/><w:decimalSymbol w:val=","/><w:listSeparator w:val=";"/></w:settings>`;
+    const fontTableXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:fonts xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:font w:name="Nunito"><w:charset w:val="00"/><w:family w:val="swiss"/><w:pitch w:val="variable"/></w:font><w:font w:name="Arial"><w:charset w:val="00"/><w:family w:val="swiss"/><w:pitch w:val="variable"/></w:font><w:font w:name="Calibri"><w:charset w:val="00"/><w:family w:val="swiss"/><w:pitch w:val="variable"/></w:font></w:fonts>`;
+    const webSettingsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:webSettings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:allowPNG/><w:optimizeForBrowser/></w:webSettings>`;
+    const themeXml = `<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">
+  <a:themeElements>
+    <a:clrScheme name="Office">
+      <a:dk1>
+        <a:sysClr val="windowText" lastClr="000000"/>
+      </a:dk1>
+      <a:lt1>
+        <a:sysClr val="window" lastClr="FFFFFF"/>
+      </a:lt1>
+      <a:dk2>
+        <a:srgbClr val="1F497D"/>
+      </a:dk2>
+      <a:lt2>
+        <a:srgbClr val="EEECE1"/>
+      </a:lt2>
+      <a:accent1>
+        <a:srgbClr val="4F81BD"/>
+      </a:accent1>
+      <a:accent2>
+        <a:srgbClr val="C0504D"/>
+      </a:accent2>
+      <a:accent3>
+        <a:srgbClr val="9BBB59"/>
+      </a:accent3>
+      <a:accent4>
+        <a:srgbClr val="8064A2"/>
+      </a:accent4>
+      <a:accent5>
+        <a:srgbClr val="4BACC6"/>
+      </a:accent5>
+      <a:accent6>
+        <a:srgbClr val="F79646"/>
+      </a:accent6>
+      <a:hlink>
+        <a:srgbClr val="0000FF"/>
+      </a:hlink>
+      <a:folHlink>
+        <a:srgbClr val="800080"/>
+      </a:folHlink>
+    </a:clrScheme>
+    <a:fontScheme name="Office">
+      <a:majorFont>
+        <a:latin typeface="Calibri"/>
+        <a:ea typeface=""/>
+        <a:cs typeface=""/>
+        <a:font script="Jpan" typeface="ＭＳ ゴシック"/>
+        <a:font script="Hang" typeface="맑은 고딕"/>
+        <a:font script="Hans" typeface="宋体"/>
+        <a:font script="Hant" typeface="新細明體"/>
+        <a:font script="Arab" typeface="Times New Roman"/>
+        <a:font script="Hebr" typeface="Times New Roman"/>
+        <a:font script="Thai" typeface="Angsana New"/>
+        <a:font script="Ethi" typeface="Nyala"/>
+        <a:font script="Beng" typeface="Vrinda"/>
+        <a:font script="Gujr" typeface="Shruti"/>
+        <a:font script="Khmr" typeface="MoolBoran"/>
+        <a:font script="Knda" typeface="Tunga"/>
+        <a:font script="Guru" typeface="Raavi"/>
+        <a:font script="Cans" typeface="Euphemia"/>
+        <a:font script="Cher" typeface="Plantagenet Cherokee"/>
+        <a:font script="Yiii" typeface="Microsoft Yi Baiti"/>
+        <a:font script="Tibt" typeface="Microsoft Himalaya"/>
+        <a:font script="Thaa" typeface="MV Boli"/>
+        <a:font script="Deva" typeface="Mangal"/>
+        <a:font script="Telu" typeface="Gautami"/>
+        <a:font script="Taml" typeface="Latha"/>
+        <a:font script="Syrc" typeface="Estrangelo Edessa"/>
+        <a:font script="Orya" typeface="Kalinga"/>
+        <a:font script="Mlym" typeface="Kartika"/>
+        <a:font script="Laoo" typeface="DokChampa"/>
+        <a:font script="Sinh" typeface="Iskoola Pota"/>
+        <a:font script="Mong" typeface="Mongolian Baiti"/>
+        <a:font script="Viet" typeface="Times New Roman"/>
+        <a:font script="Uigh" typeface="Microsoft Uighur"/>
+        <a:font script="Geor" typeface="Sylfaen"/>
+      </a:majorFont>
+      <a:minorFont>
+        <a:latin typeface="Cambria"/>
+        <a:ea typeface=""/>
+        <a:cs typeface=""/>
+        <a:font script="Jpan" typeface="ＭＳ 明朝"/>
+        <a:font script="Hang" typeface="맑은 고딕"/>
+        <a:font script="Hans" typeface="宋体"/>
+        <a:font script="Hant" typeface="新細明體"/>
+        <a:font script="Arab" typeface="Arial"/>
+        <a:font script="Hebr" typeface="Arial"/>
+        <a:font script="Thai" typeface="Cordia New"/>
+        <a:font script="Ethi" typeface="Nyala"/>
+        <a:font script="Beng" typeface="Vrinda"/>
+        <a:font script="Gujr" typeface="Shruti"/>
+        <a:font script="Khmr" typeface="DaunPenh"/>
+        <a:font script="Knda" typeface="Tunga"/>
+        <a:font script="Guru" typeface="Raavi"/>
+        <a:font script="Cans" typeface="Euphemia"/>
+        <a:font script="Cher" typeface="Plantagenet Cherokee"/>
+        <a:font script="Yiii" typeface="Microsoft Yi Baiti"/>
+        <a:font script="Tibt" typeface="Microsoft Himalaya"/>
+        <a:font script="Thaa" typeface="MV Boli"/>
+        <a:font script="Deva" typeface="Mangal"/>
+        <a:font script="Telu" typeface="Gautami"/>
+        <a:font script="Taml" typeface="Latha"/>
+        <a:font script="Syrc" typeface="Estrangelo Edessa"/>
+        <a:font script="Orya" typeface="Kalinga"/>
+        <a:font script="Mlym" typeface="Kartika"/>
+        <a:font script="Laoo" typeface="DokChampa"/>
+        <a:font script="Sinh" typeface="Iskoola Pota"/>
+        <a:font script="Mong" typeface="Mongolian Baiti"/>
+        <a:font script="Viet" typeface="Arial"/>
+        <a:font script="Uigh" typeface="Microsoft Uighur"/>
+        <a:font script="Geor" typeface="Sylfaen"/>
+      </a:minorFont>
+    </a:fontScheme>
+    <a:fmtScheme name="Office">
+      <a:fillStyleLst>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+        <a:gradFill rotWithShape="1">
+          <a:gsLst>
+            <a:gs pos="0">
+              <a:schemeClr val="phClr">
+                <a:tint val="50000"/>
+                <a:satMod val="300000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="35000">
+              <a:schemeClr val="phClr">
+                <a:tint val="37000"/>
+                <a:satMod val="300000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="100000">
+              <a:schemeClr val="phClr">
+                <a:tint val="15000"/>
+                <a:satMod val="350000"/>
+              </a:schemeClr>
+            </a:gs>
+          </a:gsLst>
+          <a:lin ang="16200000" scaled="1"/>
+        </a:gradFill>
+        <a:gradFill rotWithShape="1">
+          <a:gsLst>
+            <a:gs pos="0">
+              <a:schemeClr val="phClr">
+                <a:tint val="100000"/>
+                <a:shade val="100000"/>
+                <a:satMod val="130000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="100000">
+              <a:schemeClr val="phClr">
+                <a:tint val="50000"/>
+                <a:shade val="100000"/>
+                <a:satMod val="350000"/>
+              </a:schemeClr>
+            </a:gs>
+          </a:gsLst>
+          <a:lin ang="16200000" scaled="0"/>
+        </a:gradFill>
+      </a:fillStyleLst>
+      <a:lnStyleLst>
+        <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr">
+              <a:shade val="95000"/>
+              <a:satMod val="105000"/>
+            </a:schemeClr>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+        </a:ln>
+        <a:ln w="25400" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr"/>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+        </a:ln>
+        <a:ln w="38100" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr"/>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+        </a:ln>
+      </a:lnStyleLst>
+      <a:effectStyleLst>
+        <a:effectStyle>
+          <a:effectLst>
+            <a:outerShdw blurRad="40000" dist="20000" dir="5400000" rotWithShape="0">
+              <a:srgbClr val="000000">
+                <a:alpha val="38000"/>
+              </a:srgbClr>
+            </a:outerShdw>
+          </a:effectLst>
+        </a:effectStyle>
+        <a:effectStyle>
+          <a:effectLst>
+            <a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0">
+              <a:srgbClr val="000000">
+                <a:alpha val="35000"/>
+              </a:srgbClr>
+            </a:outerShdw>
+          </a:effectLst>
+        </a:effectStyle>
+        <a:effectStyle>
+          <a:effectLst>
+            <a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0">
+              <a:srgbClr val="000000">
+                <a:alpha val="35000"/>
+              </a:srgbClr>
+            </a:outerShdw>
+          </a:effectLst>
+          <a:scene3d>
+            <a:camera prst="orthographicFront">
+              <a:rot lat="0" lon="0" rev="0"/>
+            </a:camera>
+            <a:lightRig rig="threePt" dir="t">
+              <a:rot lat="0" lon="0" rev="1200000"/>
+            </a:lightRig>
+          </a:scene3d>
+          <a:sp3d>
+            <a:bevelT w="63500" h="25400"/>
+          </a:sp3d>
+        </a:effectStyle>
+      </a:effectStyleLst>
+      <a:bgFillStyleLst>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+        <a:gradFill rotWithShape="1">
+          <a:gsLst>
+            <a:gs pos="0">
+              <a:schemeClr val="phClr">
+                <a:tint val="40000"/>
+                <a:satMod val="350000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="40000">
+              <a:schemeClr val="phClr">
+                <a:tint val="45000"/>
+                <a:shade val="99000"/>
+                <a:satMod val="350000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="100000">
+              <a:schemeClr val="phClr">
+                <a:shade val="20000"/>
+                <a:satMod val="255000"/>
+              </a:schemeClr>
+            </a:gs>
+          </a:gsLst>
+          <a:path path="circle">
+            <a:fillToRect l="50000" t="-80000" r="50000" b="180000"/>
+          </a:path>
+        </a:gradFill>
+        <a:gradFill rotWithShape="1">
+          <a:gsLst>
+            <a:gs pos="0">
+              <a:schemeClr val="phClr">
+                <a:tint val="80000"/>
+                <a:satMod val="300000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="100000">
+              <a:schemeClr val="phClr">
+                <a:shade val="30000"/>
+                <a:satMod val="200000"/>
+              </a:schemeClr>
+            </a:gs>
+          </a:gsLst>
+          <a:path path="circle">
+            <a:fillToRect l="50000" t="50000" r="50000" b="50000"/>
+          </a:path>
+        </a:gradFill>
+      </a:bgFillStyleLst>
+    </a:fmtScheme>
+  </a:themeElements>
+  <a:objectDefaults>
+    <a:spDef>
+      <a:spPr/>
+      <a:bodyPr/>
+      <a:lstStyle/>
+      <a:style>
+        <a:lnRef idx="1">
+          <a:schemeClr val="accent1"/>
+        </a:lnRef>
+        <a:fillRef idx="3">
+          <a:schemeClr val="accent1"/>
+        </a:fillRef>
+        <a:effectRef idx="2">
+          <a:schemeClr val="accent1"/>
+        </a:effectRef>
+        <a:fontRef idx="minor">
+          <a:schemeClr val="lt1"/>
+        </a:fontRef>
+      </a:style>
+    </a:spDef>
+    <a:lnDef>
+      <a:spPr/>
+      <a:bodyPr/>
+      <a:lstStyle/>
+      <a:style>
+        <a:lnRef idx="2">
+          <a:schemeClr val="accent1"/>
+        </a:lnRef>
+        <a:fillRef idx="0">
+          <a:schemeClr val="accent1"/>
+        </a:fillRef>
+        <a:effectRef idx="1">
+          <a:schemeClr val="accent1"/>
+        </a:effectRef>
+        <a:fontRef idx="minor">
+          <a:schemeClr val="tx1"/>
+        </a:fontRef>
+      </a:style>
+    </a:lnDef>
+  </a:objectDefaults>
+  <a:extraClrSchemeLst/>
+</a:theme>
+`;
+
 
     const relationships = [
       '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>',
