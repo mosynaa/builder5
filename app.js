@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'somo-allegato-a-builder-v22';
+  const STORAGE_KEY = 'somo-allegato-a-builder-v23';
   const form = document.getElementById('builderForm');
   const fields = [...form.querySelectorAll('input, select')];
   const objectiveIds = [
@@ -605,7 +605,7 @@
     if (checked('serviceInfluencer')) activities.push('coordinamento di creator e influencer');
     if (checked('serviceEventCoverage')) activities.push('copertura degli eventi concordati');
     if (checked('serviceTikTok')) activities.push(tiktokObjectDescription());
-    if (!activities.length && checked('serviceStrategy')) activities.push('strategia e pianificazione della comunicazione social');
+    if (!activities.length && checked('serviceStrategy')) activities.push('ideazione e pianificazione dei contenuti');
     return sentence(joinNatural(activities) || 'servizi di comunicazione definiti nella presente proposta');
   }
 
@@ -766,7 +766,7 @@
 
   function productionTitle() {
     const types = selectedContentTypes();
-    return types.length ? `Produzione di ${joinNatural(types)}` : 'Produzione dei contenuti';
+    return types.length ? `Produzione e post-produzione di ${joinNatural(types)}` : 'Produzione e post-produzione dei contenuti';
   }
 
   function tiktokServiceSteps() {
@@ -785,15 +785,15 @@
     if (isTikTokOnly()) {
       tiktokServiceSteps().forEach((s) => services.push(s));
     } else {
-      if (checked('serviceStrategy')) services.push(['Strategia e piano editoriale', styledText('Definizione della linea di comunicazione, dei temi e della pianificazione in funzione degli obiettivi concordati.', 'Definizione dei contenuti da realizzare e organizzazione della pubblicazione in base agli obiettivi concordati.', 'Idee, temi e pianificazione dei contenuti.')]);
+      if (checked('serviceStrategy')) services.push(['Ideazione e pianificazione dei contenuti', styledText('Definizione dei format, dei temi e dei contenuti da realizzare in funzione degli obiettivi concordati.', 'Scelta delle idee e dei contenuti da realizzare in base agli obiettivi concordati.', 'Idee e organizzazione dei contenuti da produrre.')]);
       if (checked('serviceProduction')) {
         const types = selectedContentTypes();
         let desc = types.length ? `Produzione di ${joinNatural(types)}` : 'Produzione dei contenuti concordati';
         if (value('quantityMode') === 'fixed') {
           const fixed = fixedContentParts();
           if (fixed.length) desc = `Produzione prevista: ${joinNatural(fixed)}`;
-        } else desc += ', con quantità definite in funzione del piano editoriale';
-        desc += styledText('. Comprende ideazione, riprese, montaggio, post-produzione e adattamento ai formati social.', '. Sono inclusi ideazione, riprese, montaggio e adattamento per i social.', '. Include realizzazione, montaggio e adattamento social.');
+        } else desc += ', con quantità definite in funzione del piano di produzione concordato';
+        desc += styledText('. Comprende ideazione, riprese, montaggio, post-produzione e consegna dei contenuti già adattati ai formati social.', '. Sono inclusi ideazione, riprese e montaggio, con consegna dei contenuti già pronti nei formati social.', '. Realizzazione, montaggio e consegna pronta per i social.'); if (!checked('serviceSocial')) desc += styledText(' La pubblicazione e la gestione dei canali social non sono incluse.', ' La pubblicazione e la gestione dei social non sono incluse.', ' Pubblicazione e gestione social escluse.');
         services.push([productionTitle(), desc]);
       }
       if (checked('serviceClientContent')) {
@@ -932,7 +932,7 @@
       if (c === 'fortnightly') return `${count} ${unit} di produzione ogni 2 settimane`;
       if (c === 'bimonthly') return `${count} ${unit} di produzione ogni 2 mesi`;
       if (c === 'quarterly') return `${count} ${unit} di produzione ogni 3 mesi`;
-      if (c === 'plan') return 'Produzione definita in base al piano editoriale';
+      if (c === 'plan') return 'Produzione definita in base al piano di produzione concordato';
       return 'Nessun appuntamento dedicato';
     }
     return 'Non prevista';
@@ -942,7 +942,7 @@
     if (isTikTokOnly()) { const parts=[]; if (tiktokHas('tiktokPhotos')) parts.push('immagini'); if (tiktokHas('tiktokCatalog')) parts.push('catalogo'); if (tiktokHas('tiktokPublish')) parts.push(`${tiktokCount()} schede prodotto`); return parts.length ? joinNatural(parts) : 'Da definire'; }
     const parts = [];
     if (checked('serviceProduction')) {
-      if (value('quantityMode') === 'plan') parts.push('contenuti professionali definiti in base al piano editoriale');
+      if (value('quantityMode') === 'plan') parts.push('contenuti professionali definiti in base al piano di produzione concordato');
       else parts.push(...fixedContentParts());
     }
     if (checked('serviceClientContent')) parts.push(`fino a ${clientContentCount()} video interni guidati ${clientContentPeriodText()}`);
@@ -980,11 +980,11 @@
     if (c === 'fortnightly') return `${count} ${noun} ogni 2 settimane`;
     if (c === 'bimonthly') return `${count} ${noun} ogni 2 mesi`;
     if (c === 'quarterly') return `${count} ${noun} ogni 3 mesi`;
-    if (c === 'plan') return 'Secondo piano editoriale';
+    if (c === 'plan') return 'Secondo piano di produzione';
     return '-';
   }
   function compareQuantityValue(kind) {
-    if (value('quantityMode') !== 'fixed') return 'Secondo piano editoriale';
+    if (value('quantityMode') !== 'fixed') return 'Secondo piano di produzione';
     const period = quantityPeriodShort();
     if (kind === 'video') { const n=numberValue('videos'); return n ? `${n} ${period}` : '-'; }
     if (kind === 'photo') return value('photos') ? `${value('photos')} ${period}` : '-';
@@ -1024,7 +1024,7 @@
         if (checked('productionVideo')) rows.push(['Video', ...basicVals(compareQuantityValue('video')), ...(withTikTok ? ['-'] : [])]);
         if (checked('productionPhoto')) rows.push(['Foto', ...basicVals(compareQuantityValue('photo')), ...(withTikTok ? [tiktokColumnValue('Fotografie')] : [])]);
         if (checked('productionGraphics')) rows.push(['Grafiche', ...basicVals(compareQuantityValue('graphics')), ...(withTikTok ? ['-'] : [])]);
-      } else rows.push(['Contenuti professionali', ...basicVals('Secondo piano editoriale'), ...(withTikTok ? ['-'] : [])]);
+      } else rows.push(['Contenuti professionali', ...basicVals('Secondo piano di produzione'), ...(withTikTok ? ['-'] : [])]);
     } else if (withTikTok && tiktokHas('tiktokPhotos')) rows.push(['Foto', ...basicVals('-'), tiktokColumnValue('Fotografie')]);
     if (checked('serviceClientContent')) {
       const val = `${clientContentCount()} ${clientContentPeriodText()}`;
