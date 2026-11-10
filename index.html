@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=22">
 </head>
 <body>
   <main class="app">
@@ -251,10 +251,10 @@
           <p class="form-note section-note">Scegli una formula unica oppure due alternative. Se la proposta comprende TikTok Shop, lo Shop viene mostrato come colonna separata nella sintesi.</p>
           <div id="offerLayoutControls">
             <span class="group-label">Come vuoi presentare l'offerta?</span>
-            <input id="offerLayout" name="offerLayout" type="hidden" value="single">
+            <input id="offerLayout" name="offerLayout" type="hidden" value="compare">
             <div class="offer-layout-choices" role="radiogroup" aria-label="Struttura dell'offerta">
-              <button class="offer-layout-choice is-active" type="button" data-layout="single" aria-pressed="true"><strong>Formula singola</strong><span>Una sola soluzione, con durata e compenso</span></button>
-              <button class="offer-layout-choice" type="button" data-layout="compare" aria-pressed="false"><strong>2 formule alternative</strong><span>Due alternative economiche affiancate nella stessa offerta</span></button>
+              <button class="offer-layout-choice" type="button" data-layout="single" aria-pressed="false"><strong>Formula singola</strong><span>Una sola soluzione, con durata e compenso</span></button>
+              <button class="offer-layout-choice is-active" type="button" data-layout="compare" aria-pressed="true"><strong>2 formule alternative</strong><span>Due alternative economiche affiancate nella stessa offerta</span></button>
             </div>
           </div>
           <div id="mainEconomicControls">
@@ -427,6 +427,6 @@
       </article>
     </section>
   </main>
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=22"></script>
 </body>
 </html>
