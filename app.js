@@ -255,7 +255,7 @@
 
   const defaultState = {
     proposalMode: 'classic', clientType: 'retail', textStyle: 'professional', clientName: '', legalName: '', address: '', city: '', vat: '',
-    focus: '', customObjective: '',
+    focus: '', customObjective: '', socialPresence: 'active',
     objectiveBrand: true, objectiveContinuity: true, objectiveRange: true, objectiveExperience: false,
     objectiveFootfall: true, objectiveEvents: true, objectiveEcommerce: false, objectiveLeads: false,
     objectiveCommunity: false, objectiveLaunch: false,
@@ -460,6 +460,7 @@
   function selectedObjectiveIds() { return objectiveIds.filter((id) => checked(id)); }
   function objectiveDescriptor(id) {
     const copy = (objectiveUiByClient[value('clientType')] || {})[id] || genericObjectiveUi[id];
+    if (value('clientType') === 'emporium' && id === 'objectiveBrand' && value('socialPresence') === 'new') return { summary: 'avvio della presenza digitale', action: 'costruire la presenza digitale e la riconoscibilità del punto vendita' };
     if (!copy) return objectives[id] || null;
     const summary = String(copy[0] || '').trim().toLowerCase();
     const actionRaw = String(copy[1] || '').trim().replace(/[.!?]+$/, '');
@@ -504,6 +505,10 @@
       const description = card.querySelector('em');
       if (copy && title) title.textContent = copy[0];
       if (copy && description) description.textContent = copy[1];
+      if (value('clientType') === 'emporium' && id === 'objectiveBrand' && value('socialPresence') === 'new') {
+        if (title) title.textContent = 'Avvio della presenza digitale';
+        if (description) description.textContent = 'Costruire la presenza sui social e la riconoscibilità sul territorio.';
+      }
       card.classList.toggle('is-objective-hidden', !visible);
       card.classList.toggle('is-recommended-objective', defaults.includes(id));
     });
@@ -647,6 +652,17 @@
   function defaultObjectiveParagraphs() {
     const name = clientNameForText();
     const type = value('clientType');
+    if (type === 'emporium') {
+      const active = value('socialPresence') !== 'new';
+      const opening = active ? 'rafforzare la presenza digitale' : 'costruire la presenza digitale';
+      const closing = active ? 'consolidare' : 'affermare';
+      if (textStyle() === 'concise') return [
+        `L’obiettivo è ${opening} di ${name}, aumentare la visibilità locale e favorire l’affluenza in negozio, valorizzando assortimento, convenienza, novità e promozioni.`
+      ];
+      return [
+        `L’obiettivo è ${opening} di ${name} e la sua visibilità sul territorio, valorizzando l’ampiezza dell’assortimento e la competitività dei prezzi. Attraverso contenuti dedicati a prodotti, novità, promozioni e iniziative stagionali, la comunicazione punterà a favorire l’affluenza in negozio, stimolare l’interazione con il pubblico e ${closing} il punto vendita come riferimento per lo shopping.`
+      ];
+    }
     const professional = {
       retail: [`Il progetto è finalizzato a rafforzare la presenza digitale di ${name} e aumentare la visibilità del punto vendita, valorizzando articoli, novità e categorie.`, `La comunicazione darà spazio a prodotti, promozioni e iniziative stagionali attraverso contenuti pensati per mantenere una presenza costante e favorire le visite in store.`],
       emporium: [`Il progetto è finalizzato a rafforzare la presenza digitale di ${name} e aumentare visibilità e affluenza al punto vendita, valorizzando l’ampiezza e la varietà dell’assortimento.`, `La comunicazione darà spazio a reparti, prodotti, nuovi arrivi, promozioni e iniziative stagionali, con contenuti pensati per coinvolgere il pubblico e consolidare il punto vendita come riferimento sul territorio.`],
