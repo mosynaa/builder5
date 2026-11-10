@@ -741,3 +741,55 @@ table { width: 100%; border-collapse: collapse; }
   .page-two { gap:calc(4.6mm + var(--fill-gap)); }
   .page-two.compact { gap:calc(3.5mm + var(--fill-gap)); }
 }
+
+
+/* ===== v21 · layout finale Horizon / 9 Gradi ===== */
+.page-one .doc-header { margin-bottom: calc(2.4mm + var(--fill-gap)); }
+.page-one .parties { margin-bottom: calc(3.0mm + var(--fill-gap)); }
+.page-one .object-text { margin-bottom: calc(2.4mm + var(--fill-gap)); }
+.page-one .summary-table,
+.page-one .summary-table-wrap { margin-bottom: calc(2.3mm + var(--fill-gap)); }
+.page-one .doc-section { margin-top: calc(2.8mm + var(--fill-gap)); }
+.page-one .doc-section + .doc-section { margin-top: calc(3.3mm + var(--fill-gap)); }
+
+.page-two {
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  gap:0;
+  padding-top:15.8mm;
+  padding-bottom:22mm;
+}
+.page-two > section:not(.signature) { margin-top:5.2mm; }
+.page-two > section:first-child { margin-top:0; }
+.page-two .production-section + section { margin-top:5.2mm; }
+.page-two .fee-table { margin-bottom:0; }
+.page-two .doc-section,
+.page-two .doc-section + .doc-section { margin-top:5.2mm; }
+.page-two .doc-section p { margin-bottom:1.5mm; line-height:1.28; }
+.page-two .exclusion-list li { margin-bottom:.75mm; }
+.page-two .exclusion-note { margin-top:1.8mm; }
+.page-two .signature,
+.page-two.compact .signature { margin-top:auto; margin-bottom:4mm; }
+.page-two .signature p { margin-bottom:5mm; }
+.page-one, .page-two { --fill-gap:0px; }
+
+.signature-top { display:grid; grid-template-columns:1fr auto; gap:14mm; align-items:end; }
+.signature-top p { margin-bottom:5mm; }
+.signature-top #chosenFormulaRow.is-hidden + p { grid-column:2; }
+
+.page-one.client-content-mode .doc-header { margin-bottom:1.8mm; }
+.page-one.client-content-mode .parties { margin-bottom:2.3mm; }
+.page-one.client-content-mode .object-text { margin-bottom:1.8mm; }
+.page-one.client-content-mode .summary-table,
+.page-one.client-content-mode .summary-table-wrap { margin-bottom:1.7mm; }
+.page-one.client-content-mode .doc-section { margin-top:1.9mm; }
+.page-one.client-content-mode .doc-section + .doc-section { margin-top:2.2mm; }
+.page-one.client-content-mode .service-list { font-size:8.45pt; line-height:1.1; }
+.page-one.client-content-mode .service-list li { margin-bottom:.25mm; }
+.page-one.client-content-mode .doc-section p { margin-bottom:.8mm; }
+
+@media (max-width:700px) {
+  .signature-top { grid-template-columns:1fr; gap:0; }
+  .signature-top #chosenFormulaRow.is-hidden + p { grid-column:auto; }
+}
