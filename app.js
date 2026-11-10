@@ -932,7 +932,7 @@
     }
     parts.push(styledText('Eventuali giornate aggiuntive o produzioni straordinarie saranno concordate separatamente.', 'Eventuali produzioni o giornate aggiuntive saranno concordate separatamente.', 'Attività aggiuntive da concordare separatamente.'));
     const cadence = value('productionCadence');
-    const heading = checked('serviceClientContent') ? '3. MODELLO DI PRODUZIONE' : cadence === 'monthly' ? '3. PRODUZIONE MENSILE' : cadence === 'weekly' ? '3. PRODUZIONE SETTIMANALE' : '3. PRODUZIONE DEI CONTENUTI';
+    const heading = '3. MODELLO DI PRODUZIONE';
     setText('productionHeading', heading);
     setText('productionText', parts.join(' '));
   }
