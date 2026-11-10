@@ -1130,7 +1130,7 @@
       setText('paymentHeading', '6. PAGAMENTO E VALIDITÀ');
       el('paymentText').innerHTML = tiktokIsActive() ? `L'investimento previsto per l'ampliamento del TikTok Shop è pari a <strong>${safe(money(tikFee))} + IVA</strong>.` : `L'investimento previsto per le attività TikTok Shop selezionate è pari a <strong>${safe(money(tikFee))} + IVA</strong>.`;
       setText('invoiceText', tiktokIsActive() ? 'L’importo sarà fatturato all’avvio delle attività di ampliamento del catalogo, secondo le modalità concordate.' : 'L’importo sarà fatturato all’avvio delle attività TikTok Shop, secondo le modalità concordate.');
-      setText('validityText', 'La proposta ha validità 15 giorni. Le tempistiche operative decorreranno dalla conferma e dalla disponibilità degli articoli e delle informazioni necessarie.');
+      setText('validityText', 'Le tempistiche operative decorreranno dalla conferma e dalla disponibilità degli articoli e delle informazioni necessarie. Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.');
       return 2;
     }
 
@@ -1164,7 +1164,7 @@
       const adsTail = adsNames.length ? ' Il budget pubblicitario è sempre escluso.' : '';
       el('paymentText').innerHTML = `La collaborazione ha durata di ${duration} mesi. Il compenso complessivo è pari a <strong>${safe(money(aTotal))} + IVA</strong> per la Formula ${safe(aName)} oppure a <strong>${safe(money(bTotal))} + IVA</strong> per la Formula ${safe(bName)}, corrisposto in ${duration} rate mensili secondo la formula prescelta.${tiktokTail}${adsTail}`;
       setText('invoiceText', 'La fatturazione dei servizi continuativi avverrà mensilmente secondo la formula prescelta; le eventuali fasi iniziali o attività aggiuntive saranno fatturate all’avvio delle relative attività.');
-      setText('validityText', `La proposta ha validità 15 giorni. La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività.`);
+      setText('validityText', `La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività. Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.`);
     } else {
       const oneTime = value('economicMode') === 'oneTime';
       const monthly = numberValue('monthlyFee');
@@ -1194,7 +1194,7 @@
       if (extra) payment.push(`L’attività “${safe(extraLabel)}” è pari a <strong>${safe(money(extra))} + IVA</strong>.`);
       el('paymentText').innerHTML = payment.join(' ');
       setText('invoiceText', oneTime ? 'La fatturazione avverrà all’avvio del progetto, secondo le modalità concordate.' : 'La fatturazione dei servizi continuativi avverrà mensilmente; eventuali fasi iniziali o servizi extra saranno fatturati all’avvio delle relative attività.');
-      setText('validityText', oneTime ? 'La proposta ha validità 15 giorni.' : `La proposta ha validità 15 giorni. La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività.`);
+      setText('validityText', oneTime ? 'Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.' : `La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività. Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.`);
       if (checked('serviceAds')) {
         setHidden('formulaDetailSection', false);
         setText('formulaDetailHeading', '5. GESTIONE META ADS');
@@ -1226,10 +1226,10 @@
   }
 
   function documentHeading() {
-    const mode = proposalMode();
-    if (mode === 'tiktok') return { title:'Allegato A al Contratto di Collaborazione', subtitle:'PROPOSTA TIKTOK SHOP' };
-    if (mode === 'both') return { title:'Allegato A al Contratto di Collaborazione', subtitle:'OFFERTA INTEGRATA · SOCIAL + TIKTOK SHOP' };
-    return { title:'Allegato A al Contratto di Collaborazione', subtitle:'OFFERTA ECONOMICA E SCOPE OF WORK' };
+    return {
+      title:'Allegato A al Contratto di Collaborazione',
+      subtitle:'OFFERTA ECONOMICA E SCOPE OF WORK'
+    };
   }
 
   function visibleDirectChildren(page) {
