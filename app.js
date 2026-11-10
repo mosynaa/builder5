@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'somo-allegato-a-builder-v18';
+  const STORAGE_KEY = 'somo-allegato-a-builder-v22';
   const form = document.getElementById('builderForm');
   const fields = [...form.querySelectorAll('input, select')];
   const objectiveIds = [
@@ -265,7 +265,7 @@
     productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
     videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
-    offerLayout: 'single', formulaAName: 'CONTENT', formulaBName: 'CONTENT + META ADS', formulaAFee: '1300', formulaBFee: '1500', formulaAAds: false, formulaBAds: true, comparisonAdsBudget: '',
+    offerLayout: 'compare', formulaAName: 'CONTENT', formulaBName: 'CONTENT + META ADS', formulaAFee: '1300', formulaBFee: '1500', formulaAAds: false, formulaBAds: true, comparisonAdsBudget: '',
     economicMode: 'monthly', duration: '6', monthlyFee: '1200', extraEnabled: false,
     extraLabel: 'Fase iniziale / servizio extra', extraFee: '0', oneTimeFee: '0'
   };
@@ -336,7 +336,9 @@
   function setProposalMode(mode) {
     const allowed = ['classic','tiktok','both'];
     el('proposalMode').value = allowed.includes(mode) ? mode : 'classic';
-    if (mode === 'tiktok' && el('offerLayout')) el('offerLayout').value = 'single';
+    if (el('offerLayout')) {
+      el('offerLayout').value = mode === 'tiktok' ? 'single' : 'compare';
+    }
     syncProposalMode();
     render();
   }
