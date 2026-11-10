@@ -100,6 +100,14 @@
         <section id="objectiveSection" class="form-section">
           <h2><span class="step">2</span>Obiettivi</h2>
           <p id="objectivePresetHint" class="form-note section-note">Gli obiettivi consigliati per il tipo di cliente vengono già selezionati. Puoi modificarli liberamente.</p>
+          <label class="field">
+            <span>Situazione dei canali social</span>
+            <select id="socialPresence" name="socialPresence">
+              <option value="active">Canali già attivi · rafforzare la presenza digitale</option>
+              <option value="new">Canali da avviare · costruire la presenza digitale</option>
+            </select>
+            <small>Per gli empori adatta gli obiettivi alla situazione del cliente. La scelta non aggiunge servizi di apertura o gestione dei canali.</small>
+          </label>
           <div id="objectiveGrid" class="check-list check-grid">
             <label class="check objective-card" data-objective="objectiveBrand"><input id="objectiveBrand" name="objectiveBrand" type="checkbox"><span><strong>Notorietà e posizionamento</strong><em>Rafforzare identità e riconoscibilità.</em></span></label>
             <label class="check objective-card" data-objective="objectiveContinuity"><input id="objectiveContinuity" name="objectiveContinuity" type="checkbox"><span><strong>Continuità social</strong><em>Mantenere una presenza costante e riconoscibile.</em></span></label>
@@ -427,6 +435,6 @@
       </article>
     </section>
   </main>
-  <script src="app.js?v=23"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>
