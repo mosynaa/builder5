@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=22">
+  <link rel="stylesheet" href="styles.css?v=26">
 </head>
 <body>
   <main class="app">
@@ -224,7 +224,7 @@
             <label class="check feature-check"><input id="serviceAds" name="serviceAds" type="checkbox"><span><strong>Gestione campagne Meta Ads</strong><em>Attivazione, monitoraggio e ottimizzazione. Budget separato.</em></span></label>
           </div>
           <div id="adsPanel" class="dependent-panel is-hidden">
-            <label class="field"><span>Budget ADS mensile consigliato</span><input id="adsBudget" name="adsBudget" type="number" min="0" step="50" placeholder="Es. 200"><small>È a carico del Cliente e non entra nel compenso SOMO.</small></label>
+            <label id="adsBudgetField" class="field is-hidden"><span>Budget ADS mensile consigliato</span><input id="adsBudget" name="adsBudget" type="number" min="0" step="50" placeholder="Es. 200"><small>È a carico del Cliente e non entra nel compenso SOMO.</small></label>
           </div>
         </section>
 
@@ -291,6 +291,10 @@
             <div id="oneTimeEconomicPanel" class="is-hidden">
               <label class="field"><span>Importo complessivo del progetto</span><input id="oneTimeFee" name="oneTimeFee" type="number" min="0" step="50"></label>
             </div>
+            <label id="adsBudgetToggle" class="check">
+              <input id="showAdsBudget" name="showAdsBudget" type="checkbox">
+              <span><strong>Indica il budget pubblicitario consigliato nel testo</strong><em>L’importo compare solo nella descrizione Meta Ads, mai nella tabella comparativa. Il budget resta escluso dal compenso SOMO.</em></span>
+            </label>
             <div id="comparisonEconomicPanel" class="dependent-panel is-hidden">
               <p class="preset-title">Formule alternative</p>
               <div class="comparison-formulas">
@@ -371,6 +375,7 @@
               <thead id="summaryCompareHead"></thead>
               <tbody id="summaryCompareBody"></tbody>
             </table>
+            <p id="formulaChoiceNote" class="formula-choice-note"></p>
           </div>
 
           <section id="objectiveDocumentSection" class="doc-section">
@@ -388,7 +393,7 @@
             <p id="productionText"></p>
           </section>
 
-          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it</footer>
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO<br>somonapoli@pec.it</footer>
           <span class="page-number">1</span>
         </section>
 
@@ -429,12 +434,13 @@
             <p>Per accettazione<br><strong>Firma e Timbro del Cliente</strong><br>_____________________________________________</p>
           </section>
 
-          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it</footer>
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO<br>somonapoli@pec.it</footer>
           <span class="page-number">2</span>
         </section>
       </article>
     </section>
   </main>
-  <script src="app.js?v=25"></script>
+  <script src="app.js?v=26"></script>
 </body>
 </html>
+
