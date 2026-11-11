@@ -262,7 +262,7 @@
     serviceStrategy: true, serviceProduction: true, serviceClientContent: false, serviceSocial: true, serviceAdvCreative: false,
     serviceInfluencer: false, serviceCommunity: false, serviceEventCoverage: false,
     eventCoverageFrequency: 'agreed', productionCadence: 'monthly', productionDays: '1',
-    productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
+    videoApproval: false, productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
     videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, showAdsBudget: false, adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
     offerLayout: 'compare', formulaAName: 'CONTENT', formulaBName: 'CONTENT + META ADS', formulaAFee: '1300', formulaBFee: '1500', formulaAAds: false, formulaBAds: true, comparisonAdsBudget: '',
@@ -548,6 +548,7 @@
     setHidden('fixedQuantityPanel', value('quantityMode') !== 'fixed');
     setHidden('productionDaysField', value('productionCadence') === 'plan' || value('productionCadence') === 'none');
     setHidden('videosField', !checked('productionVideo'));
+    setHidden('videoApprovalField', !hasVideosForApproval());
     setHidden('photosField', !checked('productionPhoto'));
     setHidden('graphicsField', !checked('productionGraphics'));
 
@@ -898,6 +899,10 @@
     return parts;
   }
 
+  function hasVideosForApproval() {
+    return !isTikTokOnly() && ((checked('serviceProduction') && checked('productionVideo')) || checked('serviceClientContent'));
+  }
+
   function renderProduction() {
     const visible = isTikTokOnly() || checked('serviceProduction') || checked('serviceClientContent');
     setHidden('productionDocumentSection', !visible);
@@ -932,6 +937,7 @@
         if (pro && value('clientContentPeriod') === 'month') parts.push(`Il modello consente quindi di disporre di fino a ${pro + n} video al mese, tra produzione professionale e contenuti interni guidati.`);
       }
     }
+    if (hasVideosForApproval() && checked('videoApproval')) parts.push('I video saranno sottoposti all’approvazione del Cliente prima della pubblicazione.');
     parts.push(styledText('Eventuali giornate aggiuntive o produzioni straordinarie saranno concordate separatamente.', 'Eventuali produzioni o giornate aggiuntive saranno concordate separatamente.', 'Attività aggiuntive da concordare separatamente.'));
     const cadence = value('productionCadence');
     const heading = '3. MODELLO DI PRODUZIONE';
