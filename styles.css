@@ -793,3 +793,17 @@ table { width: 100%; border-collapse: collapse; }
   .signature-top { grid-template-columns:1fr; gap:0; }
   .signature-top #chosenFormulaRow.is-hidden + p { grid-column:auto; }
 }
+
+
+/* v26: footer and spacing aligned with the supplied Allegato A. */
+.doc-footer { font-size:6.5pt; line-height:1.35; bottom:10.5mm; }
+.doc-section, .exclusion-note, .signature { break-inside:avoid; }
+.page-two, .page-two.compact, .page-two.comparison-mode { gap:5mm; }
+.page-two > section { flex-shrink:0; }
+.page-two .signature, .page-two.compact .signature, .page-two.comparison-mode .signature { margin-top:7mm !important; padding-top:0; }
+@media print {
+  .doc-footer { position:absolute; left:20mm; right:20mm; bottom:10.5mm; font-size:6.5pt; }
+  .page-two, .page-two.compact, .page-two.comparison-mode { display:flex; gap:5mm; }
+}
+
+.formula-choice-note { margin:2mm 0 0; font-size:8.5pt; line-height:1.3; font-weight:700; color:var(--teal-dark); }
