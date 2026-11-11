@@ -1110,8 +1110,8 @@
     } else {
       const adsIncluded = comparisonEnabled() ? anyFormulaAds() : checked('serviceAds');
       if (adsIncluded) exclusions.push('Budget pubblicitario destinato alle piattaforme Meta Ads;');
-      else exclusions.push('Pubblicità Meta Ads — servizio facoltativo, aggiungibile su richiesta anche in seguito, con compenso e budget separati;');
-      if (!checked('serviceTikTok')) exclusions.push('TikTok Shop — servizio facoltativo, aggiungibile su richiesta anche in seguito, con preventivo separato;');
+      else exclusions.push(comparisonEnabled() ? 'Gestione delle campagne Meta Ads e relativo budget pubblicitario;' : 'Pubblicità Meta Ads — servizio facoltativo, aggiungibile su richiesta anche in seguito, con compenso e budget separati;');
+      if (!comparisonEnabled() && !checked('serviceTikTok')) exclusions.push('TikTok Shop — servizio facoltativo, aggiungibile su richiesta anche in seguito, con preventivo separato;');
       if (checked('serviceClientContent')) exclusions.push('Acquisto di attrezzatura o accessori destinati alla produzione dei contenuti interni;');
       if (!checked('serviceCommunity')) exclusions.push('Gestione di messaggi, commenti, recensioni e attività di community management;');
       if (checked('serviceProduction')) exclusions.push('Giornate di produzione aggiuntive, trasferte o richieste straordinarie;');
