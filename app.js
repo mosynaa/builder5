@@ -1110,8 +1110,8 @@
     } else {
       const adsIncluded = comparisonEnabled() ? anyFormulaAds() : checked('serviceAds');
       if (adsIncluded) exclusions.push('Budget pubblicitario destinato alle piattaforme Meta Ads;');
-      else exclusions.push('Gestione Meta Ads, attivabile anche durante la collaborazione previo accordo su avvio e compenso. Budget pubblicitario escluso;');
-      if (!checked('serviceTikTok')) exclusions.push('TikTok Shop, attivabile anche durante la collaborazione previo accordo su attività, avvio e compenso;');
+      else exclusions.push('Pubblicità Meta Ads — servizio facoltativo, aggiungibile su richiesta anche in seguito, con compenso e budget separati;');
+      if (!checked('serviceTikTok')) exclusions.push('TikTok Shop — servizio facoltativo, aggiungibile su richiesta anche in seguito, con preventivo separato;');
       if (checked('serviceClientContent')) exclusions.push('Acquisto di attrezzatura o accessori destinati alla produzione dei contenuti interni;');
       if (!checked('serviceCommunity')) exclusions.push('Gestione di messaggi, commenti, recensioni e attività di community management;');
       if (checked('serviceProduction')) exclusions.push('Giornate di produzione aggiuntive, trasferte o richieste straordinarie;');
@@ -1241,7 +1241,7 @@
       setText('tiktokDetailText', styledText(profText, simpleText, conciseText));
       next += 1;
     }
-    setText('exclusionsHeading', `${next}. ULTERIORI EXTRA`);
+    setText('exclusionsHeading', `${next}. ${!comparisonEnabled() && !isTikTokOnly() ? 'SERVIZI AGGIUNTIVI ED EXTRA' : 'ULTERIORI EXTRA'}`);
     setText('paymentHeading', `${next + 1}. PAGAMENTO E VALIDITÀ`);
     return rows.length;
   }
