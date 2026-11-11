@@ -1176,7 +1176,8 @@
         const profText = `${intro} la gestione professionale delle campagne sulle piattaforme Meta, inclusi configurazione, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`;
         const simpleText = `${intro} la gestione delle campagne Meta Ads: impostazione, scelta del pubblico, controllo e ottimizzazione.${budgetText}`;
         const conciseText = `${intro} la gestione e ottimizzazione delle campagne Meta Ads.${budgetText}`;
-        setText('formulaDetailText', styledText(profText, simpleText, conciseText));
+        const laterActivation = adsNames.length === 1 ? ' La gestione Meta Ads può essere aggiunta anche durante la collaborazione, concordando per iscritto la data di avvio e il nuovo compenso.' : '';
+        setText('formulaDetailText', styledText(profText, simpleText, conciseText) + laterActivation);
       }
       if (hasTikTok) rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`));
       const tiktokTail = hasTikTok ? ` Solo se espressamente scelta, la fase TikTok Shop si aggiunge alla formula selezionata per un importo di <strong>${safe(money(tikFee))} + IVA</strong>.` : '';
