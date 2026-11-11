@@ -263,7 +263,7 @@
     serviceInfluencer: false, serviceCommunity: false, serviceEventCoverage: false,
     eventCoverageFrequency: 'agreed', productionCadence: 'monthly', productionDays: '1',
     productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
-    videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, adsBudget: '200',
+    videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, showAdsBudget: false, adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
     offerLayout: 'compare', formulaAName: 'CONTENT', formulaBName: 'CONTENT + META ADS', formulaAFee: '1300', formulaBFee: '1500', formulaAAds: false, formulaBAds: true, comparisonAdsBudget: '',
     economicMode: 'monthly', duration: '6', monthlyFee: '1200', extraEnabled: false,
@@ -562,7 +562,9 @@
     setHidden('singleExtraControls', compare);
     setHidden('oneTimeEconomicPanel', tikOnly || compare || !oneTime);
     setHidden('comparisonEconomicPanel', !compare);
-    setHidden('comparisonAdsBudgetField', !compare || !anyFormulaAds());
+    setHidden('adsBudgetToggle', tikOnly || !(compare ? anyFormulaAds() : checked('serviceAds')));
+    setHidden('adsBudgetField', !checked('showAdsBudget'));
+    setHidden('comparisonAdsBudgetField', !compare || !anyFormulaAds() || !checked('showAdsBudget'));
     setHidden('extraPanel', oneTime || tikOnly || compare || !checked('extraEnabled'));
     updateTikTokPresetLabels();
     updateProductionLabels();
@@ -977,12 +979,12 @@
     if (comparisonEnabled()) {
       if (!anyFormulaAds()) return 'Non previste';
       const included = [formulaAds('A') ? formulaName('A') : '', formulaAds('B') ? formulaName('B') : ''].filter(Boolean);
-      const budget = numberValue('comparisonAdsBudget');
+      const budget = checked('showAdsBudget') ? numberValue('comparisonAdsBudget') : 0;
       return `Inclusa in ${joinNatural(included)}; ${budget ? `budget consigliato ${money(budget)} al mese, escluso` : 'budget pubblicitario escluso'}`;
     }
     if (!checked('serviceAds') && checked('serviceAdvCreative')) return 'Creatività ADV incluse; gestione campagne e budget esclusi';
     if (!checked('serviceAds')) return 'Non previste';
-    const budget = numberValue('adsBudget');
+    const budget = checked('showAdsBudget') ? numberValue('adsBudget') : 0;
     return budget ? `Gestione inclusa; budget consigliato ${money(budget)} al mese, escluso` : 'Gestione inclusa; budget pubblicitario escluso';
   }
 
@@ -1031,6 +1033,7 @@
     el('summaryCompareHead').innerHTML = `<tr><th>SERVIZIO</th>${columns.map((c) => `<th>${safe(c)}</th>`).join('')}</tr>`;
     el('summaryCompareTable').classList.toggle('has-tiktok', withTikTok);
 
+    setText('formulaChoiceNote', compare ? 'Le formule sono alternative: il Cliente ne sceglie una sola. Gli importi delle diverse colonne non si sommano.' + (withTikTok ? ' TikTok Shop è un servizio aggiuntivo facoltativo, da attivare solo se espressamente scelto.' : '') : (withTikTok ? 'TikTok Shop è un servizio aggiuntivo facoltativo: il relativo costo si aggiunge alla proposta Basic solo se espressamente scelto.' : ''));
     const rows = [];
     const basicVals = (a, b=a) => compare ? [a,b] : [a];
     rows.push(['Durata', ...basicVals(`${duration} mesi`), ...(withTikTok ? [tiktokColumnValue('Durata')] : [])]);
@@ -1051,8 +1054,6 @@
     if (hasAds) {
       const vals = compare ? [formulaAds('A') ? 'Inclusa' : '-', formulaAds('B') ? 'Inclusa' : '-'] : ['Inclusa'];
       rows.push(['Gestione Meta Ads', ...vals, ...(withTikTok ? ['-'] : [])]);
-      const budgetVals = compare ? [formulaAds('A') ? 'Escluso, a carico del Cliente' : '-', formulaAds('B') ? 'Escluso, a carico del Cliente' : '-'] : ['Escluso, a carico del Cliente'];
-      rows.push(['Budget pubblicitario', ...budgetVals, ...(withTikTok ? ['-'] : [])]);
     }
     if (withTikTok && tiktokHas('tiktokSetup')) rows.push(['Configurazione Shop', ...basicVals('-'), tiktokColumnValue('Configurazione Shop')]);
     if (withTikTok && tiktokHas('tiktokCatalog')) rows.push(['Catalogo', ...basicVals('-'), tiktokColumnValue('Catalogo')]);
@@ -1169,7 +1170,7 @@
       if (adsNames.length) {
         setHidden('formulaDetailSection', false);
         setText('formulaDetailHeading', adsNames.length === 1 ? `5. FORMULA ${adsNames[0].toUpperCase()}` : '5. GESTIONE META ADS');
-        const budget = numberValue('comparisonAdsBudget');
+        const budget = checked('showAdsBudget') ? numberValue('comparisonAdsBudget') : 0;
         const intro = adsNames.length === 1 ? `La Formula ${adsNames[0]} comprende` : `Le formule ${joinNatural(adsNames)} comprendono`;
         const budgetText = budget ? ` Il budget pubblicitario consigliato è pari a ${money(budget)} al mese e resta escluso dal compenso.` : ' Il budget pubblicitario resta escluso dal compenso ed è sostenuto direttamente dal Cliente.';
         const profText = `${intro} la gestione professionale delle campagne sulle piattaforme Meta, inclusi configurazione, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`;
@@ -1178,7 +1179,7 @@
         setText('formulaDetailText', styledText(profText, simpleText, conciseText));
       }
       if (hasTikTok) rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`));
-      const tiktokTail = hasTikTok ? ` A entrambe le formule si aggiunge la fase TikTok Shop pari a <strong>${safe(money(tikFee))} + IVA</strong>.` : '';
+      const tiktokTail = hasTikTok ? ` Solo se espressamente scelta, la fase TikTok Shop si aggiunge alla formula selezionata per un importo di <strong>${safe(money(tikFee))} + IVA</strong>.` : '';
       const adsTail = adsNames.length ? ' Il budget pubblicitario è sempre escluso.' : '';
       el('paymentText').innerHTML = `La collaborazione ha durata di ${duration} mesi. Il compenso complessivo è pari a <strong>${safe(money(aTotal))} + IVA</strong> per la Formula ${safe(aName)} oppure a <strong>${safe(money(bTotal))} + IVA</strong> per la Formula ${safe(bName)}, corrisposto in ${duration} rate mensili secondo la formula prescelta.${tiktokTail}${adsTail}`;
       setText('invoiceText', 'La fatturazione dei servizi continuativi avverrà mensilmente secondo la formula prescelta; le eventuali fasi iniziali o attività aggiuntive saranno fatturate all’avvio delle relative attività.');
@@ -1216,7 +1217,7 @@
       if (checked('serviceAds')) {
         setHidden('formulaDetailSection', false);
         setText('formulaDetailHeading', '5. GESTIONE META ADS');
-        const budget = numberValue('adsBudget');
+        const budget = checked('showAdsBudget') ? numberValue('adsBudget') : 0;
         const budgetText = budget ? ` Il budget pubblicitario consigliato è pari a ${money(budget)} al mese e resta escluso dal compenso.` : ' Il budget pubblicitario resta escluso dal compenso ed è sostenuto direttamente dal Cliente.';
         setText('formulaDetailText', styledText(`La gestione Meta Ads comprende configurazione delle campagne, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`, `La gestione Meta Ads comprende impostazione delle campagne, scelta del pubblico, controllo e ottimizzazione.${budgetText}`, `Gestione e ottimizzazione delle campagne Meta Ads.${budgetText}`));
       }
@@ -1430,8 +1431,8 @@
     return `<w:p>${pPr}${pageBreak ? '<w:r><w:br w:type="page"/></w:r>' : ''}${text ? wRun(text, { bold, size, color }) : ''}</w:p>`;
   }
   function wRichParagraph(runs, opts = {}) {
-    const { before = 0, after = 70, align = '', bullet = false, style = '' } = opts;
-    const pPr = `<w:pPr>${style ? `<w:pStyle w:val="${style}"/>` : ''}<w:spacing w:before="${before}" w:after="${after}" w:line="240" w:lineRule="auto"/>${align ? `<w:jc w:val="${align}"/>` : ''}${bullet ? '<w:ind w:left="280" w:hanging="180"/>' : ''}</w:pPr>`;
+    const { before = 0, after = 70, align = '', bullet = false, style = '', keepNext = false } = opts;
+    const pPr = `<w:pPr>${style ? `<w:pStyle w:val="${style}"/>` : ''}<w:spacing w:before="${before}" w:after="${after}" w:line="240" w:lineRule="auto"/>${align ? `<w:jc w:val="${align}"/>` : ''}${keepNext ? '<w:keepNext/>' : ''}${bullet ? '<w:ind w:left="280" w:hanging="180"/>' : ''}</w:pPr>`;
     const prefix = bullet ? wRun('• ', { size:18 }) : '';
     return `<w:p>${pPr}${prefix}${runs.map((run) => wRun(run.text, run)).join('')}</w:p>`;
   }
@@ -1588,6 +1589,7 @@
     body.push(wParagraph(domText('#objectText'), { size:19, after:125 }));
     body.push(wParagraph('SINTESI DELL’OFFERTA', { bold:true, size:23, color:WORD.ink, after:70, keepNext:true }));
     body.push(compare ? wComparisonTable(comparisonRows) : wSummaryTable(summaryRows));
+    if (compare && domText('#formulaChoiceNote')) body.push(wParagraph(domText('#formulaChoiceNote'), {size:17, before:70, after:100}));
 
     if (!el('objectiveDocumentSection')?.classList.contains('is-hidden')) {
       body.push(wParagraph('1. OBIETTIVO DELLA COLLABORAZIONE', { bold:true, size:23, color:WORD.ink, before:150, after:65, keepNext:true }));
@@ -1616,19 +1618,19 @@
       body.push(wParagraph(domText('#tiktokDetailText'), { size:18, after:90 }));
     }
     body.push(wParagraph(domText('#exclusionsHeading') || '5. ULTERIORI EXTRA', { bold:true, size:23, color:WORD.ink, before:240, after:72, keepNext:true }));
-    exclusions.forEach((text) => body.push(wRichParagraph([{ text, size:18 }], { bullet:true, after:52 })));
+    exclusions.forEach((text) => body.push(wRichParagraph([{ text, size:18 }], { bullet:true, after:52, keepNext:true })));
     body.push(wParagraph('Le eventuali attività aggiuntive saranno concordate e preventivate separatamente.', { size:18, after:110 }));
     body.push(wParagraph(domText('#paymentHeading') || '6. PAGAMENTO E VALIDITÀ', { bold:true, size:23, color:WORD.ink, before:240, after:72, keepNext:true }));
     [domText('#paymentText'),domText('#invoiceText'),domText('#validityText')].filter(Boolean).forEach((text) => body.push(wParagraph(text, { size:18, after:68 })));
     const extraContentPenalty = (!el('formulaDetailSection')?.classList.contains('is-hidden') ? 800 : 0) + (!el('tiktokDetailSection')?.classList.contains('is-hidden') ? 800 : 0) + (compare ? 450 : 0);
-    const pageTwoSignatureBefore = Math.max(1000, Math.min(3800, 5800 - (feeRows.length * 420) - (exclusions.length * 280) - extraContentPenalty));
+    const pageTwoSignatureBefore = 420;
     if (!el('chosenFormulaRow')?.classList.contains('is-hidden')) body.push(wParagraph('Formula prescelta: ________________________________', { size:18, before:pageTwoSignatureBefore, after:130 }));
     body.push(wParagraph('Data: ____ / ____ / ______', { size:18, before:el('chosenFormulaRow')?.classList.contains('is-hidden') ? pageTwoSignatureBefore : 0, after:130 }));
     body.push(wParagraph('Per accettazione', { bold:true, size:18, after:50 }));
     body.push(wParagraph('Firma e Timbro del Cliente  _____________________________________________', { size:18, after:30 }));
 
     const footerText = 'SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it';
-    const footerXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="30"/></w:pPr>${wRun(footerText,{size:14,color:'181818'})}</w:p><w:p><w:pPr><w:jc w:val="right"/><w:spacing w:after="0"/></w:pPr><w:fldSimple w:instr="PAGE"><w:r><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito"/><w:sz w:val="14"/><w:color w:val="666666"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple></w:p></w:ftr>`;
+    const footerXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="30"/></w:pPr>${wRun(footerText.replace(' · somonapoli@pec.it',''),{size:13,color:'181818'})}<w:r><w:br/></w:r>${wRun('somonapoli@pec.it',{size:13,color:'181818'})}</w:p><w:p><w:pPr><w:jc w:val="right"/><w:spacing w:after="0"/></w:pPr><w:fldSimple w:instr="PAGE"><w:r><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito"/><w:sz w:val="14"/><w:color w:val="666666"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple></w:p></w:ftr>`;
 
     const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><w:body>${body.join('')}<w:sectPr><w:footerReference w:type="default" r:id="rId2"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="895" w:right="1134" w:bottom="1020" w:left="1134" w:header="360" w:footer="470" w:gutter="0"/></w:sectPr></w:body></w:document>`;
     const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:cs="Nunito" w:eastAsia="Nunito"/><w:sz w:val="19"/><w:szCs w:val="19"/><w:lang w:val="it-IT"/><w:color w:val="${WORD.ink}"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="60" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito" w:cs="Nunito"/></w:rPr></w:style><w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:uiPriority w:val="99"/><w:semiHidden/><w:unhideWhenUsed/></w:style></w:styles>`
@@ -2053,3 +2055,4 @@
   syncProposalMode();
   render();
 })();
+
