@@ -1511,11 +1511,11 @@
     const cy = Math.round(cx * dim.height / dim.width);
     return `<w:p><w:pPr><w:jc w:val="${align}"/><w:spacing w:after="0"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${docPrId}" name="${xmlSafe(name)}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${docPrId}" name="${xmlSafe(name)}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
   }
-  function wBrandTable(somo, black) {
+  function wBrandTable(somo, black, firstDrawingId = 1) {
     const widths = [4800,4800];
     const borderNil = '<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>';
-    const left = somo ? imageDrawing('rId7', 'SOMO', somo, 38, 'left', 1) : wParagraph('SOMO S.r.l.', { bold:true, size:19, color:WORD.teal, after:0 });
-    const right = black ? imageDrawing('rId8', 'Black Noodles', black, 31, 'right', 2) : wParagraph('BLACK NOODLES', { bold:true, size:19, color:WORD.teal, align:'right', after:0 });
+    const left = somo ? imageDrawing('rId7', 'SOMO', somo, 38, 'left', firstDrawingId) : wParagraph('SOMO S.r.l.', { bold:true, size:19, color:WORD.teal, after:0 });
+    const right = black ? imageDrawing('rId8', 'Black Noodles', black, 31, 'right', firstDrawingId + 1) : wParagraph('BLACK NOODLES', { bold:true, size:19, color:WORD.teal, align:'right', after:0 });
     return `<w:tbl><w:tblPr><w:tblW w:w="9600" w:type="dxa"/><w:tblLayout w:type="fixed"/>${borderNil}</w:tblPr><w:tblGrid><w:gridCol w:w="4800"/><w:gridCol w:w="4800"/></w:tblGrid><w:tr>${wCell(left,widths[0])}${wCell(right,widths[1])}</w:tr></w:tbl>`;
   }
   async function fetchBinary(path) {
@@ -1611,11 +1611,19 @@
       ], { bullet:true, after:52 })));
     }
     const productionVisible = !el('productionDocumentSection')?.classList.contains('is-hidden');
+    if (productionVisible && !isTikTokOnly()) {
+    body.push(wParagraph('', { after:0, pageBreakBefore:true, keepNext:true }));
+    body.push(wBrandTable(somoLogo, blackLogo, 3));
+    }
     if (productionVisible) {
-      body.push(wParagraph(domText('#productionHeading'), { bold:true, size:23, color:WORD.ink, after:65, keepNext:true, pageBreakBefore:!isTikTokOnly() }));
+      body.push(wParagraph(domText('#productionHeading'), { bold:true, size:23, color:WORD.ink, before:95, after:65, keepNext:true }));
       body.push(wParagraph(domText('#productionText'), { size:18, after:80 }));
     }
-    body.push(wParagraph(domText('#compensoHeading') || '4. COMPENSO', { bold:true, size:23, color:WORD.ink, after:80, keepNext:true, pageBreakBefore:isTikTokOnly() || (!productionVisible && !isTikTokOnly()) }));
+    if (isTikTokOnly() || !productionVisible) {
+    body.push(wParagraph('', { after:0, pageBreakBefore:true, keepNext:true }));
+    body.push(wBrandTable(somoLogo, blackLogo, 3));
+    }
+    body.push(wParagraph(domText('#compensoHeading') || '4. COMPENSO', { bold:true, size:23, color:WORD.ink, before:95, after:80, keepNext:true }));
     body.push(wFeeTable(feeRows));
     if (!el('formulaDetailSection')?.classList.contains('is-hidden')) {
       body.push(wParagraph(domText('#formulaDetailHeading'), { bold:true, size:23, color:WORD.ink, before:200, after:72, keepNext:true }));
