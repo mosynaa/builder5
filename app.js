@@ -1108,8 +1108,10 @@
       exclusions.push('Contenuti video social o produzioni ulteriori non comprese nella presente proposta;');
       exclusions.push('Gestione logistica degli ordini, spedizioni, resi, reclami e assistenza clienti;');
     } else {
-      if (comparisonEnabled()) exclusions.push(anyFormulaAds() ? 'Budget pubblicitario destinato alle piattaforme Meta Ads;' : 'Gestione delle campagne Meta Ads e relativo budget pubblicitario;');
-      else exclusions.push(checked('serviceAds') ? 'Budget pubblicitario destinato alle piattaforme Meta Ads;' : 'Gestione delle campagne Meta Ads e relativo budget pubblicitario;');
+      const adsIncluded = comparisonEnabled() ? anyFormulaAds() : checked('serviceAds');
+      if (adsIncluded) exclusions.push('Budget pubblicitario destinato alle piattaforme Meta Ads;');
+      else exclusions.push('Gestione Meta Ads, attivabile anche durante la collaborazione previo accordo su avvio e compenso. Budget pubblicitario escluso;');
+      if (!checked('serviceTikTok')) exclusions.push('TikTok Shop, attivabile anche durante la collaborazione previo accordo su attività, avvio e compenso;');
       if (checked('serviceClientContent')) exclusions.push('Acquisto di attrezzatura o accessori destinati alla produzione dei contenuti interni;');
       if (!checked('serviceCommunity')) exclusions.push('Gestione di messaggi, commenti, recensioni e attività di community management;');
       if (checked('serviceProduction')) exclusions.push('Giornate di produzione aggiuntive, trasferte o richieste straordinarie;');
@@ -1120,8 +1122,8 @@
         exclusions.push('Gestione logistica degli ordini, spedizioni, resi e assistenza clienti di TikTok Shop;');
       }
     }
-    el('exclusionList').innerHTML = exclusions.slice(0,6).map((x) => `<li>${safe(x)}</li>`).join('');
-    return Math.min(exclusions.length,6);
+    el('exclusionList').innerHTML = exclusions.map((x) => `<li>${safe(x)}</li>`).join('');
+    return exclusions.length;
   }
 
   function feeRow(label, amount) { return `<tr><th>${safe(label)}</th><td>${safe(amount)}</td></tr>`; }
@@ -1176,8 +1178,7 @@
         const profText = `${intro} la gestione professionale delle campagne sulle piattaforme Meta, inclusi configurazione, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`;
         const simpleText = `${intro} la gestione delle campagne Meta Ads: impostazione, scelta del pubblico, controllo e ottimizzazione.${budgetText}`;
         const conciseText = `${intro} la gestione e ottimizzazione delle campagne Meta Ads.${budgetText}`;
-        const laterActivation = adsNames.length === 1 ? ' La gestione Meta Ads può essere aggiunta anche durante la collaborazione, concordando per iscritto la data di avvio e il nuovo compenso.' : '';
-        setText('formulaDetailText', styledText(profText, simpleText, conciseText) + laterActivation);
+        setText('formulaDetailText', styledText(profText, simpleText, conciseText));
       }
       if (hasTikTok) rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`));
       const tiktokTail = hasTikTok ? ` Solo se espressamente scelta, la fase TikTok Shop si aggiunge alla formula selezionata per un importo di <strong>${safe(money(tikFee))} + IVA</strong>.` : '';
