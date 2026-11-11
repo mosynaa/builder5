@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Builder SOMO per creare Allegati A uniformi, scaricabili in Word e PDF.">
+  <title>Allegato A Builder · SOMO</title>
+  <!-- v17: builder generale + documento finale strutturato come Allegato A SOMO -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=36">
+</head>
+<body>
+  <main class="app">
+    <aside class="builder" aria-label="Compilazione Allegato A">
+      <header class="builder-head">
+        <img src="../assets/somo.png?v=21" alt="SOMO" onerror="this.remove()">
+        <h1>Allegato A Builder</h1>
+        <p>Scegli cliente, servizi e stile del testo. Il documento si adatta al tipo di attività mantenendo una struttura SOMO chiara e coerente.</p>
+      </header>
+
+      <form id="builderForm" class="builder-form">
+        <section id="proposalSection" class="form-section proposal-section">
+          <h2>Che proposta vuoi creare?</h2>
+          <span class="group-label">Tipo di proposta</span>
+          <input id="proposalMode" name="proposalMode" type="hidden" value="classic">
+          <div id="proposalChoices" class="proposal-choices" role="radiogroup" aria-label="Tipo di proposta">
+            <button class="proposal-choice is-active" type="button" data-mode="classic" aria-pressed="true">
+              <strong>Proposta Basic</strong>
+              <span>Social, contenuti e servizi selezionati</span>
+            </button>
+            <button class="proposal-choice" type="button" data-mode="tiktok" aria-pressed="false">
+              <strong>TikTok Shop</strong>
+              <span>Attivazione o ampliamento dello Shop</span>
+            </button>
+            <button class="proposal-choice" type="button" data-mode="both" aria-pressed="false">
+              <strong>Basic + TikTok Shop</strong>
+              <span>Servizi social e TikTok Shop insieme</span>
+            </button>
+          </div>
+          <small class="proposal-help">Scegli la struttura: il builder mostra soltanto i campi utili.</small>
+        </section>
+
+        <section id="clientSection" class="form-section">
+          <h2><span class="step">1</span>Dati del cliente</h2>
+          <label class="field">
+            <span>Tipologia del cliente</span>
+            <select id="clientType" name="clientType">
+              <option value="retail">Negozio / showroom</option>
+              <option value="emporium">Emporio / grande store multicategoria</option>
+              <option value="omnichannel">Negozio con e-commerce</option>
+              <option value="online">Brand / e-commerce</option>
+              <option value="food">Ristorante / food</option>
+              <option value="nightlife">Locale / club / nightlife</option>
+              <option value="wellness">Fitness / wellness / centro servizi</option>
+              <option value="recreation">Parco / struttura ricreativa</option>
+              <option value="b2b">Ingrosso / attività B2B</option>
+              <option value="services">Servizi / professionista</option>
+              <option value="brand">Brand / altra attività</option>
+            </select>
+          </label>
+          <div class="grid-2">
+            <div class="field autocomplete-field">
+              <span>Nome commerciale</span>
+              <input id="clientName" name="clientName" type="text" autocomplete="off" placeholder="Nome del cliente" aria-autocomplete="list" aria-controls="clientAutocomplete" aria-expanded="false">
+              <div id="clientAutocomplete" class="autocomplete-suggestions is-hidden" role="listbox" aria-label="Clienti suggeriti"></div>
+              <small>Inserisci il nome commerciale del cliente.</small>
+            </div>
+            <label class="field">
+              <span>Ragione sociale</span>
+              <input id="legalName" name="legalName" type="text" placeholder="Ragione sociale del cliente">
+            </label>
+          </div>
+          <label class="field">
+            <span>Indirizzo</span>
+            <input id="address" name="address" type="text" placeholder="Via e numero civico">
+          </label>
+          <div class="grid-2">
+            <label class="field">
+              <span>CAP, città e provincia</span>
+              <input id="city" name="city" type="text" placeholder="80014 Giugliano (NA)">
+            </label>
+            <label class="field">
+              <span>Partita IVA</span>
+              <input id="vat" name="vat" type="text" inputmode="numeric" placeholder="00000000000">
+            </label>
+          </div>
+          <label class="field text-style-field">
+            <span>Stile del testo</span>
+            <select id="textStyle" name="textStyle">
+              <option value="professional">Professionale · strutturato e completo</option>
+              <option value="simple">Semplice · chiaro, diretto e ben scritto</option>
+              <option value="concise">Molto sintetico · essenziale</option>
+            </select>
+            <small>Modifica solo il modo di scrivere il documento: servizi, quantità, formule e compensi non cambiano. Per gli empori viene suggerito lo stile Semplice, ma puoi sempre scegliere tu.</small>
+          </label>
+        </section>
+
+        <section id="objectiveSection" class="form-section">
+          <h2><span class="step">2</span>Obiettivi</h2>
+          <p id="objectivePresetHint" class="form-note section-note">Gli obiettivi consigliati per il tipo di cliente vengono già selezionati. Puoi modificarli liberamente.</p>
+          <label class="field">
+            <span>Situazione dei canali social</span>
+            <select id="socialPresence" name="socialPresence">
+              <option value="active">Canali già attivi · rafforzare la presenza digitale</option>
+              <option value="new">Canali da avviare · costruire la presenza digitale</option>
+            </select>
+            <small>Per gli empori adatta gli obiettivi alla situazione del cliente. La scelta non aggiunge servizi di apertura o gestione dei canali.</small>
+          </label>
+          <div id="objectiveGrid" class="check-list check-grid">
+            <label class="check objective-card" data-objective="objectiveBrand"><input id="objectiveBrand" name="objectiveBrand" type="checkbox"><span><strong>Notorietà e posizionamento</strong><em>Rafforzare identità e riconoscibilità.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveContinuity"><input id="objectiveContinuity" name="objectiveContinuity" type="checkbox"><span><strong>Continuità social</strong><em>Mantenere una presenza costante e riconoscibile.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveRange"><input id="objectiveRange" name="objectiveRange" type="checkbox"><span><strong>Offerta da valorizzare</strong><em>Articoli, prodotti, servizi, piatti o attività.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveExperience"><input id="objectiveExperience" name="objectiveExperience" type="checkbox"><span><strong>Identità ed esperienza</strong><em>Raccontare atmosfera, servizio ed esperienza.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveFootfall"><input id="objectiveFootfall" name="objectiveFootfall" type="checkbox"><span><strong>Affluenza / visite</strong><em>Favorire visite, presenze o partecipazione.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveEvents"><input id="objectiveEvents" name="objectiveEvents" type="checkbox"><span><strong>Eventi e iniziative</strong><em>Dare visibilità a programmazione e attività.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveEcommerce"><input id="objectiveEcommerce" name="objectiveEcommerce" type="checkbox"><span><strong>Vendita online</strong><em>Supportare e-commerce e opportunità di vendita.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveLeads"><input id="objectiveLeads" name="objectiveLeads" type="checkbox"><span><strong>Contatti e richieste</strong><em>Sostenere acquisizione di contatti o iscritti.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveCommunity"><input id="objectiveCommunity" name="objectiveCommunity" type="checkbox"><span><strong>Community e interazione</strong><em>Favorire interazione e crescita della community.</em></span></label>
+            <label class="check objective-card" data-objective="objectiveLaunch"><input id="objectiveLaunch" name="objectiveLaunch" type="checkbox"><span><strong>Lancio / apertura / nuova fase</strong><em>Accompagnare una novità importante.</em></span></label>
+          </div>
+          <button id="toggleObjectivesButton" class="text-button" type="button">+ Aggiungi altri obiettivi</button>
+          <label class="field optional-field">
+            <span>Priorità specifiche da comunicare <small>(facoltativo)</small></span>
+            <input id="focus" name="focus" type="text" placeholder="Es. nuova apertura, reparto Natale, Hyrox, aperitivo">
+          </label>
+          <label class="field optional-field">
+            <span>Obiettivo aggiuntivo <small>(facoltativo)</small></span>
+            <input id="customObjective" name="customObjective" type="text" placeholder="Aggiungi solo se serve qualcosa di specifico">
+          </label>
+        </section>
+
+        <section id="servicesSection" class="form-section">
+          <h2><span class="step">3</span>Servizi inclusi</h2>
+          <p class="form-note section-note">Le voci restano sintetiche: montaggio, post-produzione e adattamenti sono compresi nella produzione.</p>
+          <div class="check-list">
+            <label class="check"><input id="serviceStrategy" name="serviceStrategy" type="checkbox"><span><strong>Strategia e piano editoriale</strong><em>Linea di comunicazione, temi e pianificazione.</em></span></label>
+            <label class="check"><input id="serviceProduction" name="serviceProduction" type="checkbox"><span><strong>Produzione dei contenuti</strong><em>Video, fotografie e/o grafiche.</em></span></label>
+            <label class="check"><input id="serviceClientContent" name="serviceClientContent" type="checkbox"><span><strong>Contenuti interni guidati</strong><em>Il Cliente registra seguendo indicazioni SOMO; editing e supporto inclusi.</em></span></label>
+            <label class="check"><input id="serviceSocial" name="serviceSocial" type="checkbox"><span><strong>Gestione dei canali social</strong><em>Copy, programmazione e pubblicazione.</em></span></label>
+            <label class="check"><input id="serviceAdvCreative" name="serviceAdvCreative" type="checkbox"><span><strong>Creatività per campagne ADV</strong><em>Materiali foto, video o grafici per le campagne.</em></span></label>
+            <label class="check"><input id="serviceInfluencer" name="serviceInfluencer" type="checkbox"><span><strong>Coordinamento creator e influencer</strong><em>Ricerca, selezione e coordinamento.</em></span></label>
+            <label class="check"><input id="serviceCommunity" name="serviceCommunity" type="checkbox"><span><strong>Community management</strong><em>Messaggi, commenti e recensioni.</em></span></label>
+            <label class="check"><input id="serviceEventCoverage" name="serviceEventCoverage" type="checkbox"><span><strong>Copertura dedicata di eventi</strong><em>Fotografo o videomaker negli appuntamenti concordati.</em></span></label>
+          </div>
+          <div id="eventCoveragePanel" class="dependent-panel is-hidden">
+            <label class="field">
+              <span>Frequenza della copertura</span>
+              <select id="eventCoverageFrequency" name="eventCoverageFrequency">
+                <option value="agreed">Negli eventi concordati</option>
+                <option value="monthly">1 evento al mese</option>
+                <option value="twiceMonthly">Fino a 2 eventi al mese</option>
+                <option value="plan">In base alla programmazione</option>
+              </select>
+            </label>
+          </div>
+          <label id="socialChannelsField" class="field"><span>Canali social gestiti</span><input id="socialChannels" name="socialChannels" type="text" placeholder="Es. Instagram e TikTok"></label>
+        </section>
+
+        <section id="productionSection" class="form-section">
+          <h2><span class="step">4</span>Produzione dei contenuti</h2>
+          <p class="form-note section-note">Indica quanto spesso andrete dal Cliente e quante uscite deve garantire la produzione. Gli stessi dati verranno riportati in modo coerente in sintesi, servizi e produzione.</p>
+          <div class="grid-2">
+            <label class="field">
+              <span>Frequenza degli appuntamenti</span>
+              <select id="productionCadence" name="productionCadence">
+                <option value="monthly">Al mese</option>
+                <option value="weekly">A settimana</option>
+                <option value="fortnightly">Ogni 2 settimane</option>
+                <option value="bimonthly">Ogni 2 mesi</option>
+                <option value="quarterly">Ogni 3 mesi</option>
+                <option value="plan">In base al piano editoriale</option>
+                <option value="none">Nessun appuntamento dedicato</option>
+              </select>
+            </label>
+            <label id="productionDaysField" class="field">
+              <span id="productionSessionsLabel">Numero di appuntamenti</span>
+              <input id="productionDays" name="productionDays" type="number" min="1" max="31" step="1">
+            </label>
+            <label id="productionMinimumField" class="check"><input id="productionMinimum" name="productionMinimum" type="checkbox"><span>Indica le giornate mensili come minimo garantito</span></label>
+          </div>
+          <span class="group-label">Tipologia dei contenuti</span>
+          <div class="check-list check-grid compact-checks">
+            <label class="check"><input id="productionVideo" name="productionVideo" type="checkbox"><span><strong>Video</strong></span></label>
+            <label class="check"><input id="productionPhoto" name="productionPhoto" type="checkbox"><span><strong>Fotografie</strong></span></label>
+            <label class="check"><input id="productionGraphics" name="productionGraphics" type="checkbox"><span><strong>Grafiche</strong></span></label>
+          </div>
+          <label id="videoApprovalField" class="check is-hidden">
+            <input id="videoApproval" name="videoApproval" type="checkbox">
+            <span><strong>Approvazione video da parte del cliente</strong><em>Indica nel documento che il cliente approva i video prima della pubblicazione.</em></span>
+          </label>
+          <label class="field quantity-mode">
+            <span>Quantità</span>
+            <select id="quantityMode" name="quantityMode">
+              <option value="fixed">Quantità definite</option>
+              <option value="plan">Definite in base al piano editoriale</option>
+            </select>
+          </label>
+          <div id="fixedQuantityPanel" class="dependent-panel">
+            <label class="field">
+              <span>Periodo delle quantità</span>
+              <select id="quantityPeriod" name="quantityPeriod">
+                <option value="month">Al mese</option>
+                <option value="week">A settimana</option>
+                <option value="appointment">Per appuntamento</option>
+                <option value="project">Complessive nel progetto</option>
+              </select>
+              <small>Es.: 4 video a settimana = Video 4 + periodo “A settimana”.</small>
+            </label>
+            <label class="field"><span>Quantità video</span><select id="videoQuantityType" name="videoQuantityType"><option value="upTo">Fino a</option><option value="exact">Quantità fissa</option></select></label>
+            <div class="grid-3">
+              <label id="videosField" class="field"><span id="videosLabel">Video al mese</span><input id="videos" name="videos" type="number" min="0" max="500" step="1"></label>
+              <label id="photosField" class="field"><span id="photosLabel">Fotografie al mese</span><input id="photos" name="photos" type="text" placeholder="Es. 15–20"></label>
+              <label id="graphicsField" class="field"><span id="graphicsLabel">Grafiche al mese</span><input id="graphicsCount" name="graphicsCount" type="number" min="0" max="500" step="1"></label>
+            </div>
+          </div>
+          <div id="clientContentPanel" class="dependent-panel is-hidden">
+            <p class="preset-title">Contenuti registrati dal Cliente</p>
+            <div class="grid-2">
+              <label class="field"><span>Video interni</span><input id="clientContentCount" name="clientContentCount" type="number" min="1" max="500" step="1" value="8"></label>
+              <label class="field"><span>Periodo</span><select id="clientContentPeriod" name="clientContentPeriod"><option value="month">Al mese</option><option value="week">A settimana</option><option value="project">Complessivi nel progetto</option></select></label>
+            </div>
+            <small>SOMO fornisce indicazioni su ripresa, luce e audio e cura l'editing dei video registrati dal Cliente.</small>
+          </div>
+        </section>
+
+        <section id="adsSection" class="form-section">
+          <h2><span class="step">5</span>ADS</h2>
+          <div class="check-list">
+            <label class="check feature-check"><input id="serviceAds" name="serviceAds" type="checkbox"><span><strong>Gestione campagne Meta Ads</strong><em>Attivazione, monitoraggio e ottimizzazione. Budget separato.</em></span></label>
+          </div>
+          <div id="adsPanel" class="dependent-panel is-hidden">
+            <label id="adsBudgetField" class="field is-hidden"><span>Budget ADS mensile consigliato</span><input id="adsBudget" name="adsBudget" type="number" min="0" step="50" placeholder="Es. 200"><small>È a carico del Cliente e non entra nel compenso SOMO.</small></label>
+          </div>
+        </section>
+
+        <section id="tiktokSection" class="form-section is-hidden">
+          <h2><span class="step">T</span>TikTok Shop</h2>
+          <input id="serviceTikTok" name="serviceTikTok" type="checkbox" class="is-hidden" aria-hidden="true" tabindex="-1">
+          <p class="form-note section-note">Puoi modificare le attività incluse nel preset.</p>
+          <div id="tiktokPanel" class="dependent-panel tiktok-builder-panel">
+            <label class="field">
+              <span>TikTok Shop già attivo?</span>
+              <select id="tiktokStatus" name="tiktokStatus">
+                <option value="new">No, da attivare</option>
+                <option value="active">Sì, già attivo</option>
+              </select>
+            </label>
+            <p class="preset-title">Attività preselezionate <small>(puoi togliere qualsiasi spunta)</small></p>
+            <div class="check-list sub-checks tiktok-checks">
+              <label id="tiktokSetupRow" class="check"><input id="tiktokSetup" name="tiktokSetup" type="checkbox"><span><strong id="tiktokPreset1">01 Configurazione e impostazione dello Shop</strong></span></label>
+              <label class="check"><input id="tiktokPhotos" name="tiktokPhotos" type="checkbox"><span><strong id="tiktokPreset2">02 Selezione e produzione fotografica</strong></span></label>
+              <label class="check"><input id="tiktokCatalog" name="tiktokCatalog" type="checkbox"><span><strong id="tiktokPreset3">03 Costruzione del catalogo</strong></span></label>
+              <label class="check"><input id="tiktokPublish" name="tiktokPublish" type="checkbox"><span><strong id="tiktokPreset4">04 Creazione e pubblicazione delle schede</strong></span></label>
+            </div>
+            <div class="grid-2">
+              <label class="field"><span>Quantità</span><input id="tiktokProductCount" name="tiktokProductCount" type="number" min="1" max="1000" step="1"><small>Default: 30. Si aggiorna automaticamente in tutto il documento.</small></label>
+              <label class="field"><span id="tiktokFeeLabel">Investimento fase di avvio</span><input id="tiktokFee" name="tiktokFee" type="number" min="0" step="50"><small>Default: € 1.200 + IVA. Puoi modificarlo.</small></label>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2><span class="step">6</span>Durata e compenso</h2>
+          <p class="form-note section-note">Scegli una formula unica, due alternative oppure la sola colonna Content + Meta Ads. Se la proposta comprende TikTok Shop, lo Shop viene mostrato come colonna separata nella sintesi.</p>
+          <div id="offerLayoutControls">
+            <span class="group-label">Come vuoi presentare l'offerta?</span>
+            <input id="offerLayout" name="offerLayout" type="hidden" value="compare">
+            <div class="offer-layout-choices" role="radiogroup" aria-label="Struttura dell'offerta">
+              <button class="offer-layout-choice" type="button" data-layout="single" aria-pressed="false"><strong>Formula singola</strong><span>Una sola soluzione, con durata e compenso</span></button>
+              <button class="offer-layout-choice" type="button" data-layout="ads" aria-pressed="false"><strong>Solo Content + Meta Ads</strong><span>Una sola colonna con produzione e gestione campagne Meta</span></button>
+              <button class="offer-layout-choice is-active" type="button" data-layout="compare" aria-pressed="true"><strong>2 formule alternative</strong><span>Due alternative economiche affiancate nella stessa offerta</span></button>
+            </div>
+          </div>
+          <div id="mainEconomicControls">
+            <label id="economicModeField" class="field">
+              <span>Struttura economica dei servizi principali</span>
+              <select id="economicMode" name="economicMode">
+                <option value="monthly">Collaborazione continuativa</option>
+                <option value="oneTime">Progetto a importo complessivo</option>
+              </select>
+            </label>
+            <div id="monthlyEconomicPanel">
+              <div class="grid-2">
+                <label class="field"><span>Durata</span><select id="duration" name="duration"><option value="3">3 mesi</option><option value="6">6 mesi</option><option value="12">12 mesi</option></select></label>
+                <label id="singleMonthlyFeeField" class="field"><span>Compenso mensile</span><input id="monthlyFee" name="monthlyFee" type="number" min="0" step="50"></label>
+              </div>
+              <div id="singleExtraControls">
+                <label class="check extra-toggle"><input id="extraEnabled" name="extraEnabled" type="checkbox"><span><strong>Aggiungi fase iniziale o servizio extra</strong><em>Per attività aggiuntive rispetto al compenso principale.</em></span></label>
+                <div id="extraPanel" class="dependent-panel is-hidden">
+                  <div class="grid-2">
+                    <label class="field"><span>Descrizione</span><input id="extraLabel" name="extraLabel" type="text" placeholder="Es. Produzione straordinaria"></label>
+                    <label class="field"><span>Importo</span><input id="extraFee" name="extraFee" type="number" min="0" step="50"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="oneTimeEconomicPanel" class="is-hidden">
+              <label class="field"><span>Importo complessivo del progetto</span><input id="oneTimeFee" name="oneTimeFee" type="number" min="0" step="50"></label>
+            </div>
+            <label id="adsBudgetToggle" class="check">
+              <input id="showAdsBudget" name="showAdsBudget" type="checkbox">
+              <span><strong>Indica il budget pubblicitario consigliato nel testo</strong><em>L’importo compare solo nella descrizione Meta Ads, mai nella tabella comparativa. Il budget resta escluso dal compenso SOMO.</em></span>
+            </label>
+            <div id="comparisonEconomicPanel" class="dependent-panel is-hidden">
+              <p id="formulaControlsHeading" class="preset-title">Formule alternative</p>
+              <div class="comparison-formulas">
+                <div id="formulaACard" class="formula-card">
+                  <strong>FORMULA 1</strong>
+                  <label class="field"><span>Nome</span><input id="formulaAName" name="formulaAName" type="text" value="CONTENT"></label>
+                  <label class="field"><span>Compenso mensile</span><input id="formulaAFee" name="formulaAFee" type="number" min="0" step="50" value="1300"></label>
+                  <label class="check compact-formula-check"><input id="formulaAAds" name="formulaAAds" type="checkbox"><span><strong>Gestione Meta Ads</strong></span></label>
+                </div>
+                <div class="formula-card">
+                  <strong id="formulaBLabel">FORMULA 2</strong>
+                  <label class="field"><span>Nome</span><input id="formulaBName" name="formulaBName" type="text" value="CONTENT + META ADS"></label>
+                  <label class="field"><span>Compenso mensile</span><input id="formulaBFee" name="formulaBFee" type="number" min="0" step="50" value="1500"></label>
+                  <label id="formulaBAdsField" class="check compact-formula-check"><input id="formulaBAds" name="formulaBAds" type="checkbox" checked><span><strong>Gestione Meta Ads</strong></span></label>
+                </div>
+              </div>
+              <label id="comparisonAdsBudgetField" class="field"><span>Budget Meta Ads consigliato <small>(facoltativo)</small></span><input id="comparisonAdsBudget" name="comparisonAdsBudget" type="number" min="0" step="50" placeholder="Es. 200"><small>Resta sempre escluso dal compenso SOMO.</small></label>
+            </div>
+          </div>
+            <div id="invoiceSchedule" class="grid-2">
+              <label class="field"><span>Giorno di fatturazione mensile</span><input id="invoiceDay" name="invoiceDay" type="number" min="1" max="28" placeholder="Es. 5"></label>
+              <label class="field"><span>Termine di pagamento dalla fattura (giorni)</span><input id="paymentDays" name="paymentDays" type="number" min="1" max="365" placeholder="Es. 10"></label>
+            </div>
+          <div class="total-card" aria-live="polite">
+            <div><span id="installmentsLabel">RATE MENSILI</span><strong id="installmentsPreview">6</strong></div>
+            <div><span id="contractTotalLabel">TOTALE</span><strong id="contractTotalPreview">€ 0,00</strong></div>
+          </div>
+        </section>
+      </form>
+
+      <div class="builder-actions three-actions">
+        <button id="wordButton" class="button button-primary" type="button">Scarica Word</button>
+        <button id="printButton" class="button button-secondary" type="button">PDF</button>
+        <button id="resetButton" class="button button-secondary" type="button">Azzera</button>
+      </div>
+    </aside>
+
+    <section class="preview" aria-label="Anteprima Allegato A">
+      <div class="preview-toolbar">
+        <p><strong>Anteprima</strong><span class="preview-hint">Il PDF mantiene il formato A4.</span></p>
+        <div class="toolbar-actions">
+          <button id="wordButtonTop" class="button button-primary" type="button">Word</button>
+          <button id="printButtonTop" class="button button-secondary" type="button">PDF</button>
+        </div>
+      </div>
+
+      <article id="document" class="document">
+        <section id="pageOne" class="page page-one">
+          <header class="doc-header">
+            <img class="logo-somo" src="../assets/somo.png?v=21" alt="SOMO" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
+            <img class="logo-noodles" src="../assets/black-noodles.png?v=21" alt="Black Noodles" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
+          </header>
+          <h1 id="docTitle" class="doc-title">Allegato A al Contratto di Collaborazione</h1>
+          <p id="docSubtitle" class="doc-subtitle">OFFERTA ECONOMICA E SCOPE OF WORK</p>
+
+          <table class="parties">
+            <thead><tr><th>FORNITORE</th><th>CLIENTE</th></tr></thead>
+            <tbody><tr>
+              <td><strong>SOMO S.r.l.</strong><br>Vico Sant’Eframo Vecchio, 20<br>80137 Napoli (NA)<br>P. IVA 10895731213</td>
+              <td id="clientBlock"><strong>________________________________</strong><br>Sede: __________________________________<br>________________________________________<br>P. IVA/C.F.: __________________________</td>
+            </tr></tbody>
+          </table>
+
+          <h2 class="label-title">OGGETTO</h2>
+          <p id="objectText" class="object-text"></p>
+
+          <h2 class="section-title">SINTESI DELL’OFFERTA</h2>
+          <table id="summarySingleTable" class="summary-table">
+            <tbody>
+              <tr><th id="summaryDurationLabel">DURATA</th><td id="summaryDuration"></td></tr>
+              <tr><th>OBIETTIVO</th><td id="summaryObjective"></td></tr>
+              <tr id="summaryProductionRow"><th>PRODUZIONE</th><td id="summaryProduction"></td></tr>
+              <tr id="summaryContentRow"><th>CONTENUTI</th><td id="summaryContent"></td></tr>
+              <tr id="summaryManagementRow"><th>GESTIONE</th><td id="summaryManagement"></td></tr>
+              <tr id="summaryTikTokRow" class="is-hidden"><th>TIKTOK SHOP</th><td id="summaryTikTok"></td></tr>
+              <tr><th>INVESTIMENTO</th><td id="summaryInvestment"></td></tr>
+              <tr id="summaryAdsRow"><th>ADS</th><td id="summaryAds"></td></tr>
+            </tbody>
+          </table>
+          <div id="summaryCompareWrap" class="summary-table-wrap is-hidden">
+            <table id="summaryCompareTable" class="summary-table comparison-summary">
+              <thead id="summaryCompareHead"></thead>
+              <tbody id="summaryCompareBody"></tbody>
+            </table>
+            <p id="formulaChoiceNote" class="formula-choice-note"></p>
+          </div>
+
+          <section id="objectiveDocumentSection" class="doc-section">
+            <h2 id="objectiveHeading" class="section-title">1. OBIETTIVO DELLA COLLABORAZIONE</h2>
+            <div id="objectiveText"></div>
+          </section>
+
+          <section id="servicesDocumentSection" class="doc-section">
+            <h2 class="section-title">2. SERVIZI INCLUSI</h2>
+            <ul id="serviceList" class="service-list"></ul>
+          </section>
+
+          <section id="productionDocumentSection" class="doc-section production-section">
+            <h2 id="productionHeading" class="section-title">3. MODELLO DI PRODUZIONE</h2>
+            <p id="productionText"></p>
+          </section>
+
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO<br>somonapoli@pec.it</footer>
+          <span class="page-number">1</span>
+        </section>
+
+        <section id="pageTwo" class="page page-two">
+          <header class="doc-header">
+            <img class="logo-somo" src="../assets/somo.png?v=21" alt="SOMO" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
+            <img class="logo-noodles" src="../assets/black-noodles.png?v=21" alt="Black Noodles" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
+          </header>
+          <section>
+            <h2 id="compensoHeading" class="section-title">4. COMPENSO</h2>
+            <table class="fee-table"><tbody id="feeTableBody"></tbody></table>
+          </section>
+
+          <section id="formulaDetailSection" class="doc-section is-hidden">
+            <h2 id="formulaDetailHeading" class="section-title">5. FORMULA</h2>
+            <p id="formulaDetailText"></p>
+          </section>
+
+          <section id="tiktokDetailSection" class="doc-section is-hidden">
+            <h2 id="tiktokDetailHeading" class="section-title">5. TIKTOK SHOP</h2>
+            <p id="tiktokDetailText"></p>
+          </section>
+
+          <section class="doc-section">
+            <h2 id="exclusionsHeading" class="section-title">5. NON INCLUSO</h2>
+            <ul id="exclusionList" class="exclusion-list"></ul>
+            <p class="exclusion-note">Le eventuali attività aggiuntive saranno concordate e preventivate separatamente.</p>
+          </section>
+
+          <section class="doc-section">
+            <h2 id="paymentHeading" class="section-title">6. PAGAMENTO E VALIDITÀ</h2>
+            <p id="paymentText"></p>
+            <p id="invoiceText"></p>
+            <p id="validityText"></p>
+          </section>
+
+          <section class="signature">
+            <div class="signature-top">
+              <p id="chosenFormulaRow" class="is-hidden">Formula prescelta: ________________________________</p>
+              <p>Data: <span id="signatureDate">____ / ____ / ______</span></p>
+            </div>
+            <p>Per accettazione<br><strong>Firma e Timbro del Cliente</strong><br>_____________________________________________</p>
+          </section>
+
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO<br>somonapoli@pec.it</footer>
+          <span class="page-number">2</span>
+        </section>
+      </article>
+    </section>
+  </main>
+  <script src="app.js?v=36-formula-ads"></script>
+</body>
+</html>
+
