@@ -1097,7 +1097,7 @@
     setHidden('feeBreakdown', comparisonEnabled() || !adsIncluded());
     if (!comparisonEnabled() && adsIncluded()) {
       const contentFee = adsFormulaOnly() ? formulaFee('A') : numberValue('monthlyFee');
-      setText('feeBreakdown', `Dettaglio mensile: Content ${money(contentFee)} + IVA · Gestione ${adsLabel()} ${money(adsManagementFee())} + IVA. Budget pubblicitario a parte.`);
+      setText('feeBreakdown', `Content ${money(contentFee)} · Gestione Ads ${money(adsManagementFee())} al mese, IVA esclusa.`);
     }
     setText('compensoHeading', '4. COMPENSO');
 
