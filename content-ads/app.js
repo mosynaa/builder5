@@ -1094,6 +1094,11 @@
     setHidden('formulaDetailSection', true);
     setHidden('tiktokDetailSection', true);
     setHidden('chosenFormulaRow', true);
+    setHidden('feeBreakdown', comparisonEnabled() || !adsIncluded());
+    if (!comparisonEnabled() && adsIncluded()) {
+      const contentFee = adsFormulaOnly() ? formulaFee('A') : numberValue('monthlyFee');
+      setText('feeBreakdown', `Dettaglio mensile: Content ${money(contentFee)} + IVA · Gestione ${adsLabel()} ${money(adsManagementFee())} + IVA. Budget pubblicitario a parte.`);
+    }
     setText('compensoHeading', '4. COMPENSO');
 
     if (tikOnly) {
@@ -1602,6 +1607,9 @@
     }
     body.push(wParagraph(domText('#compensoHeading') || '4. COMPENSO', { bold:true, size:23, color:WORD.ink, before:95, after:80, keepNext:true }));
     body.push(wFeeTable(feeRows));
+    if (!el('feeBreakdown').classList.contains('is-hidden')) {
+      body.push(wParagraph(domText('#feeBreakdown'), { size:17, before:65, after:70 }));
+    }
     if (!el('formulaDetailSection')?.classList.contains('is-hidden')) {
       body.push(wParagraph(domText('#formulaDetailHeading'), { bold:true, size:23, color:WORD.ink, before:200, after:72, keepNext:true }));
       body.push(wParagraph(domText('#formulaDetailText'), { size:18, after:90 }));
