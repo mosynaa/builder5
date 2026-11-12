@@ -830,3 +830,14 @@ table { width: 100%; border-collapse: collapse; }
 .summary-shop-head strong { font-size: 9pt; }
 .summary-shop-card p { margin: 1mm 0 0; font-size: 8.5pt; }
 .summary-shop-note { color: var(--muted); }
+
+#tiktokDetailSection .shop-steps { margin: 1.4mm 0; }
+#tiktokDetailSection .shop-steps th, #tiktokDetailSection .shop-steps td {
+  padding: 1mm 1.6mm;
+  font-size: 8pt;
+  line-height: 1.2;
+}
+#tiktokOperatingBlock h3 { margin: 1.2mm 0 .5mm; color: var(--teal); font-size: 8.5pt; }
+#tiktokOperatingBlock p { font-size: 8pt; }
+.page-two.shop-detail-mode { gap: 2.4mm; }
+.page-two.shop-detail-mode .signature { margin-top: 2mm !important; }

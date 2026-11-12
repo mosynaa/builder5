@@ -760,10 +760,10 @@
     const count = tiktokCount();
     const word = itemWord();
     const steps = [];
-    if (tiktokHas('tiktokSetup')) steps.push(['Configurazione e impostazione dello Shop', 'Configurazione iniziale del canale e organizzazione della struttura necessaria alla vendita e alla gestione del catalogo.']);
-    if (tiktokHas('tiktokPhotos')) steps.push([tiktokIsActive() ? 'Selezione e produzione fotografica' : 'Selezione e produzione fotografica', `Definizione dei ${tiktokIsActive() ? '' : 'primi '}${count} ${word} e realizzazione delle immagini destinate allo Shop.`]);
-    if (tiktokHas('tiktokCatalog')) steps.push([tiktokIsActive() ? 'Aggiornamento del catalogo' : 'Costruzione del catalogo', 'Organizzazione delle informazioni commerciali: titoli, descrizioni, prezzi e dati necessari alla pubblicazione.']);
-    if (tiktokHas('tiktokPublish')) steps.push(['Creazione e pubblicazione delle schede', `Realizzazione delle ${count} schede prodotto, caricamento dei contenuti, verifica finale e pubblicazione.`]);
+    if (tiktokHas('tiktokSetup')) steps.push(['01 · Configurazione dello Shop', 'Configurazione iniziale del canale e organizzazione della struttura necessaria alla vendita e alla gestione del catalogo.']);
+    if (tiktokHas('tiktokPhotos')) steps.push(['02 · Selezione e produzione fotografica', `Definizione dei ${tiktokIsActive() ? '' : 'primi '}${count} ${word} e realizzazione delle immagini destinate allo Shop.`]);
+    if (tiktokHas('tiktokCatalog')) steps.push([tiktokIsActive() ? '03 · Aggiornamento del catalogo' : '03 · Costruzione del catalogo', 'Organizzazione delle informazioni commerciali: titoli, descrizioni, prezzi e dati necessari alla pubblicazione.']);
+    if (tiktokHas('tiktokPublish')) steps.push(['04 · Creazione e pubblicazione delle schede', `Realizzazione delle ${count} schede prodotto, caricamento dei contenuti, verifica finale e pubblicazione.`]);
     return steps;
   }
 
@@ -984,10 +984,9 @@
     setHidden('shopAcceptanceRow', !visible);
     if (!visible) return;
     const title = tiktokIsActive() ? 'TikTok Shop · Ampliamento catalogo' : (tiktokHas('tiktokSetup') ? 'TikTok Shop · Avvio' : 'TikTok Shop');
-    const steps = tiktokServiceSteps().map(([label]) => label.toLowerCase());
     setText('summaryShopTitle', title);
     setText('summaryShopFee', `${money(tiktokFee())} + IVA una tantum`);
-    setText('summaryShopActivities', steps.length ? sentence(joinNatural(steps)) : 'Attività da definire.');
+    setText('summaryShopActivities', 'Vedi le attività e le informazioni operative nella sezione TikTok Shop.');
     const hasProductWork = tiktokHas('tiktokPhotos') || tiktokHas('tiktokCatalog') || tiktokHas('tiktokPublish');
     setText('summaryShopQuantity', hasProductWork ? `${tiktokCount()} ${itemWord()} · ` : '');
     setText('summaryShopNote', 'Servizio facoltativo. Indicare la scelta nello spazio di accettazione.');
@@ -1210,13 +1209,19 @@
     if (hasTikTok) {
       setHidden('tiktokDetailSection', false);
       setText('tiktokDetailHeading', `${next}. TIKTOK SHOP`);
-      const acts = tiktokServiceSteps().map(([title]) => title.toLowerCase());
-      const status = tiktokIsActive() ? 'Lo Shop è già attivo e la proposta riguarda' : 'La fase TikTok Shop comprende';
-      const subject = acts.length ? joinNatural(acts) : 'le attività selezionate nel builder';
-      const profText = `${status} ${subject}, per ${count} ${itemWord()}. Le attività vengono svolte sulla base delle informazioni, dei prezzi e della disponibilità forniti dal Cliente; eventuali inserimenti ulteriori saranno concordati separatamente.`;
-      const simpleText = `${status} ${subject} per ${count} ${itemWord()}. Prezzi, disponibilità e informazioni sui prodotti saranno forniti o confermati dal Cliente.`;
-      const conciseText = `${status} ${subject} per ${count} ${itemWord()}.`;
-      setText('tiktokDetailText', styledText(profText, simpleText, conciseText));
+      const steps = tiktokServiceSteps();
+      setText('tiktokDetailText', tiktokIsActive() ? 'Ampliamento di uno Shop già attivo.' : (tiktokHas('tiktokSetup') ? 'Avvio del TikTok Shop.' : 'Attività per il TikTok Shop.'));
+      el('tiktokStepsBody').innerHTML = steps.map(([title, description]) => `<tr><th scope="row">${safe(title)}</th><td>${safe(description)}</td></tr>`).join('');
+      setHidden('tiktokStepsTable', !steps.length);
+      const productWork = tiktokHas('tiktokPhotos') || tiktokHas('tiktokCatalog') || tiktokHas('tiktokPublish');
+      const notes = [];
+      if (productWork) {
+        notes.push(`Il Cliente mette a disposizione i ${itemWord()} e fornisce o conferma prezzi, disponibilità e dati necessari. Eventuali inserimenti oltre i ${count} previsti saranno concordati separatamente.`);
+      }
+      if (tiktokHas('tiktokSetup')) notes.push('L’attivazione dello Shop è soggetta alle verifiche di TikTok.');
+      else if (tiktokHas('tiktokPublish')) notes.push('La pubblicazione delle schede è soggetta alle verifiche di TikTok.');
+      setHidden('tiktokOperatingBlock', !notes.length);
+      setText('tiktokOperatingText', notes.join(' '));
       next += 1;
     }
     setText('exclusionsHeading', `${next}. ${!comparisonEnabled() && !isTikTokOnly() ? 'SERVIZI AGGIUNTIVI ED EXTRA' : 'ULTERIORI EXTRA'}`);
@@ -1317,6 +1322,7 @@
     el('pageOne').classList.toggle('dense', serviceCount > 6 || (checked('serviceTikTok') && hasMainServices() && serviceCount > 5));
     el('pageOne').classList.toggle('comparison-mode', columnSummaryEnabled());
     el('pageTwo').classList.toggle('comparison-mode', columnSummaryEnabled());
+    el('pageTwo').classList.toggle('shop-detail-mode', !isTikTokOnly() && checked('serviceTikTok'));
     el('pageTwo').classList.toggle('compact', columnSummaryEnabled() || exclusionCount > 4 || feeRows > 3);
     saveState();
     requestAnimationFrame(harmonizePages);
@@ -1616,7 +1622,15 @@
     }
     if (!el('tiktokDetailSection')?.classList.contains('is-hidden')) {
       body.push(wParagraph(domText('#tiktokDetailHeading'), { bold:true, size:23, color:WORD.ink, before:200, after:72, keepNext:true }));
-      body.push(wParagraph(domText('#tiktokDetailText'), { size:18, after:90 }));
+      body.push(wParagraph(domText('#tiktokDetailText'), { size:18, after:65, keepNext:true }));
+      const shopRows = [...document.querySelectorAll('#tiktokStepsBody tr')]
+        .map((row) => [...row.cells].map((cell) => cell.textContent.trim()));
+      if (shopRows.length) body.push(wSummaryTable(shopRows));
+      const operatingText = domText('#tiktokOperatingText');
+      if (operatingText) {
+        body.push(wParagraph('Informazioni operative', { bold:true, size:17, before:70, after:30, keepNext:true }));
+        body.push(wParagraph(operatingText, { size:17, after:65 }));
+      }
     }
     body.push(wParagraph(domText('#exclusionsHeading') || '5. ULTERIORI EXTRA', { bold:true, size:23, color:WORD.ink, before:240, after:72, keepNext:true }));
     exclusions.forEach((text) => body.push(wRichParagraph([{ text, size:18 }], { bullet:true, after:52, keepNext:true })));
