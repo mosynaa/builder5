@@ -1079,7 +1079,9 @@
     return exclusions.length;
   }
 
-  function feeRow(label, amount) { return `<tr><th>${safe(label)}</th><td>${safe(amount)}</td></tr>`; }
+  function feeRow(label, ...amounts) {
+    return `<tr><th scope="row">${safe(label)}</th>${amounts.map((amount) => `<td>${safe(amount)}</td>`).join('')}</tr>`;
+  }
 
   function renderEconomics() {
     const tikOnly = isTikTokOnly();
@@ -1109,14 +1111,15 @@
       return 2;
     }
 
-    const rows = [];
+    const oneTime = !formulaColumnsEnabled() && value('economicMode') === 'oneTime';
+    const rows = oneTime ? [] : [`<tr><th scope="col">Formula</th><th scope="col">Compenso mensile</th><th scope="col">Totale per ${duration} mesi</th></tr>`];
     let totalPreview = 0;
     if (comparisonEnabled()) {
       const aName = formulaName('A'), bName = formulaName('B');
       const aFee = formulaFee('A'), bFee = formulaFee('B');
       const aTotal = aFee * duration, bTotal = bFee * duration;
-      rows.push(feeRow(aName.toUpperCase(), `${money(aFee)}/mese + IVA - totale ${money(aTotal)}`));
-      rows.push(feeRow(bName.toUpperCase(), `${money(bFee)}/mese + IVA - totale ${money(bTotal)}`));
+      rows.push(feeRow(aName, `${money(aFee)} + IVA`, `${money(aTotal)} + IVA`));
+      rows.push(feeRow(bName, `${money(bFee)} + IVA`, `${money(bTotal)} + IVA`));
       setText('installmentsLabel', aName);
       setText('installmentsPreview', `${money(aFee)}/mese`);
       setText('contractTotalLabel', bName);
@@ -1134,13 +1137,11 @@
         const conciseText = `${intro} la gestione e ottimizzazione delle campagne ${adsLabel()}.${budgetText}`;
         setText('formulaDetailText', styledText(profText, simpleText, conciseText));
       }
-      if (hasTikTok) rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA una tantum`));
       const adsTail = adsNames.length ? ' Il budget pubblicitario è sempre escluso.' : '';
       el('paymentText').innerHTML = `La collaborazione ha durata di ${duration} mesi. Il compenso complessivo è pari a <strong>${safe(money(aTotal))} + IVA</strong> per la Formula ${safe(aName)} oppure a <strong>${safe(money(bTotal))} + IVA</strong> per la Formula ${safe(bName)}, corrisposto in ${duration} rate mensili secondo la formula prescelta.${shopPayment}${adsTail}`;
       setText('invoiceText', 'La fatturazione dei servizi continuativi avverrà mensilmente secondo la formula prescelta; le eventuali fasi iniziali o attività aggiuntive saranno fatturate all’avvio delle relative attività.');
       setText('validityText', `La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività. Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.`);
     } else {
-      const oneTime = !adsFormulaOnly() && value('economicMode') === 'oneTime';
       const monthly = adsFormulaOnly() ? formulaFee('B') : monthlyContentAndAds();
       const mainOneTime = numberValue('oneTimeFee');
       const extra = !oneTime && !adsFormulaOnly() && checked('extraEnabled') ? numberValue('extraFee') : 0;
@@ -1150,16 +1151,18 @@
         totalPreview += mainOneTime;
       } else {
         const baseTotal = duration * monthly;
-        rows.push(feeRow(adsFormulaOnly() ? formulaName('B') : 'COMPENSO MENSILE', `${money(monthly)} + IVA`));
-        rows.push(feeRow(`TOTALE ${duration} MESI`, `${money(baseTotal)} + IVA`));
+        const formula = adsIncluded() ? formulaName('B') : formulaName('A');
+        rows.push(feeRow(formula, `${money(monthly)} + IVA`, `${money(baseTotal)} + IVA`));
         totalPreview += baseTotal;
       }
-      if (hasTikTok) { rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA una tantum`)); totalPreview += tikFee; }
-      if (extra) { rows.push(feeRow(extraLabel.toUpperCase(), `${money(extra)} + IVA`)); totalPreview += extra; }
-      if (rows.length > 2 || hasTikTok || extra || oneTime) rows.push(feeRow(hasTikTok ? 'TOTALE CON TIKTOK SHOP' : 'TOTALE COMPLESSIVO', `${money(totalPreview)} + IVA`));
+      if (extra) {
+        totalPreview += extra;
+        rows.push(feeRow(`${extraLabel} (una tantum)`, '—', `${money(extra)} + IVA`));
+        rows.push(feeRow('Totale con extra', '—', `${money(totalPreview)} + IVA`));
+      }
       setText('installmentsLabel', oneTime ? 'TIPOLOGIA' : 'RATE MENSILI');
       setText('installmentsPreview', oneTime ? 'Progetto' : String(duration));
-      setText('contractTotalLabel', hasTikTok ? 'TOTALE CON TIKTOK SHOP' : 'TOTALE COMPLESSIVO');
+      setText('contractTotalLabel', 'TOTALE FORMULA');
       setText('contractTotalPreview', money(totalPreview));
       const payment = [];
       if (oneTime) payment.push(`L'importo complessivo previsto per il progetto è pari a <strong>${safe(money(mainOneTime))} + IVA</strong>.`);
@@ -1452,6 +1455,7 @@
     return wTableShell(xmlRows, { widths, border:WORD.line, size:4 });
   }
   function wFeeTable(rows) {
+    if (rows[0]?.length === 3) return wComparisonTable(rows);
     const widths = [4800,4800];
     const xmlRows = rows.map(([label, value]) => `<w:tr>${wCell(wParagraph(label, { bold:true, size:17, color:WORD.teal, after:20 }), widths[0], { fill:WORD.paper, valign:'center' })}${wCell(wParagraph(value, { bold:true, size:21, after:20 }), widths[1], { fill:WORD.paper, valign:'center' })}</w:tr>`);
     return wTableShell(xmlRows, { widths, border:WORD.teal, size:6 });
@@ -1530,7 +1534,7 @@
       .map((tr) => [tr.children[0]?.textContent?.trim() || '', tr.children[1]?.textContent?.trim() || '']);
     const comparisonRows = [...document.querySelectorAll('#summaryCompareTable tr')]
       .map((tr) => [...tr.children].map((cell) => cell.textContent?.trim() || ''));
-    const feeRows = [...document.querySelectorAll('.fee-table tr')].map((tr) => [tr.children[0]?.textContent?.trim() || '', tr.children[1]?.textContent?.trim() || '']);
+    const feeRows = [...document.querySelectorAll('.fee-table tr')].map((tr) => [...tr.children].map((cell) => cell.textContent.trim()));
     const serviceItems = [...document.querySelectorAll('#serviceList li')].map((li) => ({
       title: li.querySelector('strong')?.textContent?.trim() || '',
       description: li.querySelector('.service-description')?.textContent?.trim() || ''
