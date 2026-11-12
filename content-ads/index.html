@@ -14,9 +14,6 @@
     .fee-table th[scope="col"] { width: 29%; }
     .fee-table th[scope="col"]:first-child { width: 42%; }
   </style>
-  <style>
-    #feeBreakdown { margin: 1.5mm 0 0; font-size: 8.5pt; line-height: 1.3; }
-  </style>
 </head>
 <body>
   <main class="app">
@@ -388,6 +385,8 @@
               <tr id="summaryContentRow"><th>CONTENUTI</th><td id="summaryContent"></td></tr>
               <tr id="summaryManagementRow"><th>GESTIONE</th><td id="summaryManagement"></td></tr>
               <tr id="summaryTikTokRow" class="is-hidden"><th>TIKTOK SHOP</th><td id="summaryTikTok"></td></tr>
+              <tr id="summaryContentFeeRow" class="is-hidden"><th>Content</th><td id="summaryContentFee"></td></tr>
+              <tr id="summaryAdsFeeRow" class="is-hidden"><th id="summaryAdsFeeLabel"></th><td id="summaryAdsFee"></td></tr>
               <tr><th>INVESTIMENTO</th><td id="summaryInvestment"></td></tr>
               <tr id="summaryAdsRow"><th>ADS</th><td id="summaryAds"></td></tr>
             </tbody>
@@ -436,7 +435,6 @@
           <section>
             <h2 id="compensoHeading" class="section-title">4. COMPENSO</h2>
             <table class="fee-table"><tbody id="feeTableBody"></tbody></table>
-            <p id="feeBreakdown" class="is-hidden"></p>
           </section>
 
           <section id="formulaDetailSection" class="doc-section is-hidden">
@@ -477,7 +475,7 @@
       </article>
     </section>
   </main>
-  <script src="app.js?v=43-compact-fee-split"></script>
+  <script src="app.js?v=44-summary-fee-split"></script>
 </body>
 </html>
 

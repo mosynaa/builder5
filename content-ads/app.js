@@ -1012,8 +1012,13 @@
     }
     if (checked('serviceClientContent')) addShared('Contenuti interni guidati', `${clientContentCount()} ${clientContentPeriodText()}`);
     if (checked('serviceSocial')) addShared('Gestione social', 'Inclusa');
-    if (adsIncluded()) rows.push([`Gestione ${adsLabel()}`, ...formulas.map((id) => formulaAds(id) ? 'Inclusa' : 'Esclusa')]);
-    rows.push(['Compenso mensile', ...formulas.map((id) => `${money(formulaFee(id))} + IVA`)]);
+    if (adsFormulaOnly()) {
+      addShared('Content', `${money(formulaFee('A'))} + IVA`);
+      addShared(`Gestione ${adsLabel()}`, `+ ${money(adsManagementFee())} + IVA`);
+    } else if (adsIncluded()) {
+      rows.push([`Gestione ${adsLabel()}`, ...formulas.map((id) => formulaAds(id) ? 'Inclusa' : 'Esclusa')]);
+    }
+    rows.push([adsFormulaOnly() ? 'Totale mensile' : 'Compenso mensile', ...formulas.map((id) => `${money(formulaFee(id))} + IVA`)]);
     el('summaryCompareBody').innerHTML = rows.map((row) => `<tr><th>${safe(row[0])}</th>${row.slice(1).map((v) => `<td>${safe(v)}</td>`).join('')}</tr>`).join('');
   }
 
@@ -1037,11 +1042,18 @@
     setText('summaryContent', contentSummary());
     setText('summaryManagement', managementSummary());
     setText('summaryAds', adsSummary());
+    setHidden('summaryContentFeeRow', !adsIncluded());
+    setHidden('summaryAdsFeeRow', !adsIncluded());
+    if (adsIncluded()) {
+      setText('summaryContentFee', `${money(numberValue('monthlyFee'))} + IVA`);
+      setText('summaryAdsFeeLabel', `Gestione ${adsLabel()}`);
+      setText('summaryAdsFee', `+ ${money(adsManagementFee())} + IVA`);
+    }
     const productionIncluded = tikOnly || checked('serviceProduction') || checked('serviceClientContent');
     setHidden('summaryProductionRow', !productionIncluded);
     setHidden('summaryContentRow', !productionIncluded);
     setHidden('summaryManagementRow', tikOnly || (!checked('serviceSocial') && !checked('serviceCommunity')));
-    setHidden('summaryAdsRow', tikOnly || (!adsIncluded() && !checked('serviceAdvCreative')));
+    setHidden('summaryAdsRow', tikOnly || (!adsIncluded() && !checked('serviceAdvCreative')) || (adsIncluded() && !checked('showAdsBudget')));
 
     setHidden('summaryTikTokRow', !tikOnly);
     if (tikOnly) {
@@ -1094,11 +1106,6 @@
     setHidden('formulaDetailSection', true);
     setHidden('tiktokDetailSection', true);
     setHidden('chosenFormulaRow', true);
-    setHidden('feeBreakdown', comparisonEnabled() || !adsIncluded());
-    if (!comparisonEnabled() && adsIncluded()) {
-      const contentFee = adsFormulaOnly() ? formulaFee('A') : numberValue('monthlyFee');
-      setText('feeBreakdown', `Content ${money(contentFee)} · Gestione Ads ${money(adsManagementFee())} al mese, IVA esclusa.`);
-    }
     setText('compensoHeading', '4. COMPENSO');
 
     if (tikOnly) {
@@ -1607,9 +1614,6 @@
     }
     body.push(wParagraph(domText('#compensoHeading') || '4. COMPENSO', { bold:true, size:23, color:WORD.ink, before:95, after:80, keepNext:true }));
     body.push(wFeeTable(feeRows));
-    if (!el('feeBreakdown').classList.contains('is-hidden')) {
-      body.push(wParagraph(domText('#feeBreakdown'), { size:17, before:65, after:70 }));
-    }
     if (!el('formulaDetailSection')?.classList.contains('is-hidden')) {
       body.push(wParagraph(domText('#formulaDetailHeading'), { bold:true, size:23, color:WORD.ink, before:200, after:72, keepNext:true }));
       body.push(wParagraph(domText('#formulaDetailText'), { size:18, after:90 }));
