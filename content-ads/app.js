@@ -981,6 +981,7 @@
   function renderShopSummary() {
     const visible = !isTikTokOnly() && checked('serviceTikTok');
     setHidden('summaryShopCard', !visible);
+    setHidden('shopAcceptanceRow', !visible);
     if (!visible) return;
     const title = tiktokIsActive() ? 'TikTok Shop · Ampliamento catalogo' : (tiktokHas('tiktokSetup') ? 'TikTok Shop · Avvio' : 'TikTok Shop');
     const steps = tiktokServiceSteps().map(([label]) => label.toLowerCase());
@@ -989,7 +990,7 @@
     setText('summaryShopActivities', steps.length ? sentence(joinNatural(steps)) : 'Attività da definire.');
     const hasProductWork = tiktokHas('tiktokPhotos') || tiktokHas('tiktokCatalog') || tiktokHas('tiktokPublish');
     setText('summaryShopQuantity', hasProductWork ? `${tiktokCount()} ${itemWord()} · ` : '');
-    setText('summaryShopNote', comparisonEnabled() ? 'Attivabile su richiesta con entrambe le formule.' : 'Attivabile su richiesta con la formula proposta.');
+    setText('summaryShopNote', 'Servizio facoltativo. Indicare la scelta nello spazio di accettazione.');
   }
 
   function renderComparisonSummary() {
@@ -1086,6 +1087,7 @@
     const tikFee = hasTikTok ? tiktokFee() : 0;
     const count = tiktokCount();
     const duration = Math.max(1, numberValue('duration',6));
+    const shopPayment = hasTikTok ? ` TikTok Shop si aggiunge alla formula solo se accettato nello spazio di firma, per un compenso una tantum di <strong>${safe(money(tikFee))} + IVA</strong>.` : '';
 
     setHidden('formulaDetailSection', true);
     setHidden('tiktokDetailSection', true);
@@ -1133,9 +1135,8 @@
         setText('formulaDetailText', styledText(profText, simpleText, conciseText));
       }
       if (hasTikTok) rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA una tantum`));
-      const tiktokTail = hasTikTok ? ` Solo se espressamente scelta, la fase TikTok Shop si aggiunge alla formula selezionata per un importo di <strong>${safe(money(tikFee))} + IVA</strong>.` : '';
       const adsTail = adsNames.length ? ' Il budget pubblicitario è sempre escluso.' : '';
-      el('paymentText').innerHTML = `La collaborazione ha durata di ${duration} mesi. Il compenso complessivo è pari a <strong>${safe(money(aTotal))} + IVA</strong> per la Formula ${safe(aName)} oppure a <strong>${safe(money(bTotal))} + IVA</strong> per la Formula ${safe(bName)}, corrisposto in ${duration} rate mensili secondo la formula prescelta.${tiktokTail}${adsTail}`;
+      el('paymentText').innerHTML = `La collaborazione ha durata di ${duration} mesi. Il compenso complessivo è pari a <strong>${safe(money(aTotal))} + IVA</strong> per la Formula ${safe(aName)} oppure a <strong>${safe(money(bTotal))} + IVA</strong> per la Formula ${safe(bName)}, corrisposto in ${duration} rate mensili secondo la formula prescelta.${shopPayment}${adsTail}`;
       setText('invoiceText', 'La fatturazione dei servizi continuativi avverrà mensilmente secondo la formula prescelta; le eventuali fasi iniziali o attività aggiuntive saranno fatturate all’avvio delle relative attività.');
       setText('validityText', `La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività. Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.`);
     } else {
@@ -1155,15 +1156,15 @@
       }
       if (hasTikTok) { rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA una tantum`)); totalPreview += tikFee; }
       if (extra) { rows.push(feeRow(extraLabel.toUpperCase(), `${money(extra)} + IVA`)); totalPreview += extra; }
-      if (rows.length > 2 || hasTikTok || extra || oneTime) rows.push(feeRow('TOTALE COMPLESSIVO', `${money(totalPreview)} + IVA`));
+      if (rows.length > 2 || hasTikTok || extra || oneTime) rows.push(feeRow(hasTikTok ? 'TOTALE CON TIKTOK SHOP' : 'TOTALE COMPLESSIVO', `${money(totalPreview)} + IVA`));
       setText('installmentsLabel', oneTime ? 'TIPOLOGIA' : 'RATE MENSILI');
       setText('installmentsPreview', oneTime ? 'Progetto' : String(duration));
-      setText('contractTotalLabel', 'TOTALE COMPLESSIVO');
+      setText('contractTotalLabel', hasTikTok ? 'TOTALE CON TIKTOK SHOP' : 'TOTALE COMPLESSIVO');
       setText('contractTotalPreview', money(totalPreview));
       const payment = [];
       if (oneTime) payment.push(`L'importo complessivo previsto per il progetto è pari a <strong>${safe(money(mainOneTime))} + IVA</strong>.`);
       else payment.push(`Il compenso complessivo per ${duration} mesi è pari a <strong>${safe(money(monthly * duration))} + IVA</strong>, corrisposto in ${duration} rate mensili da <strong>${safe(money(monthly))} + IVA</strong>.`);
-      if (hasTikTok) payment.push(`Le attività TikTok Shop selezionate prevedono un investimento di <strong>${safe(money(tikFee))} + IVA</strong>.`);
+      if (hasTikTok) payment.push(shopPayment.trim());
       if (extra) payment.push(`L’attività “${safe(extraLabel)}” è pari a <strong>${safe(money(extra))} + IVA</strong>.`);
       el('paymentText').innerHTML = payment.join(' ');
       setText('invoiceText', oneTime ? 'La fatturazione avverrà all’avvio del progetto, secondo le modalità concordate.' : 'La fatturazione dei servizi continuativi avverrà mensilmente; eventuali fasi iniziali o servizi extra saranno fatturati all’avvio delle relative attività.');
@@ -1614,6 +1615,9 @@
     const pageTwoSignatureBefore = 420;
     if (!el('chosenFormulaRow')?.classList.contains('is-hidden')) body.push(wParagraph('Formula prescelta: ________________________________', { size:18, before:pageTwoSignatureBefore, after:130 }));
     body.push(wParagraph('Data: ____ / ____ / ______', { size:18, before:el('chosenFormulaRow')?.classList.contains('is-hidden') ? pageTwoSignatureBefore : 0, after:130 }));
+    if (!el('shopAcceptanceRow').classList.contains('is-hidden')) {
+      body.push(wParagraph(domText('#shopAcceptanceRow'), { size:18, after:110, keepNext:true }));
+    }
     body.push(wParagraph('Per accettazione', { bold:true, size:18, after:50 }));
     body.push(wParagraph('Firma e Timbro del Cliente  _____________________________________________', { size:18, after:30 }));
 
