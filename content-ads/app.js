@@ -744,7 +744,7 @@
     }
 
     if (!isTikTokOnly() && value('focus')) paragraphs.push(`La comunicazione darà particolare priorità a <strong>${safe(value('focus'))}</strong>.`);
-    if (!isTikTokOnly() && value('customObjective')) paragraphs.push(`Obiettivo aggiuntivo: ${safe(sentence(value('customObjective')))}`);
+    if (!isTikTokOnly() && value('customObjective')) paragraphs.push(safe(sentence(value('customObjective'))));
     if (!paragraphs.length) paragraphs.push('Obiettivi da definire con il Cliente.');
     el('objectiveText').innerHTML = paragraphs.map((p) => `<p>${p}</p>`).join('');
     setHidden('objectiveDocumentSection', false);
