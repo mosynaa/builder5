@@ -14,6 +14,22 @@
     .fee-table th[scope="col"] { width: 29%; }
     .fee-table th[scope="col"]:first-child { width: 42%; }
   </style>
+  <style>
+    #shopProposalPage { color:var(--ink); }
+    #shopProposalPage h1, #shopProposalPage h2 { color:var(--teal); font-size:10pt; margin:0 0 1mm; }
+    #shopProposalPage p { font-size:9pt; margin:0 0 1.4mm; line-height:1.35; }
+    #shopProposalSteps { width:100%; margin:6mm 0; border-collapse:collapse; border-top:2px solid var(--teal); }
+    #shopProposalSteps th, #shopProposalSteps td { padding:1.7mm 1mm; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; font-size:8.5pt; }
+    #shopProposalSteps th { width:40%; }
+    #shopProposalSteps th span { color:var(--teal); margin-right:2mm; }
+    #shopProposalPage .shop-investment { width:100%; border-collapse:collapse; background:var(--paper-soft); margin-bottom:3mm; }
+    .shop-investment th, .shop-investment td { padding:2mm; text-align:left; }
+    .shop-investment th { color:var(--teal); font-size:9pt; }
+    .shop-investment td { text-align:right; font-size:13pt; font-weight:800; }
+    .shop-signatures { display:grid; grid-template-columns:1fr 1fr; gap:3mm; text-align:center; border-top:1px solid var(--line); padding-top:5mm; margin-top:6mm; font-size:8pt; color:var(--teal); }
+    .shop-signatures p { margin-top:3mm !important; color:var(--ink); }
+    @media (max-width:700px) { #shopProposalPage .doc-footer { position:static; margin-top:8mm; } }
+  </style>
 </head>
 <body>
   <main class="app">
@@ -357,6 +373,24 @@
       </div>
 
       <article id="document" class="document">
+        <section id="shopProposalPage" class="page is-hidden" aria-labelledby="shopProposalTitle">
+          <header class="doc-header">
+            <img class="logo-somo" src="../assets/somo.png?v=21" alt="SOMO">
+            <img class="logo-noodles" src="../assets/black-noodles.png?v=21" alt="Black Noodles">
+          </header>
+          <h1 id="shopProposalTitle">PROPOSTA COMMERCIALE | TIKTOK SHOP</h1>
+          <p id="shopProposalIntro"></p>
+          <table id="shopProposalSteps" aria-label="Attività TikTok Shop"><tbody id="shopProposalStepsBody"></tbody></table>
+          <h2>INVESTIMENTO</h2>
+          <table class="shop-investment"><tbody><tr><th id="shopProposalScope" scope="row"></th><td id="shopProposalPrice"></td></tr></tbody></table>
+          <h2>INFORMAZIONI OPERATIVE</h2>
+          <div id="shopProposalNotes"></div>
+          <div class="shop-signatures">
+            <div><strong>PER SOMO S.R.L.</strong><p>Firma ________________________<br>Data ____ / ____ / ______</p></div>
+            <div><strong>PER IL CLIENTE</strong><p>Firma ________________________<br>Data ____ / ____ / ______</p></div>
+          </div>
+          <footer class="doc-footer">SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213<br>somonapoli@pec.it</footer>
+        </section>
         <section id="pageOne" class="page page-one">
           <header class="doc-header">
             <img class="logo-somo" src="../assets/somo.png?v=21" alt="SOMO" onerror="var p=this.parentElement; this.remove(); if(p && !p.querySelector('img')) p.style.display='none';">
@@ -479,7 +513,7 @@
       </article>
     </section>
   </main>
-  <script src="app.js?v=49-shop-proposal"></script>
+  <script src="app.js?v=50-standalone-shop"></script>
 </body>
 </html>
 

@@ -1289,9 +1289,50 @@
     }
   }
 
+  function standaloneShopProposal() {
+    const steps = tiktokServiceSteps();
+    const hasProducts = tiktokHas('tiktokPhotos') || tiktokHas('tiktokCatalog') || tiktokHas('tiktokPublish');
+    const quantity = `${tiktokCount()} ${itemWord()}`;
+    const phase = tiktokIsActive() ? 'Ampliamento del catalogo' : (tiktokHas('tiktokSetup') ? 'Fase di avvio' : 'Intervento sul catalogo');
+    const client = value('clientName') || value('legalName');
+    const subject = client ? ` il TikTok Shop di ${client}` : ' il TikTok Shop del Cliente';
+    const notes = [];
+    if (hasProducts) {
+      notes.push(`Il Cliente mette a disposizione i ${itemWord()} e fornisce o conferma prezzi, disponibilità e informazioni necessarie alla pubblicazione.`);
+      notes.push(`L’inserimento di ulteriori prodotti oltre i ${quantity} previsti sarà concordato separatamente.`);
+    }
+    notes.push('Eventuali contenuti video previsti da una collaborazione in corso restano esclusi da questa proposta.');
+    if (tiktokHas('tiktokSetup')) notes.push('L’attivazione definitiva dello Shop è soggetta alle verifiche e alle procedure previste da TikTok.');
+    else if (tiktokHas('tiktokPublish')) notes.push('La pubblicazione delle schede è soggetta alle verifiche previste da TikTok.');
+    return {
+      intro: steps.length ? `La proposta riguarda${subject} e comprende ${tiktokObjectDescription()}.` : `La proposta riguarda${subject}. Le attività saranno concordate con il Cliente.`,
+      steps, scope: hasProducts ? `${phase} · ${quantity}` : phase,
+      price: `${money(tiktokFee())} + IVA una tantum`, notes
+    };
+  }
+
+  function renderStandaloneShop() {
+    const standalone = isTikTokOnly();
+    setHidden('shopProposalPage', !standalone);
+    setHidden('pageOne', standalone);
+    setHidden('pageTwo', standalone);
+    if (!standalone) return;
+    const proposal = standaloneShopProposal();
+    setText('shopProposalIntro', proposal.intro);
+    setText('shopProposalScope', proposal.scope);
+    setText('shopProposalPrice', proposal.price);
+    setHidden('shopProposalSteps', !proposal.steps.length);
+    el('shopProposalStepsBody').innerHTML = proposal.steps.map(([title, description]) => {
+      const [number, label] = title.split(' · ');
+      return `<tr><th scope="row"><span>${safe(number)}</span>${safe(label)}</th><td>${safe(description)}</td></tr>`;
+    }).join('');
+    el('shopProposalNotes').innerHTML = proposal.notes.map(note => `<p>${safe(note)}</p>`).join('');
+  }
+
   function render() {
     syncProposalMode();
     renderVisibility();
+    renderStandaloneShop();
     syncProductionPlacement();
     renderClientBlock();
     const heading = documentHeading();
@@ -1558,6 +1599,22 @@
 
     const body = [];
     body.push(wBrandTable(somoLogo, blackLogo));
+    if (isTikTokOnly()) {
+      const shop = standaloneShopProposal();
+      body.push(wParagraph(domText('#shopProposalTitle'), { bold:true, color:WORD.teal, size:24, before:115, after:85, keepNext:true }));
+      body.push(wParagraph(shop.intro, { size:19, after:180 }));
+      if (shop.steps.length) body.push(wSummaryTable(shop.steps));
+      body.push(wParagraph('INVESTIMENTO', { bold:true, color:WORD.teal, size:20, before:210, after:65, keepNext:true }));
+      body.push(wFeeTable([[shop.scope, shop.price]]));
+      body.push(wParagraph('INFORMAZIONI OPERATIVE', { bold:true, color:WORD.teal, size:20, before:140, after:60, keepNext:true }));
+      shop.notes.forEach(note => body.push(wParagraph(note, { size:18, after:65 })));
+      body.push(wParagraph('', { size:10, after:140, keepNext:true }));
+      const signatures = ['PER SOMO S.R.L.', 'PER IL CLIENTE'].map(label => wCell(
+        wParagraph(label, { bold:true, size:18, align:'center', after:130 }) +
+        wParagraph('Firma ________________________', { size:17, align:'center', after:65 }) +
+        wParagraph('Data ____ / ____ / ______', { size:17, align:'center' }), 4800));
+      body.push(wTableShell([`<w:tr><w:trPr><w:cantSplit/></w:trPr>${signatures.join('')}</w:tr>`], { widths:[4800,4800] }));
+    } else {
     body.push(wParagraph(domText('#docTitle'), { bold:true, size:33, color:WORD.ink, after:55, keepNext:true }));
     body.push(wParagraph(domText('#docSubtitle'), { bold:true, size:19, color:WORD.teal, after:120 }));
     body.push(wPartiesTable(client));
@@ -1637,6 +1694,8 @@
     }
     body.push(wParagraph('Per accettazione', { bold:true, size:18, after:50 }));
     body.push(wParagraph('Firma e Timbro del Cliente  _____________________________________________', { size:18, after:30 }));
+
+    }
 
     const footerText = 'SOMO S.r.l. · Vico Sant’Eframo Vecchio, 20 – 80137 Napoli · P. IVA 10895731213 · Black Noodles, studio creativo di SOMO · somonapoli@pec.it';
     const footerXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="30"/></w:pPr>${wRun(footerText.replace(' · somonapoli@pec.it',''),{size:13,color:'181818'})}<w:r><w:br/></w:r>${wRun('somonapoli@pec.it',{size:13,color:'181818'})}</w:p><w:p><w:pPr><w:jc w:val="right"/><w:spacing w:after="0"/></w:pPr><w:fldSimple w:instr="PAGE"><w:r><w:rPr><w:rFonts w:ascii="Nunito" w:hAnsi="Nunito"/><w:sz w:val="14"/><w:color w:val="666666"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple></w:p></w:ftr>`;
