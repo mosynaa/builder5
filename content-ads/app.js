@@ -803,13 +803,6 @@
         services.push([`Gestione ${adsLabel()}${scope}`, 'Configurazione, attivazione, monitoraggio e ottimizzazione delle campagne. Il budget pubblicitario resta escluso dal compenso.']);
       }
 
-      if (checked('serviceTikTok')) {
-        const steps = tiktokServiceSteps();
-        let desc = steps.length ? sentence(steps.map((s) => s[0].toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' e $1')) : 'Attività da definire.';
-        if (steps.length && textStyle() === 'simple') desc = `Preparazione dello Shop con ${steps.map((s) => s[0].toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' e $1')}.`;
-        if (steps.length && textStyle() === 'concise') desc = `${sentence(steps.map((s) => s[0].toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' e $1'))}`;
-        services.push(['TikTok Shop', desc]);
-      }
       if (checked('serviceInfluencer')) services.push(['Creator e influencer', 'Ricerca, selezione, proposta dei profili e coordinamento delle collaborazioni approvate dal Cliente.']);
       if (checked('serviceEventCoverage')) {
         const freq = { agreed:'negli eventi concordati', monthly:'per 1 evento al mese', twiceMonthly:'fino a 2 eventi al mese', plan:'in base alla programmazione' }[value('eventCoverageFrequency')] || 'negli eventi concordati';
