@@ -1020,37 +1020,31 @@
   function renderSummary() {
     renderShopSummary();
     const columns = columnSummaryEnabled();
-    setHidden('summarySingleTable', columns);
+    setHidden('summaryHeading', isTikTokOnly());
+    setHidden('summarySingleTable', columns || isTikTokOnly());
     setHidden('summaryCompareWrap', !columns);
     if (columns) { renderComparisonSummary(); return; }
+    if (isTikTokOnly()) return;
 
-    const tikOnly = isTikTokOnly();
     const oneTime = value('economicMode') === 'oneTime';
     const duration = Math.max(1, numberValue('duration',6));
     const monthly = monthlyContentAndAds();
     const oneTimeFee = numberValue('oneTimeFee');
 
-    setText('summaryDurationLabel', tikOnly || oneTime ? 'TIPOLOGIA' : 'DURATA');
-    setText('summaryDuration', tikOnly ? (tiktokIsActive() ? 'Ampliamento catalogo' : (tiktokHas('tiktokSetup') ? 'Fase di avvio' : 'TikTok Shop')) : (oneTime ? 'Progetto a importo complessivo' : `${duration} mesi`));
+    setText('summaryDurationLabel', oneTime ? 'TIPOLOGIA' : 'DURATA');
+    setText('summaryDuration', oneTime ? 'Progetto a importo complessivo' : `${duration} mesi`);
     setText('summaryObjective', summaryObjective());
     setText('summaryProduction', productionSummary());
     setText('summaryContent', contentSummary());
     setText('summaryManagement', managementSummary());
     setText('summaryAds', adsSummary());
-    const productionIncluded = tikOnly || checked('serviceProduction') || checked('serviceClientContent');
+    const productionIncluded = checked('serviceProduction') || checked('serviceClientContent');
     setHidden('summaryProductionRow', !productionIncluded);
     setHidden('summaryContentRow', !productionIncluded);
-    setHidden('summaryManagementRow', tikOnly || (!checked('serviceSocial') && !checked('serviceCommunity')));
-    setHidden('summaryAdsRow', tikOnly || (!adsIncluded() && !checked('serviceAdvCreative')) || (adsIncluded() && !checked('showAdsBudget')));
+    setHidden('summaryManagementRow', (!checked('serviceSocial') && !checked('serviceCommunity')));
+    setHidden('summaryAdsRow', (!adsIncluded() && !checked('serviceAdvCreative')) || (adsIncluded() && !checked('showAdsBudget')));
 
-    setHidden('summaryTikTokRow', !tikOnly);
-    if (tikOnly) {
-      const status = tiktokIsActive() ? 'Shop già attivo' : 'Shop da attivare';
-      setText('summaryTikTok', `${status} · ${tiktokCount()} ${itemWord()}`);
-    }
-
-    if (tikOnly) setText('summaryInvestment', `${money(tiktokFee())} + IVA`);
-    else if (oneTime) setText('summaryInvestment', `${money(oneTimeFee)} + IVA`);
+    if (oneTime) setText('summaryInvestment', `${money(oneTimeFee)} + IVA`);
     else setText('summaryInvestment', adsIncluded() ? monthlyFeeSummary(monthly, numberValue('monthlyFee')) : `${money(monthly)} al mese + IVA`);
   }
 
@@ -1097,8 +1091,9 @@
     setText('compensoHeading', '4. COMPENSO');
 
     if (tikOnly) {
+      setText('compensoHeading', '4. INVESTIMENTO');
       const label = tiktokIsActive() ? `AMPLIAMENTO SHOP · ${count} ${itemWord().toUpperCase()}` : (tiktokHas('tiktokSetup') ? `FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · ${count} ${itemWord().toUpperCase()}`);
-      el('feeTableBody').innerHTML = [feeRow(label, `${money(tikFee)} + IVA`), feeRow('TOTALE PROPOSTA', `${money(tikFee)} + IVA`)].join('');
+      el('feeTableBody').innerHTML = feeRow(label, `${money(tikFee)} + IVA una tantum`);
       setText('installmentsLabel', 'TIPOLOGIA');
       setText('installmentsPreview', tiktokIsActive() ? 'Ampliamento' : (tiktokHas('tiktokSetup') ? 'Fase di avvio' : 'TikTok Shop'));
       setText('contractTotalLabel', 'TOTALE PROPOSTA');
@@ -1224,8 +1219,8 @@
 
   function documentHeading() {
     return {
-      title:'Allegato A al Contratto di Collaborazione',
-      subtitle:'OFFERTA ECONOMICA E SCOPE OF WORK'
+      title:isTikTokOnly() ? 'Proposta commerciale | TikTok Shop' : 'Allegato A al Contratto di Collaborazione',
+      subtitle:isTikTokOnly() ? '' : 'OFFERTA ECONOMICA E SCOPE OF WORK'
     };
   }
 
@@ -1302,6 +1297,7 @@
     const heading = documentHeading();
     setText('docTitle', heading.title);
     setText('docSubtitle', heading.subtitle);
+    setHidden('docSubtitle', !heading.subtitle);
     setText('objectText', buildObjectText());
     renderSummary();
     const objectiveCount = renderObjectives();
@@ -1567,8 +1563,10 @@
     body.push(wPartiesTable(client));
     body.push(wParagraph('OGGETTO', { bold:true, size:19, color:WORD.teal, before:120, after:40, keepNext:true }));
     body.push(wParagraph(domText('#objectText'), { size:19, after:125 }));
-    body.push(wParagraph('SINTESI DELL’OFFERTA', { bold:true, size:23, color:WORD.ink, after:70, keepNext:true }));
-    body.push(compare ? wComparisonTable(comparisonRows) : wSummaryTable(summaryRows));
+    if (!isTikTokOnly()) {
+      body.push(wParagraph('SINTESI DELL’OFFERTA', { bold:true, size:23, color:WORD.ink, after:70, keepNext:true }));
+      body.push(compare ? wComparisonTable(comparisonRows) : wSummaryTable(summaryRows));
+    }
     if (compare && domText('#formulaChoiceNote')) body.push(wParagraph(domText('#formulaChoiceNote'), {size:17, before:70, after:100}));
     if (!el('summaryShopCard').classList.contains('is-hidden')) {
       body.push(wParagraph('', {size:6, after:70, keepNext:true}));
