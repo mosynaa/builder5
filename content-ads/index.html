@@ -228,7 +228,7 @@
         <section id="adsSection" class="form-section">
           <h2><span class="step">5</span>ADS</h2>
           <div class="check-list">
-            <label class="check feature-check"><input id="serviceAds" name="serviceAds" type="checkbox"><span><strong>Gestione campagne Meta Ads</strong><em>Attivazione, monitoraggio e ottimizzazione. Budget separato.</em></span></label>
+            <label class="check feature-check"><input id="serviceAds" name="serviceAds" type="checkbox"><span><strong>Gestione campagne pubblicitarie</strong><em>Attivazione, monitoraggio e ottimizzazione. Budget separato.</em></span></label>
           </div>
           <div id="adsPanel" class="dependent-panel is-hidden">
             <label id="adsBudgetField" class="field is-hidden"><span>Budget ADS mensile consigliato</span><input id="adsBudget" name="adsBudget" type="number" min="0" step="50" placeholder="Es. 200"><small>È a carico del Cliente e non entra nel compenso SOMO.</small></label>
@@ -263,13 +263,13 @@
 
         <section class="form-section">
           <h2><span class="step">6</span>Durata e compenso</h2>
-          <p class="form-note section-note">Scegli una formula unica, due alternative oppure la sola colonna Content + Meta Ads. Se la proposta comprende TikTok Shop, lo Shop viene mostrato come colonna separata nella sintesi.</p>
+          <p class="form-note section-note">Scegli una formula unica, due alternative oppure la sola colonna Content + Ads. Se la proposta comprende TikTok Shop, lo Shop viene mostrato come colonna separata nella sintesi.</p>
           <div id="offerLayoutControls">
             <span class="group-label">Come vuoi presentare l'offerta?</span>
             <input id="offerLayout" name="offerLayout" type="hidden" value="compare">
             <div class="offer-layout-choices" role="radiogroup" aria-label="Struttura dell'offerta">
               <button class="offer-layout-choice" type="button" data-layout="single" aria-pressed="false"><strong>Formula singola</strong><span>Una sola soluzione, con durata e compenso</span></button>
-              <button class="offer-layout-choice" type="button" data-layout="ads" aria-pressed="false"><strong>Solo Content + Meta Ads</strong><span>Una sola colonna con produzione e gestione campagne Meta</span></button>
+              <button class="offer-layout-choice" type="button" data-layout="ads" aria-pressed="false"><strong>Solo Content + Ads</strong><span>Una sola colonna con produzione e gestione campagne pubblicitarie</span></button>
               <button class="offer-layout-choice is-active" type="button" data-layout="compare" aria-pressed="true"><strong>2 formule alternative</strong><span>Due alternative economiche affiancate nella stessa offerta</span></button>
             </div>
           </div>
@@ -284,7 +284,7 @@
             <div id="monthlyEconomicPanel">
               <div class="grid-2">
                 <label class="field"><span>Durata</span><select id="duration" name="duration"><option value="3">3 mesi</option><option value="6">6 mesi</option><option value="12">12 mesi</option></select></label>
-                <label id="singleMonthlyFeeField" class="field"><span>Compenso mensile</span><input id="monthlyFee" name="monthlyFee" type="number" min="0" step="50"></label>
+                <label id="singleMonthlyFeeField" class="field"><span>Compenso Content al mese</span><input id="monthlyFee" name="monthlyFee" type="number" min="0" step="50"></label>
               </div>
               <div id="singleExtraControls">
                 <label class="check extra-toggle"><input id="extraEnabled" name="extraEnabled" type="checkbox"><span><strong>Aggiungi fase iniziale o servizio extra</strong><em>Per attività aggiuntive rispetto al compenso principale.</em></span></label>
@@ -299,27 +299,30 @@
             <div id="oneTimeEconomicPanel" class="is-hidden">
               <label class="field"><span>Importo complessivo del progetto</span><input id="oneTimeFee" name="oneTimeFee" type="number" min="0" step="50"></label>
             </div>
+            <div id="adsManagementControls" class="dependent-panel is-hidden">
+              <div class="grid-2">
+                <label class="field"><span>Piattaforme Ads</span><select id="adsPlatform" name="adsPlatform">
+                  <option value="meta">Solo Meta Ads</option>
+                  <option value="tiktok">Solo TikTok Ads</option>
+                  <option value="both">Meta Ads e TikTok Ads</option>
+                </select></label>
+                <label id="adsFeeMetaField" class="field"><span>Compenso gestione Ads al mese</span><input id="adsFeeMeta" name="adsFeeMeta" type="number" min="0" step="0.01" value="200"></label>
+                <label id="adsFeeTikTokField" class="field"><span>Compenso gestione Ads al mese</span><input id="adsFeeTikTok" name="adsFeeTikTok" type="number" min="0" step="0.01" value="200"></label>
+                <label id="adsFeeBothField" class="field"><span>Compenso gestione Ads al mese</span><input id="adsFeeBoth" name="adsFeeBoth" type="number" min="0" step="0.01" value="300"></label>
+              </div>
+              <p class="form-note">Content + Ads <strong id="adsFormulaPreview"></strong></p>
+            </div>
             <label id="adsBudgetToggle" class="check">
               <input id="showAdsBudget" name="showAdsBudget" type="checkbox">
-              <span><strong>Indica il budget pubblicitario consigliato nel testo</strong><em>L’importo compare solo nella descrizione Meta Ads, mai nella tabella comparativa. Il budget resta escluso dal compenso SOMO.</em></span>
+              <span><strong>Indica il budget pubblicitario consigliato nel testo</strong><em>L’importo compare solo nella descrizione delle campagne, mai nella tabella comparativa. Il budget resta escluso dal compenso SOMO.</em></span>
             </label>
             <div id="comparisonEconomicPanel" class="dependent-panel is-hidden">
               <p id="formulaControlsHeading" class="preset-title">Formule alternative</p>
-              <div class="comparison-formulas">
-                <div id="formulaACard" class="formula-card">
-                  <strong>FORMULA 1</strong>
-                  <label class="field"><span>Nome</span><input id="formulaAName" name="formulaAName" type="text" value="CONTENT"></label>
-                  <label class="field"><span>Compenso mensile</span><input id="formulaAFee" name="formulaAFee" type="number" min="0" step="50" value="1300"></label>
-                  <label class="check compact-formula-check"><input id="formulaAAds" name="formulaAAds" type="checkbox"><span><strong>Gestione Meta Ads</strong></span></label>
-                </div>
-                <div class="formula-card">
-                  <strong id="formulaBLabel">FORMULA 2</strong>
-                  <label class="field"><span>Nome</span><input id="formulaBName" name="formulaBName" type="text" value="CONTENT + META ADS"></label>
-                  <label class="field"><span>Compenso mensile</span><input id="formulaBFee" name="formulaBFee" type="number" min="0" step="50" value="1500"></label>
-                  <label id="formulaBAdsField" class="check compact-formula-check"><input id="formulaBAds" name="formulaBAds" type="checkbox" checked><span><strong>Gestione Meta Ads</strong></span></label>
-                </div>
+              <div class="grid-2">
+                <label class="field"><span>Nome Content</span><input id="formulaAName" name="formulaAName" type="text" value="CONTENT"></label>
+                <label class="field"><span>Compenso Content al mese</span><input id="formulaAFee" name="formulaAFee" type="number" min="0" step="0.01" value="1300"></label>
               </div>
-              <label id="comparisonAdsBudgetField" class="field"><span>Budget Meta Ads consigliato <small>(facoltativo)</small></span><input id="comparisonAdsBudget" name="comparisonAdsBudget" type="number" min="0" step="50" placeholder="Es. 200"><small>Resta sempre escluso dal compenso SOMO.</small></label>
+              <label id="comparisonAdsBudgetField" class="field"><span>Budget pubblicitario consigliato <small>(facoltativo)</small></span><input id="comparisonAdsBudget" name="comparisonAdsBudget" type="number" min="0" step="50" placeholder="Es. 200"><small>Resta sempre escluso dal compenso SOMO.</small></label>
             </div>
           </div>
             <div id="invoiceSchedule" class="grid-2">
@@ -456,7 +459,7 @@
       </article>
     </section>
   </main>
-  <script src="app.js?v=36-formula-ads"></script>
+  <script src="app.js?v=37-ads-fees"></script>
 </body>
 </html>
 

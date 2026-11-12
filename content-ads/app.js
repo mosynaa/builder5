@@ -204,7 +204,8 @@
     videoApproval: false, productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
     videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, showAdsBudget: false, adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
-    offerLayout: 'compare', formulaAName: 'CONTENT', formulaBName: 'CONTENT + META ADS', formulaAFee: '1300', formulaBFee: '1500', formulaAAds: false, formulaBAds: true, comparisonAdsBudget: '',
+    offerLayout: 'compare', formulaAName: 'CONTENT', formulaAFee: '1300', comparisonAdsBudget: '',
+    adsPlatform: 'meta', adsFeeMeta: '200', adsFeeTikTok: '200', adsFeeBoth: '300',
     economicMode: 'monthly', duration: '6', monthlyFee: '1200', extraEnabled: false,
     socialChannels: '', productionMinimum: false, videoQuantityType: 'upTo', invoiceDay: '', paymentDays: '',
     extraLabel: 'Fase iniziale / servizio extra', extraFee: '0', oneTimeFee: '0'
@@ -247,10 +248,30 @@
   function formulaColumnsEnabled() { return comparisonEnabled() || adsFormulaOnly(); }
   function selectedFormulas() { return adsFormulaOnly() ? ['B'] : ['A', 'B']; }
   function columnSummaryEnabled() { return formulaColumnsEnabled() || (proposalMode() === 'both' && checked('serviceTikTok')); }
-  function formulaName(which) { return value(which === 'A' ? 'formulaAName' : 'formulaBName') || (which === 'A' ? 'FORMULA 1' : 'FORMULA 2'); }
-  function formulaFee(which) { return numberValue(which === 'A' ? 'formulaAFee' : 'formulaBFee'); }
-  function formulaAds(which) { return (adsFormulaOnly() && which === 'B') || checked(which === 'A' ? 'formulaAAds' : 'formulaBAds'); }
-  function anyFormulaAds() { return formulaColumnsEnabled() && selectedFormulas().some(formulaAds); }
+  const adsPlatforms = {
+    meta: { label: 'Meta Ads', feeField: 'adsFeeMeta', defaultFee: 200 },
+    tiktok: { label: 'TikTok Ads', feeField: 'adsFeeTikTok', defaultFee: 200 },
+    both: { label: 'Meta Ads e TikTok Ads', feeField: 'adsFeeBoth', defaultFee: 300 }
+  };
+  function adsPlatform() { return adsPlatforms[value('adsPlatform')] || adsPlatforms.meta; }
+  function adsLabel() { return adsPlatform().label; }
+  function adsManagementFee() {
+    const { feeField, defaultFee } = adsPlatform();
+    return value(feeField) === '' ? defaultFee : numberValue(feeField);
+  }
+  function formulaName(which) {
+    const name = value('formulaAName') || 'CONTENT';
+    return which === 'A' ? name : `${name} + ${adsLabel().toUpperCase()}`;
+  }
+  function formulaFee(which) { return numberValue('formulaAFee') + (which === 'B' ? adsManagementFee() : 0); }
+  function formulaAds(which) { return which === 'B'; }
+  function anyFormulaAds() { return formulaColumnsEnabled(); }
+  function adsIncluded() {
+    return classicEnabled() && (formulaColumnsEnabled() || (value('economicMode') !== 'oneTime' && checked('serviceAds')));
+  }
+  function monthlyContentAndAds() {
+    return numberValue('monthlyFee') + (adsIncluded() ? adsManagementFee() : 0);
+  }
   function clientContentCount() { return Math.max(1, numberValue('clientContentCount', 8)); }
   function clientContentPeriodText() { return { month:'al mese', week:'a settimana', project:'complessivi nel progetto' }[value('clientContentPeriod')] || 'al mese'; }
   function classicEnabled() { return proposalMode() !== 'tiktok'; }
@@ -478,7 +499,7 @@
     const compare = formulaColumnsEnabled();
     setHidden('objectiveSection', !classic);
     setHidden('servicesSection', !classic);
-    setHidden('adsSection', !classic || compare);
+    setHidden('adsSection', !classic || compare || value('economicMode') === 'oneTime');
     setHidden('productionSection', !classic || (!checked('serviceProduction') && !checked('serviceClientContent')));
     setHidden('clientContentPanel', !classic || !checked('serviceClientContent'));
     setHidden('eventCoveragePanel', !checked('serviceEventCoverage'));
@@ -503,15 +524,14 @@
     setHidden('singleExtraControls', compare);
     setHidden('oneTimeEconomicPanel', tikOnly || compare || !oneTime);
     setHidden('comparisonEconomicPanel', !compare);
-    setHidden('formulaACard', adsFormulaOnly());
-    el('comparisonEconomicPanel').classList.toggle('one-formula', adsFormulaOnly());
-    setHidden('formulaBAdsField', adsFormulaOnly());
-    setText('formulaControlsHeading', adsFormulaOnly() ? 'Formula Content + Meta Ads' : 'Formule alternative');
+    setHidden('adsManagementControls', !adsIncluded());
+    for (const platform of Object.values(adsPlatforms)) setHidden(platform.feeField + 'Field', platform !== adsPlatform());
+    setText('formulaControlsHeading', adsFormulaOnly() ? formulaName('B') : 'Formule alternative');
     setHidden('socialChannelsField', !checked('serviceSocial'));
     setHidden('productionMinimumField', value('productionCadence') !== 'monthly');
     setHidden('invoiceSchedule', tikOnly || (!compare && value('economicMode') === 'oneTime'));
-    setText('formulaBLabel', adsFormulaOnly() ? 'COMPENSO DELLA FORMULA' : 'FORMULA 2');
-    setHidden('adsBudgetToggle', tikOnly || !(compare ? anyFormulaAds() : checked('serviceAds')));
+    setHidden('adsBudgetToggle', !adsIncluded());
+    setText('adsFormulaPreview', adsIncluded() ? money(compare ? formulaFee('B') : monthlyContentAndAds()) + ' al mese + IVA' : '');
     setHidden('adsBudgetField', !checked('showAdsBudget'));
     setHidden('comparisonAdsBudgetField', !compare || !anyFormulaAds() || !checked('showAdsBudget'));
     setHidden('extraPanel', oneTime || tikOnly || compare || !checked('extraEnabled'));
@@ -556,8 +576,8 @@
     if (checked('serviceProduction')) activities.push(productionCadenceObjectText());
     if (checked('serviceClientContent')) activities.push('supporto alla realizzazione e post-produzione dei contenuti registrati dal Cliente');
     if (checked('serviceSocial')) activities.push('gestione dei canali social');
-    if (comparisonEnabled() && anyFormulaAds()) activities.push('gestione Meta Ads secondo la formula prescelta');
-    else if (adsFormulaOnly() || (!formulaColumnsEnabled() && checked('serviceAds'))) activities.push('gestione delle campagne Meta Ads');
+    if (comparisonEnabled() && anyFormulaAds()) activities.push(`gestione ${adsLabel()} secondo la formula prescelta`);
+    else if (adsIncluded()) activities.push(`gestione delle campagne ${adsLabel()}`);
     if (checked('serviceInfluencer')) activities.push('coordinamento di creator e influencer');
     if (checked('serviceEventCoverage')) activities.push('copertura degli eventi concordati');
     if (checked('serviceTikTok')) activities.push(tiktokObjectDescription());
@@ -777,18 +797,10 @@
         services.push(['Gestione dei canali social', desc]);
       } else if (checked('serviceCommunity')) services.push(['Community management', 'Gestione di messaggi, commenti e recensioni sui canali concordati.']);
 
-      if (!formulaColumnsEnabled()) {
-        if (checked('serviceAdvCreative') && checked('serviceAds')) services.push(['Campagne ADV', styledText('Ideazione delle creatività e gestione delle campagne Meta Ads, con attivazione, monitoraggio e ottimizzazione.', 'Preparazione dei materiali e gestione delle campagne Meta Ads, con controllo e ottimizzazione.', 'Creatività e gestione delle campagne Meta Ads.')]);
-        else {
-          if (checked('serviceAdvCreative')) services.push(['Creatività per campagne ADV', styledText('Produzione di foto, video e grafiche sviluppate per le campagne pubblicitarie.', 'Realizzazione di foto, video e grafiche da utilizzare nelle campagne pubblicitarie.', 'Foto, video e grafiche per le campagne.')]);
-          if (checked('serviceAds')) services.push(['Gestione campagne Meta Ads', styledText('Configurazione, attivazione, monitoraggio e ottimizzazione delle campagne in funzione degli obiettivi e del budget disponibile.', 'Gestione delle campagne Meta Ads per raggiungere il pubblico concordato, con controllo e ottimizzazione. Il budget pubblicitario resta escluso.', 'Gestione e ottimizzazione delle campagne Meta Ads. Budget escluso.')]);
-        }
-      } else {
-        if (checked('serviceAdvCreative')) services.push(['Creatività per campagne ADV', 'Produzione di foto, video e grafiche sviluppate per le campagne pubblicitarie previste nelle formule selezionate.']);
-        if (anyFormulaAds()) {
-          const adsNames = selectedFormulas().filter(formulaAds).map(formulaName);
-          services.push([`Gestione Meta Ads${adsNames.length === 1 ? ` (solo ${adsNames[0]})` : ''}`, styledText('Configurazione delle campagne, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica. Il budget pubblicitario resta escluso dal compenso.', 'Gestione delle campagne Meta Ads, scelta del pubblico, controllo e ottimizzazione. Il budget pubblicitario resta escluso dal compenso.', 'Gestione e ottimizzazione Meta Ads. Budget pubblicitario escluso.')]);
-        }
+      if (checked('serviceAdvCreative')) services.push(['Creatività per campagne ADV', 'Produzione di foto, video e grafiche sviluppate per le campagne pubblicitarie.']);
+      if (adsIncluded()) {
+        const scope = comparisonEnabled() ? ` (formula ${formulaName('B')})` : '';
+        services.push([`Gestione ${adsLabel()}${scope}`, 'Configurazione, attivazione, monitoraggio e ottimizzazione delle campagne. Il budget pubblicitario resta escluso dal compenso.']);
       }
 
       if (checked('serviceTikTok')) {
@@ -939,10 +951,10 @@
       const budget = checked('showAdsBudget') ? numberValue('comparisonAdsBudget') : 0;
       return `Inclusa in ${joinNatural(included)}; ${budget ? `budget consigliato ${money(budget)} al mese, escluso` : 'budget pubblicitario escluso'}`;
     }
-    if (!checked('serviceAds') && checked('serviceAdvCreative')) return 'Creatività ADV incluse; gestione campagne e budget esclusi';
-    if (!checked('serviceAds')) return 'Non previste';
+    if (!adsIncluded() && checked('serviceAdvCreative')) return 'Creatività ADV incluse; gestione campagne e budget esclusi';
+    if (!adsIncluded()) return 'Non previste';
     const budget = checked('showAdsBudget') ? numberValue('adsBudget') : 0;
-    return budget ? `Gestione inclusa; budget consigliato ${money(budget)} al mese, escluso` : 'Gestione inclusa; budget pubblicitario escluso';
+    return budget ? `Gestione ${adsLabel()} inclusa, budget consigliato ${money(budget)} al mese a parte` : `Gestione ${adsLabel()} inclusa, budget pubblicitario a parte`;
   }
 
   function productionComparisonValue() {
@@ -973,7 +985,6 @@
     if (row === 'Shooting') return tiktokHas('tiktokPhotos') ? `Dedicato a ${count} ${word}` : '-';
     if (row === 'Fotografie') return tiktokHas('tiktokPhotos') ? `${count} ${word}` : '-';
     if (row === 'Gestione social') return '-';
-    if (row === 'Gestione Meta Ads') return '-';
     if (row === 'Configurazione Shop') return tiktokHas('tiktokSetup') ? 'Inclusa' : (tiktokIsActive() ? 'Già attivo' : '-');
     if (row === 'Catalogo') return tiktokHas('tiktokCatalog') ? (tiktokIsActive() ? 'Aggiornamento' : 'Costruzione iniziale') : '-';
     if (row === 'Schede prodotto') return tiktokHas('tiktokPublish') ? `${count} schede` : '-';
@@ -1008,15 +1019,15 @@
       rows.push(['Contenuti interni guidati', ...basicVals(val), ...(withTikTok ? ['-'] : [])]);
     }
     if (checked('serviceSocial')) rows.push(['Gestione social', ...basicVals('Inclusa'), ...(withTikTok ? ['-'] : [])]);
-    const hasAds = formulaColumnsEnabled() ? anyFormulaAds() : checked('serviceAds');
+    const hasAds = adsIncluded();
     if (hasAds) {
       const vals = formulaColumnsEnabled() ? formulas.map((id) => formulaAds(id) ? 'Inclusa' : '-') : ['Inclusa'];
-      rows.push(['Gestione Meta Ads', ...vals, ...(withTikTok ? ['-'] : [])]);
+      rows.push([`Gestione ${adsLabel()}`, ...vals, ...(withTikTok ? ['-'] : [])]);
     }
     if (withTikTok && tiktokHas('tiktokSetup')) rows.push(['Configurazione Shop', ...basicVals('-'), tiktokColumnValue('Configurazione Shop')]);
     if (withTikTok && tiktokHas('tiktokCatalog')) rows.push(['Catalogo', ...basicVals('-'), tiktokColumnValue('Catalogo')]);
     if (withTikTok && tiktokHas('tiktokPublish')) rows.push(['Schede prodotto', ...basicVals('-'), tiktokColumnValue('Schede prodotto')]);
-    const basicFees = (formulaColumnsEnabled() ? formulas.map(formulaFee) : [numberValue('monthlyFee')]).map((fee) => `${money(fee)} al mese + IVA`);
+    const basicFees = (formulaColumnsEnabled() ? formulas.map(formulaFee) : [monthlyContentAndAds()]).map((fee) => `${money(fee)} al mese + IVA`);
     rows.push(['Compenso', ...basicFees, ...(withTikTok ? [tiktokColumnValue('Compenso')] : [])]);
     el('summaryCompareBody').innerHTML = rows.map((row) => `<tr><th>${safe(row[0])}</th>${row.slice(1).map((v) => `<td>${safe(v)}</td>`).join('')}</tr>`).join('');
   }
@@ -1030,7 +1041,7 @@
     const tikOnly = isTikTokOnly();
     const oneTime = value('economicMode') === 'oneTime';
     const duration = Math.max(1, numberValue('duration',6));
-    const monthly = numberValue('monthlyFee');
+    const monthly = monthlyContentAndAds();
     const oneTimeFee = numberValue('oneTimeFee');
 
     setText('summaryDurationLabel', tikOnly || oneTime ? 'TIPOLOGIA' : 'DURATA');
@@ -1044,7 +1055,7 @@
     setHidden('summaryProductionRow', !productionIncluded);
     setHidden('summaryContentRow', !productionIncluded);
     setHidden('summaryManagementRow', tikOnly || (!checked('serviceSocial') && !checked('serviceCommunity')));
-    setHidden('summaryAdsRow', tikOnly || (!checked('serviceAds') && !checked('serviceAdvCreative')));
+    setHidden('summaryAdsRow', tikOnly || (!adsIncluded() && !checked('serviceAdvCreative')));
 
     const tiktokSelected = checked('serviceTikTok');
     setHidden('summaryTikTokRow', !tiktokSelected);
@@ -1066,9 +1077,8 @@
       exclusions.push('Contenuti video social o produzioni ulteriori non comprese nella presente proposta;');
       exclusions.push('Gestione logistica degli ordini, spedizioni, resi, reclami e assistenza clienti;');
     } else {
-      const adsIncluded = formulaColumnsEnabled() ? anyFormulaAds() : checked('serviceAds');
-      if (adsIncluded) exclusions.push('Budget pubblicitario destinato alle piattaforme Meta Ads;');
-      else exclusions.push(comparisonEnabled() ? 'Gestione delle campagne Meta Ads e relativo budget pubblicitario;' : 'Pubblicità Meta Ads, aggiungibile su richiesta anche in seguito, con compenso e budget separati;');
+      if (adsIncluded()) exclusions.push('Budget pubblicitario a carico del Cliente;');
+      else exclusions.push('Gestione delle campagne pubblicitarie e relativo budget;');
       if (!comparisonEnabled() && !checked('serviceTikTok')) exclusions.push('TikTok Shop, aggiungibile su richiesta anche in seguito, con preventivo separato;');
       if (checked('serviceClientContent')) exclusions.push('Acquisto di attrezzatura o accessori destinati alla produzione dei contenuti interni;');
       if (!checked('serviceCommunity')) exclusions.push('Gestione di messaggi, commenti, recensioni e attività di community management;');
@@ -1133,9 +1143,9 @@
         const budget = checked('showAdsBudget') ? numberValue('comparisonAdsBudget') : 0;
         const intro = adsNames.length === 1 ? `La Formula ${adsNames[0]} comprende` : `Le formule ${joinNatural(adsNames)} comprendono`;
         const budgetText = budget ? ` Il budget pubblicitario consigliato è pari a ${money(budget)} al mese e resta escluso dal compenso.` : ' Il budget pubblicitario resta escluso dal compenso ed è sostenuto direttamente dal Cliente.';
-        const profText = `${intro} la gestione professionale delle campagne sulle piattaforme Meta, inclusi configurazione, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`;
-        const simpleText = `${intro} la gestione delle campagne Meta Ads: impostazione, scelta del pubblico, controllo e ottimizzazione.${budgetText}`;
-        const conciseText = `${intro} la gestione e ottimizzazione delle campagne Meta Ads.${budgetText}`;
+        const profText = `${intro} la gestione professionale delle campagne su ${adsLabel()}, inclusi configurazione, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`;
+        const simpleText = `${intro} la gestione delle campagne ${adsLabel()}: impostazione, scelta del pubblico, controllo e ottimizzazione.${budgetText}`;
+        const conciseText = `${intro} la gestione e ottimizzazione delle campagne ${adsLabel()}.${budgetText}`;
         setText('formulaDetailText', styledText(profText, simpleText, conciseText));
       }
       if (hasTikTok) rows.push(feeRow(tiktokIsActive() ? `TIKTOK SHOP · AMPLIAMENTO · ${count} ${itemWord().toUpperCase()}` : `TIKTOK SHOP · FASE DI AVVIO · ${count} ${itemWord().toUpperCase()}`, `${money(tikFee)} + IVA`));
@@ -1146,7 +1156,7 @@
       setText('validityText', `La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività. Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.`);
     } else {
       const oneTime = !adsFormulaOnly() && value('economicMode') === 'oneTime';
-      const monthly = adsFormulaOnly() ? formulaFee('B') : numberValue('monthlyFee');
+      const monthly = adsFormulaOnly() ? formulaFee('B') : monthlyContentAndAds();
       const mainOneTime = numberValue('oneTimeFee');
       const extra = !oneTime && !adsFormulaOnly() && checked('extraEnabled') ? numberValue('extraFee') : 0;
       const extraLabel = value('extraLabel') || 'Fase iniziale / servizio extra';
@@ -1174,12 +1184,12 @@
       el('paymentText').innerHTML = payment.join(' ');
       setText('invoiceText', oneTime ? 'La fatturazione avverrà all’avvio del progetto, secondo le modalità concordate.' : 'La fatturazione dei servizi continuativi avverrà mensilmente; eventuali fasi iniziali o servizi extra saranno fatturati all’avvio delle relative attività.');
       setText('validityText', oneTime ? 'Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.' : `La durata contrattuale è di ${duration} mesi a decorrere dall’avvio delle attività. Il presente Allegato A costituisce parte integrante e sostanziale del contratto di collaborazione sottoscritto tra le parti.`);
-      if (adsFormulaOnly() || checked('serviceAds')) {
+      if (adsIncluded()) {
         setHidden('formulaDetailSection', false);
-        setText('formulaDetailHeading', '5. GESTIONE META ADS');
+        setText('formulaDetailHeading', `5. GESTIONE ${adsLabel().toUpperCase()}`);
         const budget = checked('showAdsBudget') ? numberValue(adsFormulaOnly() ? 'comparisonAdsBudget' : 'adsBudget') : 0;
         const budgetText = budget ? ` Il budget pubblicitario consigliato è pari a ${money(budget)} al mese e resta escluso dal compenso.` : ' Il budget pubblicitario resta escluso dal compenso ed è sostenuto direttamente dal Cliente.';
-        setText('formulaDetailText', styledText(`La gestione Meta Ads comprende configurazione delle campagne, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`, `La gestione Meta Ads comprende impostazione delle campagne, scelta del pubblico, controllo e ottimizzazione.${budgetText}`, `Gestione e ottimizzazione delle campagne Meta Ads.${budgetText}`));
+        setText('formulaDetailText', styledText(`La gestione ${adsLabel()} comprende configurazione delle campagne, definizione dei pubblici, monitoraggio, ottimizzazione e reportistica periodica.${budgetText}`, `La gestione ${adsLabel()} comprende impostazione delle campagne, scelta del pubblico, controllo e ottimizzazione.${budgetText}`, `Gestione e ottimizzazione delle campagne ${adsLabel()}.${budgetText}`));
       }
     }
 
