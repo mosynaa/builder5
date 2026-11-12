@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=36">
+  <link rel="stylesheet" href="styles.css?v=38-shop-card">
 </head>
 <body>
   <main class="app">
@@ -263,7 +263,7 @@
 
         <section class="form-section">
           <h2><span class="step">6</span>Durata e compenso</h2>
-          <p class="form-note section-note">Scegli una formula unica, due alternative oppure la sola colonna Content + Ads. Se la proposta comprende TikTok Shop, lo Shop viene mostrato come colonna separata nella sintesi.</p>
+          <p class="form-note section-note">Scegli una formula unica, due alternative oppure la sola colonna Content + Ads. Se aggiungi TikTok Shop, lo trovi in una scheda sotto la sintesi.</p>
           <div id="offerLayoutControls">
             <span class="group-label">Come vuoi presentare l'offerta?</span>
             <input id="offerLayout" name="offerLayout" type="hidden" value="compare">
@@ -393,6 +393,15 @@
             <p id="formulaChoiceNote" class="formula-choice-note"></p>
           </div>
 
+          <section id="summaryShopCard" class="summary-shop-card is-hidden" aria-labelledby="summaryShopTitle">
+            <div class="summary-shop-head">
+              <h3 id="summaryShopTitle"></h3>
+              <strong id="summaryShopFee"></strong>
+            </div>
+            <p><span id="summaryShopQuantity"></span><span id="summaryShopActivities"></span></p>
+            <p id="summaryShopNote" class="summary-shop-note"></p>
+          </section>
+
           <section id="objectiveDocumentSection" class="doc-section">
             <h2 id="objectiveHeading" class="section-title">1. OBIETTIVO DELLA COLLABORAZIONE</h2>
             <div id="objectiveText"></div>
@@ -459,7 +468,7 @@
       </article>
     </section>
   </main>
-  <script src="app.js?v=37-ads-fees"></script>
+  <script src="app.js?v=38-shop-card"></script>
 </body>
 </html>
 

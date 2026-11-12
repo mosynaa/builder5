@@ -809,3 +809,24 @@ table { width: 100%; border-collapse: collapse; }
 }
 
 .formula-choice-note { margin:2mm 0 0; font-size:8.5pt; line-height:1.3; font-weight:700; color:var(--teal-dark); }
+
+/* Scheda dell'intervento TikTok Shop nella sintesi dell'offerta. */
+.summary-shop-card {
+  margin: 0 0 calc(3mm + var(--fill-gap));
+  padding: 2mm 3mm;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper-soft);
+  break-inside: avoid;
+}
+.summary-shop-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 3mm;
+}
+.summary-shop-head h3 { margin: 0; color: var(--teal); font-size: 10pt; }
+.summary-shop-head strong { font-size: 9pt; }
+.summary-shop-card p { margin: 1mm 0 0; font-size: 8.5pt; }
+.summary-shop-note { color: var(--muted); }
