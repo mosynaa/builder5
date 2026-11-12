@@ -993,6 +993,10 @@
     setText('summaryShopNote', 'Servizio facoltativo. Indicare la scelta nello spazio di accettazione.');
   }
 
+  function monthlyFeeSummary(total, content) {
+    return `${money(total)} + IVA (${money(content)} Content + ${money(adsManagementFee())} gestione Ads)`;
+  }
+
   function renderComparisonSummary() {
     const formulas = selectedFormulas();
     const duration = Math.max(1, numberValue('duration', 6));
@@ -1012,13 +1016,12 @@
     }
     if (checked('serviceClientContent')) addShared('Contenuti interni guidati', `${clientContentCount()} ${clientContentPeriodText()}`);
     if (checked('serviceSocial')) addShared('Gestione social', 'Inclusa');
-    if (adsFormulaOnly()) {
-      addShared('Content', `${money(formulaFee('A'))} + IVA`);
-      addShared(`Gestione ${adsLabel()}`, `+ ${money(adsManagementFee())} + IVA`);
-    } else if (adsIncluded()) {
+    if (comparisonEnabled() && adsIncluded()) {
       rows.push([`Gestione ${adsLabel()}`, ...formulas.map((id) => formulaAds(id) ? 'Inclusa' : 'Esclusa')]);
     }
-    rows.push([adsFormulaOnly() ? 'Totale mensile' : 'Compenso mensile', ...formulas.map((id) => `${money(formulaFee(id))} + IVA`)]);
+    rows.push(['Compenso mensile', ...formulas.map((id) => adsFormulaOnly()
+      ? monthlyFeeSummary(formulaFee(id), formulaFee('A'))
+      : `${money(formulaFee(id))} + IVA`)]);
     el('summaryCompareBody').innerHTML = rows.map((row) => `<tr><th>${safe(row[0])}</th>${row.slice(1).map((v) => `<td>${safe(v)}</td>`).join('')}</tr>`).join('');
   }
 
@@ -1042,13 +1045,6 @@
     setText('summaryContent', contentSummary());
     setText('summaryManagement', managementSummary());
     setText('summaryAds', adsSummary());
-    setHidden('summaryContentFeeRow', !adsIncluded());
-    setHidden('summaryAdsFeeRow', !adsIncluded());
-    if (adsIncluded()) {
-      setText('summaryContentFee', `${money(numberValue('monthlyFee'))} + IVA`);
-      setText('summaryAdsFeeLabel', `Gestione ${adsLabel()}`);
-      setText('summaryAdsFee', `+ ${money(adsManagementFee())} + IVA`);
-    }
     const productionIncluded = tikOnly || checked('serviceProduction') || checked('serviceClientContent');
     setHidden('summaryProductionRow', !productionIncluded);
     setHidden('summaryContentRow', !productionIncluded);
@@ -1063,7 +1059,7 @@
 
     if (tikOnly) setText('summaryInvestment', `${money(tiktokFee())} + IVA`);
     else if (oneTime) setText('summaryInvestment', `${money(oneTimeFee)} + IVA`);
-    else setText('summaryInvestment', `${money(monthly)} al mese + IVA`);
+    else setText('summaryInvestment', adsIncluded() ? monthlyFeeSummary(monthly, numberValue('monthlyFee')) : `${money(monthly)} al mese + IVA`);
   }
 
   function renderExclusions() {
