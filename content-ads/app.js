@@ -1203,6 +1203,7 @@
       setHidden('tiktokStepsTable', !steps.length);
       const productWork = tiktokHas('tiktokPhotos') || tiktokHas('tiktokCatalog') || tiktokHas('tiktokPublish');
       const notes = [];
+      if (tiktokHas('tiktokSetup')) notes.push('Il Cliente fornisce i dati aziendali e la documentazione richiesta da TikTok per la registrazione e la verifica dell’account venditore.');
       if (productWork) {
         notes.push(`Il Cliente mette a disposizione i ${itemWord()} e fornisce o conferma prezzi, disponibilità e dati necessari. Eventuali inserimenti oltre i ${count} previsti saranno concordati separatamente.`);
       }
@@ -1297,6 +1298,7 @@
     const client = value('clientName') || value('legalName');
     const subject = client ? ` il TikTok Shop di ${client}` : ' il TikTok Shop del Cliente';
     const notes = [];
+    if (tiktokHas('tiktokSetup')) notes.push('Il Cliente fornisce i dati aziendali e la documentazione richiesta da TikTok per la registrazione e la verifica dell’account venditore.');
     if (hasProducts) {
       notes.push(`Il Cliente mette a disposizione i ${itemWord()} e fornisce o conferma prezzi, disponibilità e informazioni necessarie alla pubblicazione.`);
       notes.push(`L’inserimento di ulteriori prodotti oltre i ${quantity} previsti sarà concordato separatamente.`);
