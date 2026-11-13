@@ -1011,7 +1011,7 @@
     }
     if (checked('serviceClientContent')) addShared('Contenuti interni guidati', `${clientContentCount()} ${clientContentPeriodText()}`);
     if (checked('serviceSocial')) addShared('Gestione social', 'Inclusa');
-    if (comparisonEnabled() && adsIncluded()) {
+    if (adsIncluded()) {
       rows.push([`Gestione ${adsLabel()}`, ...formulas.map((id) => formulaAds(id) ? 'Inclusa' : 'Esclusa')]);
     }
     if (checked('showSummaryFee')) rows.push(['Compenso mensile', ...formulas.map((id) => adsFormulaOnly() && checked('showSummaryFeeBreakdown')
@@ -1045,7 +1045,7 @@
     setHidden('summaryProductionRow', !productionIncluded);
     setHidden('summaryContentRow', !productionIncluded);
     setHidden('summaryManagementRow', (!checked('serviceSocial') && !checked('serviceCommunity')));
-    setHidden('summaryAdsRow', (!adsIncluded() && !checked('serviceAdvCreative')) || (adsIncluded() && !checked('showAdsBudget')));
+    setHidden('summaryAdsRow', !adsIncluded() && !checked('serviceAdvCreative'));
 
     setHidden('summaryInvestmentRow', !oneTime && !checked('showSummaryFee'));
     if (oneTime) setText('summaryInvestment', `${money(oneTimeFee)} + IVA`);
