@@ -202,7 +202,7 @@
     serviceInfluencer: false, serviceCommunity: false, serviceEventCoverage: false,
     eventCoverageFrequency: 'agreed', productionCadence: 'monthly', productionDays: '1',
     videoApproval: false, productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
-    videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, showAdsBudget: false, showSummaryFee: true, adsBudget: '200',
+    videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, showAdsBudget: false, showSummaryFee: true, mentionShopExtra: 'auto', adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
     offerLayout: 'compare', formulaAName: 'CONTENT', formulaAFee: '1300', comparisonAdsBudget: '',
     adsPlatform: 'meta', adsFeeMeta: '200', adsFeeTikTok: '200', adsFeeBoth: '300',
@@ -499,6 +499,7 @@
     const compare = formulaColumnsEnabled();
     setHidden('objectiveSection', !classic);
     setHidden('servicesSection', !classic);
+    setHidden('shopExtraControl', !classic || checked('serviceTikTok'));
     setHidden('adsSection', !classic || compare || value('economicMode') === 'oneTime');
     setHidden('productionSection', !classic || (!checked('serviceProduction') && !checked('serviceClientContent')));
     setHidden('clientContentPanel', !classic || !checked('serviceClientContent'));
@@ -1060,7 +1061,7 @@
     } else {
       if (adsIncluded()) exclusions.push('Budget pubblicitario a carico del Cliente;');
       else exclusions.push('Gestione delle campagne pubblicitarie e relativo budget;');
-      if (!comparisonEnabled() && !checked('serviceTikTok')) exclusions.push('TikTok Shop, aggiungibile su richiesta anche in seguito, con preventivo separato;');
+      if (!checked('serviceTikTok') && (value('mentionShopExtra') === 'yes' || (value('mentionShopExtra') === 'auto' && !comparisonEnabled()))) exclusions.push('TikTok Shop, aggiungibile su richiesta anche in seguito, con preventivo separato;');
       if (checked('serviceClientContent')) exclusions.push('Acquisto di attrezzatura o accessori destinati alla produzione dei contenuti interni;');
       if (!checked('serviceCommunity')) exclusions.push('Gestione di messaggi, commenti, recensioni e attività di community management;');
       if (checked('serviceProduction')) exclusions.push('Giornate di produzione aggiuntive, trasferte o richieste straordinarie;');
