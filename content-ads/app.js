@@ -202,7 +202,7 @@
     serviceInfluencer: false, serviceCommunity: false, serviceEventCoverage: false,
     eventCoverageFrequency: 'agreed', productionCadence: 'monthly', productionDays: '1',
     videoApproval: false, productionVideo: true, productionPhoto: true, productionGraphics: false, quantityMode: 'plan', quantityPeriod: 'month',
-    videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, showAdsBudget: false, adsBudget: '200',
+    videos: '8', photos: '15–20', graphicsCount: '4', clientContentCount: '8', clientContentPeriod: 'month', serviceAds: false, showAdsBudget: false, showSummaryFee: true, adsBudget: '200',
     serviceTikTok: false, tiktokStatus: 'new', tiktokSetup: true, tiktokPhotos: true, tiktokCatalog: true, tiktokPublish: true, tiktokProductCount: '30', tiktokFee: '1200',
     offerLayout: 'compare', formulaAName: 'CONTENT', formulaAFee: '1300', comparisonAdsBudget: '',
     adsPlatform: 'meta', adsFeeMeta: '200', adsFeeTikTok: '200', adsFeeBoth: '300',
@@ -529,6 +529,7 @@
     setText('formulaControlsHeading', adsFormulaOnly() ? formulaName('B') : 'Formule alternative');
     setHidden('socialChannelsField', !checked('serviceSocial'));
     setHidden('productionMinimumField', value('productionCadence') !== 'monthly');
+    setHidden('summaryFeeControl', tikOnly || (!compare && value('economicMode') === 'oneTime'));
     setHidden('invoiceSchedule', tikOnly || (!compare && value('economicMode') === 'oneTime'));
     setHidden('adsBudgetToggle', !adsIncluded());
     setText('adsFormulaPreview', adsIncluded() ? money(compare ? formulaFee('B') : monthlyContentAndAds()) + ' al mese + IVA' : '');
@@ -1011,7 +1012,7 @@
     if (comparisonEnabled() && adsIncluded()) {
       rows.push([`Gestione ${adsLabel()}`, ...formulas.map((id) => formulaAds(id) ? 'Inclusa' : 'Esclusa')]);
     }
-    rows.push(['Compenso mensile', ...formulas.map((id) => adsFormulaOnly()
+    if (checked('showSummaryFee')) rows.push(['Compenso mensile', ...formulas.map((id) => adsFormulaOnly()
       ? monthlyFeeSummary(formulaFee(id), formulaFee('A'))
       : `${money(formulaFee(id))} + IVA`)]);
     el('summaryCompareBody').innerHTML = rows.map((row) => `<tr><th>${safe(row[0])}</th>${row.slice(1).map((v) => `<td>${safe(v)}</td>`).join('')}</tr>`).join('');
@@ -1044,6 +1045,7 @@
     setHidden('summaryManagementRow', (!checked('serviceSocial') && !checked('serviceCommunity')));
     setHidden('summaryAdsRow', (!adsIncluded() && !checked('serviceAdvCreative')) || (adsIncluded() && !checked('showAdsBudget')));
 
+    setHidden('summaryInvestmentRow', !oneTime && !checked('showSummaryFee'));
     if (oneTime) setText('summaryInvestment', `${money(oneTimeFee)} + IVA`);
     else setText('summaryInvestment', adsIncluded() ? monthlyFeeSummary(monthly, numberValue('monthlyFee')) : `${money(monthly)} al mese + IVA`);
   }

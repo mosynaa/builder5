@@ -332,6 +332,10 @@
               </div>
               <p class="form-note">Content + Ads <strong id="adsFormulaPreview"></strong></p>
             </div>
+            <label id="summaryFeeControl" class="check">
+              <input id="showSummaryFee" name="showSummaryFee" type="checkbox" checked>
+              <span><strong>Mostra il compenso mensile nella sintesi</strong><em>Il prezzo si modifica nei campi del compenso.</em></span>
+            </label>
             <label id="adsBudgetToggle" class="check">
               <input id="showAdsBudget" name="showAdsBudget" type="checkbox">
               <span><strong>Indica il budget pubblicitario consigliato nel testo</strong><em>L’importo compare solo nella descrizione delle campagne, mai nella tabella comparativa. Il budget resta escluso dal compenso SOMO.</em></span>
@@ -418,7 +422,7 @@
               <tr id="summaryProductionRow"><th>PRODUZIONE</th><td id="summaryProduction"></td></tr>
               <tr id="summaryContentRow"><th>CONTENUTI</th><td id="summaryContent"></td></tr>
               <tr id="summaryManagementRow"><th>GESTIONE</th><td id="summaryManagement"></td></tr>
-              <tr><th>INVESTIMENTO</th><td id="summaryInvestment"></td></tr>
+              <tr id="summaryInvestmentRow"><th>INVESTIMENTO</th><td id="summaryInvestment"></td></tr>
               <tr id="summaryAdsRow"><th>ADS</th><td id="summaryAds"></td></tr>
             </tbody>
           </table>
@@ -513,7 +517,7 @@
       </article>
     </section>
   </main>
-  <script src="app.js?v=51-shop-onboarding"></script>
+  <script src="app.js?v=52-summary-price"></script>
 </body>
 </html>
 
