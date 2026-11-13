@@ -421,7 +421,7 @@
   function selectedObjectiveIds() { return objectiveIds.filter((id) => checked(id)); }
   function objectiveDescriptor(id) {
     const copy = (objectiveUiByClient[value('clientType')] || {})[id] || genericObjectiveUi[id];
-    if (value('clientType') === 'emporium' && id === 'objectiveBrand' && value('socialPresence') === 'new') return { summary: 'avvio della presenza digitale', action: 'costruire la presenza digitale e la riconoscibilità del punto vendita' };
+    if (id === 'objectiveBrand' && value('socialPresence') === 'new') return { summary: 'avvio della presenza digitale', action: 'costruire la presenza sui social e rendere riconoscibile l’attività' };
     if (!copy) return objectives[id] || null;
     const summary = String(copy[0] || '').trim().toLowerCase();
     const actionRaw = String(copy[1] || '').trim().replace(/[.!?]+$/, '');
@@ -466,9 +466,9 @@
       const description = card.querySelector('em');
       if (copy && title) title.textContent = copy[0];
       if (copy && description) description.textContent = copy[1];
-      if (value('clientType') === 'emporium' && id === 'objectiveBrand' && value('socialPresence') === 'new') {
+      if (id === 'objectiveBrand' && value('socialPresence') === 'new') {
         if (title) title.textContent = 'Avvio della presenza digitale';
-        if (description) description.textContent = 'Costruire la presenza sui social e la riconoscibilità sul territorio.';
+        if (description) description.textContent = 'Costruire la presenza sui social e rendere riconoscibile l’attività.';
       }
       card.classList.toggle('is-objective-hidden', !visible);
       card.classList.toggle('is-recommended-objective', defaults.includes(id));
@@ -610,8 +610,10 @@
       return 'Organizzazione e sviluppo delle attività TikTok Shop selezionate';
     }
     const selected = selectedObjectives();
-    if (objectivesAreDefault() && !value('customObjective') && !value('focus')) return profile().summary;
+    const launch = value('socialPresence') === 'new';
+    if (!launch && objectivesAreDefault() && !value('customObjective') && !value('focus')) return profile().summary;
     const parts = selected.map((o) => o.summary);
+    if (launch && !parts.includes('avvio della presenza digitale')) parts.unshift('avvio della presenza digitale');
     if (parts.length > 4) return `${joinNatural(parts.slice(0,4))} e altri obiettivi concordati`;
     if (parts.length) return sentence(joinNatural(parts)).replace(/\.$/, '');
     if (value('customObjective')) return sentence(value('customObjective')).replace(/\.$/, '');
@@ -735,9 +737,21 @@
       else if (tiktokIsActive() && tiktokHas('tiktokCatalog') && tiktokHas('tiktokPublish')) paragraphs.push(`Ampliare il TikTok Shop già attivo attraverso la preparazione e pubblicazione di <strong>${count} nuovi ${safe(word)}</strong>.`);
       else paragraphs.push(`Sviluppare le attività TikTok Shop selezionate per <strong>${count} ${safe(word)}</strong> in modo coordinato e pronto all'utilizzo sulla piattaforma.`);
     } else if (objectivesAreDefault()) {
-      defaultObjectiveParagraphs().forEach((p) => paragraphs.push(safe(p)));
+      const defaults = defaultObjectiveParagraphs();
+      if (value('socialPresence') === 'new' && value('clientType') !== 'emporium') {
+        const opening = defaults[0];
+        if (/rafforzare (la presenza (digitale|online)|identità e presenza digitale) di /i.test(opening)) {
+          defaults[0] = opening.replace(/rafforzare (la presenza (digitale|online)|identità e presenza digitale) di /i, (match) =>
+            match[0] === 'R' ? 'Costruire la presenza sui social di ' : 'costruire la presenza sui social di '
+          );
+        } else {
+          defaults.unshift(`La proposta mira a costruire la presenza sui social di ${clientNameForText()} a partire dai primi contenuti.`);
+        }
+      }
+      defaults.forEach((p) => paragraphs.push(safe(p)));
     } else {
       const actions = selectedObjectives().map((o) => o.action);
+      if (value('socialPresence') === 'new' && !checked('objectiveBrand')) actions.unshift('costruire la presenza sui social a partire dai primi contenuti');
       if (actions.length) {
         const joined = safe(joinNatural(actions));
         if (textStyle() === 'simple') paragraphs.push(`La comunicazione avrà l’obiettivo di ${joined}.`);
